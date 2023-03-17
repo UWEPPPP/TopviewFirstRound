@@ -1,4 +1,4 @@
-package com.liujiahui.www.entity.po;
+package com.liujiahui.www.entity.dto;
 
 /**
  * 在java用户帐户
@@ -6,7 +6,7 @@ package com.liujiahui.www.entity.po;
  * @author 刘家辉
  * @date 2023/03/17
  */
-public class UserAccountOnJavaBO {
+public class UserAccountOnJavaDTO {
      private String account;
      private String password;
      private String identity;

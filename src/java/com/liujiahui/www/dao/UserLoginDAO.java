@@ -1,7 +1,7 @@
 package com.liujiahui.www.dao;
 
-import com.liujiahui.www.entity.po.UserAccountOnJavaBO;
-import com.liujiahui.www.entity.po.UserAfterLoginBO;
+import com.liujiahui.www.entity.dto.UserAccountOnJavaDTO;
+import com.liujiahui.www.entity.dto.UserAfterLoginDTO;
 import com.liujiahui.www.service.ContractLoginService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
@@ -20,7 +20,7 @@ import static com.liujiahui.www.dao.UtilDAO.close;
  * @date 2023/03/17
  */
 public class UserLoginDAO {
-    public static UserAfterLoginBO login(UserAccountOnJavaBO account) throws SQLException, IOException, ContractException {
+    public static UserAfterLoginDTO login(UserAccountOnJavaDTO account) throws SQLException, IOException, ContractException {
         String userAccount=account.getAccount();
         String userPassword=account.getPassword();
         String identity=account.getIdentity();
@@ -34,7 +34,7 @@ public class UserLoginDAO {
             preparedStatement.setString(1, userAccount);
             ResultSet set = preparedStatement.executeQuery();
             set.next();
-            UserAfterLoginBO user = new UserAfterLoginBO();
+            UserAfterLoginDTO user = new UserAfterLoginDTO();
             String balance= String.valueOf(ContractLoginService.getBalance(set.getString("account_address"),set.getString("private_key")));
             user.setName(set.getString("user_name"));
             user.setAccountAddress(set.getString("account_address"));

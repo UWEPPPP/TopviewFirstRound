@@ -1,7 +1,7 @@
 package com.liujiahui.www.service;
 
 import com.liujiahui.www.AssetSolidity;
-import com.liujiahui.www.entity.po.UserAccountOnContractBO;
+import com.liujiahui.www.entity.dto.UserAccountOnContractDTO;
 import org.fisco.bcos.sdk.BcosSDK;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
@@ -13,7 +13,7 @@ import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
  * @date 2023/03/17
  */
 public class ContractRegisterService {
-    public static UserAccountOnContractBO initByContract() {
+    public static UserAccountOnContractDTO initByContract() {
         BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
         Client client= bcosSDK.getClient(1);
         // 随机生成非国密公私钥对
@@ -22,10 +22,10 @@ public class ContractRegisterService {
         String accountAddress = cryptoKeyPair.getAddress();
         AssetSolidity asset = AssetSolidity.load("0x5672e6a652dd9a1aa5fc07e3bbd265557b009d22",client, cryptoKeyPair);
         asset.registerAsset();
-        UserAccountOnContractBO userAccountOnContractBO = new UserAccountOnContractBO();
-        userAccountOnContractBO.setAccountAddress(accountAddress);
-        userAccountOnContractBO.setPrivateKey(cryptoKeyPair.getHexPrivateKey());
-        return userAccountOnContractBO;
+        UserAccountOnContractDTO userAccountOnContractDTO = new UserAccountOnContractDTO();
+        userAccountOnContractDTO.setAccountAddress(accountAddress);
+        userAccountOnContractDTO.setPrivateKey(cryptoKeyPair.getHexPrivateKey());
+        return userAccountOnContractDTO;
     }
 
 }

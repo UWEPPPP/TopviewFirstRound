@@ -2,7 +2,7 @@ package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.po.Supplier;
 import com.liujiahui.www.entity.po.User;
-import com.liujiahui.www.entity.po.UserAccountOnContractBO;
+import com.liujiahui.www.entity.dto.UserAccountOnContractDTO;
 import com.liujiahui.www.service.ContractRegisterService;
 
 import java.io.IOException;
@@ -32,15 +32,15 @@ public class UserRegisterDAO {
         if(checkUserExist(table,user.getName(),connection)){
             return false;
         }
-        UserAccountOnContractBO userAccountOnContractBO = ContractRegisterService.initByContract();
+        UserAccountOnContractDTO userAccountOnContractDTO = ContractRegisterService.initByContract();
         String sql="insert into user."+table+"(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, user.getName());
         preparedStatement.setString(2, user.getGender());
         preparedStatement.setString(3, user.getPhoneNumber());
         preparedStatement.setString(4, user.getPassword());
-        preparedStatement.setString(5, userAccountOnContractBO.getPrivateKey());
-        preparedStatement.setString(6, userAccountOnContractBO.getAccountAddress());
+        preparedStatement.setString(5, userAccountOnContractDTO.getPrivateKey());
+        preparedStatement.setString(6, userAccountOnContractDTO.getAccountAddress());
         if(user instanceof Supplier){
             preparedStatement.setString(7, ((Supplier) user).getAddress());
         }

@@ -1,4 +1,4 @@
-package com.liujiahui.www.entity.po;
+package com.liujiahui.www.entity.dto;
 
 /**
  * 用户登录后
@@ -6,7 +6,7 @@ package com.liujiahui.www.entity.po;
  * @author 刘家辉
  * @date 2023/03/17
  */
-public class UserAfterLoginBO {
+public class UserAfterLoginDTO {
       private  String name;
       private  String balance;
       private  String accountAddress;
