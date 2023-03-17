@@ -8,9 +8,10 @@ package com.liujiahui.www.entity.po;
  */
 public class User {
    protected   String name;
-   protected   int phoneNumber;
+   protected   String phoneNumber;
    protected   String password;
    protected   String gender;
+   protected   String balance;
 
    public String getName() {
       return name;
@@ -20,11 +21,11 @@ public class User {
       this.name = name;
    }
 
-   public int getPhoneNumber() {
+   public String getPhoneNumber() {
       return phoneNumber;
    }
 
-   public void setPhoneNumber(int phoneNumber) {
+   public void setPhoneNumber(String phoneNumber) {
       this.phoneNumber = phoneNumber;
    }
 

@@ -2,6 +2,7 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.UserLoginController;
 import com.liujiahui.www.controller.UserRegisterController;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import java.util.Scanner;
  * @date 2023/03/16
  */
 public class InitInterface {
-    public static void start() throws SQLException, IOException {
+    public static void start() throws SQLException, IOException, ContractException {
         Scanner in = new Scanner(System.in);
         System.out.println("欢迎来到Topview集团旗下的产品溯源系统");
         System.out.println("1.登录");

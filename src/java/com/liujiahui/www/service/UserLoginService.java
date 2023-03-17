@@ -1,42 +1,43 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.dao.UserDAO;
+import com.liujiahui.www.dao.UserLoginDAO;
 import com.liujiahui.www.entity.bo.UserLoginBO;
-import com.liujiahui.www.entity.bo.UserRegisterBO;
-import com.liujiahui.www.entity.po.Consumer;
-import org.fisco.bcos.sdk.BcosSDK;
-import org.fisco.bcos.sdk.client.Client;
-import org.fisco.bcos.sdk.crypto.CryptoSuite;
-import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
-import org.fisco.bcos.sdk.model.CryptoType;
+import com.liujiahui.www.entity.dto.UserInformationDTO;
+import com.liujiahui.www.entity.po.*;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
+/**
+ * 用户登录服务
+ *
+ * @author 刘家辉
+ * @date 2023/03/17
+ */
 public class UserLoginService {
-    public static void loginByConsumer(UserLoginBO userLoginBO) throws SQLException, IOException {
-        int account = userLoginBO.getAccount();
+    public static UserInformationDTO login(UserLoginBO userLoginBO) throws ContractException, SQLException, IOException {
+        String account = userLoginBO.getAccount();
         String password = userLoginBO.getPassword();
-        Consumer consumer = new Consumer();
-        consumer.setPhoneNumber(account);
-        consumer.setPassword(password);
-        UserDAO userDAO = new UserDAO();
-       Consumer consumer1=(Consumer)userDAO.login(consumer);
-        if(consumer1!=null){
-           System.out.println("登录成功");
-    }
-    }
-
-    public static void loginBySupplier(UserLoginBO userLoginBO) {
-    }
-
-    public static void registerByConsumer(UserRegisterBO userRegisterBO) {
-       // 创建非国密类型的CryptoSuite
-        CryptoSuite cryptoSuite = new CryptoSuite(CryptoType.ECDSA_TYPE);
-      // 随机生成非国密公私钥对
-        CryptoKeyPair cryptoKeyPair = cryptoSuite.createKeyPair();
-      // 获取账户地址
-        String accountAddress = cryptoKeyPair.getAddress();
-        cryptoKeyPair.getHexPrivateKey();
+        String identity = userLoginBO.getIdentity();
+        UserAccountOnJavaBO userAccountOnJavaBO = new UserAccountOnJavaBO();
+        userAccountOnJavaBO.setAccount(account);
+        userAccountOnJavaBO.setPassword(password);
+        String checkIdentity="suppliers";
+        if(Objects.equals(identity, checkIdentity)){
+            userAccountOnJavaBO.setIdentity("suppliers");
+            UserAfterLoginBO user = UserLoginDAO.login(userAccountOnJavaBO);
+            if(user!=null){
+                return new UserInformationDTO(user.getName(),user.getBalance(),user.getAccountAddress());
+            }
+        }else {
+            userAccountOnJavaBO.setIdentity("consumer");
+            UserAfterLoginBO user =UserLoginDAO.login(userAccountOnJavaBO);
+            if(user!=null){
+                return new UserInformationDTO(user.getName(),user.getBalance(),user.getAccountAddress());
+            }
+        }
+        return null;
     }
 }

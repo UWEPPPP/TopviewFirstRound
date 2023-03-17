@@ -9,7 +9,7 @@ package com.liujiahui.www.entity.bo;
 public class UserRegisterBO {
    private   String  name;
    private   String  gender;
-   private   int     phone;
+   private   String     phone;
    private   String  address;
    private   String  password;
 
@@ -29,11 +29,11 @@ public class UserRegisterBO {
         this.gender = gender;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

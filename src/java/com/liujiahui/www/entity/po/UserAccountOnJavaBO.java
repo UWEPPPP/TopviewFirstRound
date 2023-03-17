@@ -1,15 +1,16 @@
-package com.liujiahui.www.entity.bo;
+package com.liujiahui.www.entity.po;
 
 /**
- * 消费者登录值对象
+ * 在java用户帐户
  *
  * @author 刘家辉
- * @date 2023/03/16
+ * @date 2023/03/17
  */
-public class UserLoginBO {
-      private String  account;
-      private String  password;
-      private String  identity;
+public class UserAccountOnJavaBO {
+     private String account;
+     private String password;
+     private String identity;
+
     public String getIdentity() {
         return identity;
     }
@@ -17,9 +18,6 @@ public class UserLoginBO {
     public void setIdentity(String identity) {
         this.identity = identity;
     }
-
-
-
 
     public String getAccount() {
         return account;
@@ -39,16 +37,10 @@ public class UserLoginBO {
 
     @Override
     public String toString() {
-        return "UserLoginBO{" +
+        return "UserAccountOnJava{" +
                 "account='" + account + '\'' +
                 ", password='" + password + '\'' +
                 ", identity='" + identity + '\'' +
                 '}';
-    }
-
-    public UserLoginBO(String account, String password, String identity) {
-        this.account = account;
-        this.password = password;
-        this.identity = identity;
     }
 }

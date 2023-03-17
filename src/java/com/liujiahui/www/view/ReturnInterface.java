@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.service.UserRegisterService;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * @date 2023/03/17
  */
 public class ReturnInterface {
-    public static void returnInterface(Boolean bool) throws SQLException, IOException {
+    public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException {
         if(bool){
             System.out.println("注册成功");
             System.out.println("登录时账号即为您输入的名字"+" ,密码为你设置的密码 "+" ,账号初始余额为1000");
@@ -21,6 +21,11 @@ public class ReturnInterface {
             System.out.println("注册失败,用户名已存在");
             System.out.println("即将返回主界面");
         }
+        InitInterface.start();
+    }
+    public static void loginReturnInterface() throws SQLException, IOException, ContractException {
+        System.out.println("登录失败,用户名或密码错误");
+        System.out.println("即将返回主界面");
         InitInterface.start();
     }
 }

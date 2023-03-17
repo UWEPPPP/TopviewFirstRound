@@ -17,10 +17,7 @@ public class Testg {
         // 获取账户地址
         String accountAddress = cryptoKeyPair.getAddress();
         AssetSolidity asset = AssetSolidity.deploy(client, cryptoKeyPair);
-        asset.registerAsset();
-       System.out.println(asset.balances(accountAddress));
-       System.out.println(asset.getBalance());
-
+        System.out.println(asset.getContractAddress());
 
     }
 }
