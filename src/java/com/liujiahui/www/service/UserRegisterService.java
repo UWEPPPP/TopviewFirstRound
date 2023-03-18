@@ -4,7 +4,6 @@ import com.liujiahui.www.dao.UserRegisterDAO;
 import com.liujiahui.www.entity.bo.UserRegisterBO;
 import com.liujiahui.www.entity.po.Consumer;
 import com.liujiahui.www.entity.po.Supplier;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
  * @date 2023/03/16
  */
 public class UserRegisterService {
-    public static Boolean registerByConsumer(UserRegisterBO userRegisterBO) throws SQLException, IOException, ContractException {
+    public static Boolean registerByConsumer(UserRegisterBO userRegisterBO) throws SQLException, IOException {
         Consumer consumer = new Consumer();
         consumer.setName(userRegisterBO.getName());
         consumer.setGender(userRegisterBO.getGender());
@@ -25,7 +24,7 @@ public class UserRegisterService {
         UserRegisterDAO userRegisterDAO = new UserRegisterDAO();
         return userRegisterDAO.register(consumer);
     }
-    public static Boolean registerBySupplier(UserRegisterBO userRegisterBO) throws SQLException, IOException, ContractException {
+    public static Boolean registerBySupplier(UserRegisterBO userRegisterBO) throws SQLException, IOException {
         Supplier supplier = new Supplier();
         supplier.setName(userRegisterBO.getName());
         supplier.setGender(userRegisterBO.getGender());

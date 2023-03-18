@@ -16,9 +16,7 @@ public class ContractRegisterService {
     public static UserAccountOnContractDTO initByContract() {
         BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
         Client client= bcosSDK.getClient(1);
-        // 随机生成非国密公私钥对
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
-        // 获取账户地址
         String accountAddress = cryptoKeyPair.getAddress();
         AssetSolidity asset = AssetSolidity.load("0x5672e6a652dd9a1aa5fc07e3bbd265557b009d22",client, cryptoKeyPair);
         asset.registerAsset();

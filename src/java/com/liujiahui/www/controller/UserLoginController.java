@@ -1,7 +1,7 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.UserLoginBO;
-import com.liujiahui.www.entity.dto.UserInformationDTO;
+import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.vo.UserAfterLoginVO;
 import com.liujiahui.www.service.UserLoginService;
 import com.liujiahui.www.view.ConsumerMainInterface;
@@ -24,18 +24,18 @@ public class UserLoginController {
     public static void loginByConsumer(String account, String password) throws SQLException, IOException, ContractException {
         UserLoginBO userLoginBO = new UserLoginBO(account,password,"consumer");
         identity="consumer";
-        UserInformationDTO login=UserLoginService.login(userLoginBO);
+        UserInformationSaveDTO login=UserLoginService.login(userLoginBO);
         loginBackView(login);
     }
 
     public static void loginBySupplier(String account, String password) throws ContractException, SQLException, IOException {
         UserLoginBO userLoginBO = new UserLoginBO(account,password,"suppliers");
         identity="suppliers";
-        UserInformationDTO login = UserLoginService.login(userLoginBO);
+        UserInformationSaveDTO login = UserLoginService.login(userLoginBO);
         loginBackView(login);
     }
 
-    public static void loginBackView(UserInformationDTO userInformationDTO) throws ContractException, SQLException, IOException {
+    public static void loginBackView(UserInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException {
         if(userInformationDTO == null){
             ReturnInterface.loginReturnInterface();
         }

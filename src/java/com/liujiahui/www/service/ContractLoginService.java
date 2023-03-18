@@ -18,7 +18,6 @@ public class ContractLoginService {
     public static BigInteger getBalance(String accountAddress, String privateKey) throws ContractException {
         BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
         Client client= bcosSDK.getClient(1);
-        // 随机生成非国密公私钥对
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair(privateKey);
         AssetSolidity asset = AssetSolidity.load("0x5672e6a652dd9a1aa5fc07e3bbd265557b009d22",client, cryptoKeyPair);
         return asset.balances(accountAddress);

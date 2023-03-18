@@ -3,8 +3,7 @@ package com.liujiahui.www.service;
 import com.liujiahui.www.dao.UserLoginDAO;
 import com.liujiahui.www.entity.bo.UserLoginBO;
 import com.liujiahui.www.entity.dto.UserAccountOnJavaDTO;
-import com.liujiahui.www.entity.dto.UserAfterLoginDTO;
-import com.liujiahui.www.entity.dto.UserInformationDTO;
+import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.util.Objects;
  * @date 2023/03/17
  */
 public class UserLoginService {
-    public static UserInformationDTO login(UserLoginBO userLoginBO) throws ContractException, SQLException, IOException {
+    public static UserInformationSaveDTO login(UserLoginBO userLoginBO) throws ContractException, SQLException, IOException {
         String account = userLoginBO.getAccount();
         String password = userLoginBO.getPassword();
         String identity = userLoginBO.getIdentity();
@@ -28,17 +27,9 @@ public class UserLoginService {
         String checkIdentity="suppliers";
         if(Objects.equals(identity, checkIdentity)){
             userAccountOnJavaDTO.setIdentity("suppliers");
-            UserAfterLoginDTO user = UserLoginDAO.login(userAccountOnJavaDTO);
-            if(user!=null){
-                return new UserInformationDTO(user.getName(),user.getBalance(),user.getAccountAddress());
-            }
         }else {
             userAccountOnJavaDTO.setIdentity("consumer");
-            UserAfterLoginDTO user =UserLoginDAO.login(userAccountOnJavaDTO);
-            if(user!=null){
-                return new UserInformationDTO(user.getName(),user.getBalance(),user.getAccountAddress());
-            }
         }
-        return null;
+        return UserLoginDAO.login(userAccountOnJavaDTO);
     }
 }

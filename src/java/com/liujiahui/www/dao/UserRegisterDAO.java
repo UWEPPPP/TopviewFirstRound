@@ -24,16 +24,19 @@ public class UserRegisterDAO {
         Connection connection = UtilDAO.getConnection();
         PreparedStatement preparedStatement;
         String table;
+        String tableAndLimit;
         if(user instanceof Supplier){
-            table = "consumer";
-        }else{
             table = "suppliers";
+            tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address) values(?,?,?,?,?,?,?)";
+        }else{
+            table = "consumer";
+            tableAndLimit = "consumer(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";
         }
         if(checkUserExist(table,user.getName(),connection)){
             return false;
         }
         UserAccountOnContractDTO userAccountOnContractDTO = ContractRegisterService.initByContract();
-        String sql="insert into user."+table+"(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";
+        String sql="insert into user."+tableAndLimit;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, user.getName());
         preparedStatement.setString(2, user.getGender());
