@@ -1,0 +1,301 @@
+package com.liujiahui.www.solidity;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.fisco.bcos.sdk.abi.FunctionReturnDecoder;
+import org.fisco.bcos.sdk.abi.TypeReference;
+import org.fisco.bcos.sdk.abi.datatypes.Address;
+import org.fisco.bcos.sdk.abi.datatypes.Bool;
+import org.fisco.bcos.sdk.abi.datatypes.Event;
+import org.fisco.bcos.sdk.abi.datatypes.Function;
+import org.fisco.bcos.sdk.abi.datatypes.Type;
+import org.fisco.bcos.sdk.abi.datatypes.Utf8String;
+import org.fisco.bcos.sdk.abi.datatypes.generated.Bytes32;
+import org.fisco.bcos.sdk.abi.datatypes.generated.Uint256;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple6;
+import org.fisco.bcos.sdk.client.Client;
+import org.fisco.bcos.sdk.contract.Contract;
+import org.fisco.bcos.sdk.crypto.CryptoSuite;
+import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
+import org.fisco.bcos.sdk.eventsub.EventCallback;
+import org.fisco.bcos.sdk.model.CryptoType;
+import org.fisco.bcos.sdk.model.TransactionReceipt;
+import org.fisco.bcos.sdk.model.callback.TransactionCallback;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+
+/**
+ * 商品贸易
+ *
+ * @author 刘家辉
+ * @date 2023/03/18
+ */
+@SuppressWarnings("unchecked")
+public class ItemTradeSolidity extends Contract {
+    public static final String[] BINARY_ARRAY = {"608060405234801561001057600080fd5b5061100a806100206000396000f3fe6080604052600436106100555760003560e01c80630d044b1c1461005a57806312065fe0146101bf5780635c80a435146101e65780639f37092a14610325578063a3e54b3e14610353578063cac7ed6214610491575b600080fd5b34801561006657600080fd5b506101ab600480360360c081101561007d57600080fd5b81359190810190604081016020820135600160201b81111561009e57600080fd5b8201836020820111156100b057600080fd5b803590602001918460018302840111600160201b831117156100d157600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295949360208101935035915050600160201b81111561012357600080fd5b82018360208201111561013557600080fd5b803590602001918460018302840111600160201b8311171561015657600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295505082359350505060208101356001600160a01b031690604001356104a6565b604080519115158252519081900360200190f35b3480156101cb57600080fd5b506101d4610622565b60408051918252519081900360200190f35b3480156101f257600080fd5b5061021f6004803603604081101561020957600080fd5b506001600160a01b0381351690602001356106a0565b6040805187815290810185905282151560808201526001600160a01b03821660a082015260c060208083018281528851928401929092528751606084019160e0850191908a019080838360005b8381101561028457818101518382015260200161026c565b50505050905090810190601f1680156102b15780820380516001836020036101000a031916815260200191505b50838103825286518152865160209182019188019080838360005b838110156102e45781810151838201526020016102cc565b50505050905090810190601f1680156103115780820380516001836020036101000a031916815260200191505b509850505050505050505060405180910390f35b6103516004803603604081101561033b57600080fd5b506001600160a01b038135169060200135610815565b005b34801561035f57600080fd5b506103516004803603606081101561037657600080fd5b810190602081018135600160201b81111561039057600080fd5b8201836020820111156103a257600080fd5b803590602001918460018302840111600160201b831117156103c357600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092958435959094909350604081019250602001359050600160201b81111561041d57600080fd5b82018360208201111561042f57600080fd5b803590602001918460018302840111600160201b8311171561045057600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610d05945050505050565b34801561049d57600080fd5b50610351610ea0565b60008060028888888888336040516020018087815260200186805190602001908083835b602083106104e95780518252601f1990920191602091820191016104ca565b51815160209384036101000a600019018019909216911617905288519190930192880191508083835b602083106105315780518252601f199092019160209182019101610512565b51815160209384036101000a6000190180199092169116179052920195865250606093841b6bffffffffffffffffffffffff19908116868301529290931b909116603484015250604080518084036028018152604890930190819052825192955093508392508401908083835b602083106105bd5780518252601f19909201916020918201910161059e565b51815160209384036101000a60001901801990921691161790526040519190930194509192505080830381855afa1580156105fc573d6000803e3d6000fd5b5050506040513d602081101561061157600080fd5b505183149150509695505050505050565b600080546040805163f8b2cb4f60e01b815233600482015290516001600160a01b039092169163f8b2cb4f91602480820192602092909190829003018186803b15801561066e57600080fd5b505afa158015610682573d6000803e3d6000fd5b505050506040513d602081101561069857600080fd5b505190505b90565b600160205281600052604060002081815481106106b957fe5b60009182526020918290206005919091020180546001808301805460408051600294831615610100026000190190921693909304601f810187900487028201870190935282815292965092945090928301828280156107595780601f1061072e57610100808354040283529160200191610759565b820191906000526020600020905b81548152906001019060200180831161073c57829003601f168201915b505050506002838101546003850180546040805160206001841615610100026000190190931695909504601f8101839004830286018301909152808552959692959294509091908301828280156107f15780601f106107c6576101008083540402835291602001916107f1565b820191906000526020600020905b8154815290600101906020018083116107d457829003601f168201915b5050506004909301549192505060ff8116906001600160a01b036101009091041686565b61081d610efb565b6001600160a01b038316600090815260016020526040902080548390811061084157fe5b90600052602060002090600502016040518060c001604052908160008201548152602001600182018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156108fd5780601f106108d2576101008083540402835291602001916108fd565b820191906000526020600020905b8154815290600101906020018083116108e057829003601f168201915b505050918352505060028281015460208084019190915260038401805460408051601f6000196101006001861615020190931695909504918201849004840285018401815281855290940193909183018282801561099c5780601f106109715761010080835404028352916020019161099c565b820191906000526020600020905b81548152906001019060200180831161097f57829003601f168201915b50505091835250506004919091015460ff81161515602083015261010090046001600160a01b0316604090910152608081015190915015610a13576040805162461bcd60e51b815260206004820152600c60248201526b125d195b481a5cc81cdbdb1960a21b604482015290519081900360640190fd5b3481604001511115610a61576040805162461bcd60e51b8152602060048201526012602482015271496e73756666696369656e742066756e647360701b604482015290519081900360640190fd5b600160808201526040516001600160a01b038416903480156108fc02916000818181858888f19350505050158015610a9d573d6000803e3d6000fd5b506000600282600001518360200151846040015185606001518660a00151336040516020018087815260200186805190602001908083835b60208310610af45780518252601f199092019160209182019101610ad5565b51815160209384036101000a60001901801990921691161790529201878152865190830192870191508083835b60208310610b405780518252601f199092019160209182019101610b21565b6001836020036101000a038019825116818451168082178552505050505050905001836001600160a01b03166001600160a01b031660601b8152601401826001600160a01b03166001600160a01b031660601b815260140196505050505050506040516020818303038152906040526040518082805190602001908083835b60208310610bde5780518252601f199092019160209182019101610bbf565b51815160209384036101000a60001901801990921691161790526040519190930194509192505080830381855afa158015610c1d573d6000803e3d6000fd5b5050506040513d6020811015610c3257600080fd5b505160208381015160408086015181518085018290523392810183905260608101869052608080825284519082015283519596506001600160a01b038a16957f17448fd9a76ee7763e78c8a5a143f9274ee5c69cc7668146b32e49187da0592995929392889291829160a08301919088019080838360005b83811015610cc2578181015183820152602001610caa565b50505050905090810190601f168015610cef5780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a250505050565b33600090815260016020526040902054610d1d610efb565b506040805160c0810182528281526020808201878152828401879052606083018690526000608084018190523360a08501819052815260018084529481208054808701825590825290839020845160059092020190815590518051939485949293610d8d93918501920190610f3c565b506040820151600282015560608201518051610db3916003840191602090910190610f3c565b5060808201516004909101805460a0909301516001600160a01b031661010002610100600160a81b031992151560ff199094169390931791909116919091179055604080516020808201879052828252875192820192909252865133927f2db22df1631edf2d77f9b36c2a4277805c00cc152fddb472fd9d0d23c9dd395092899289928291606083019186019080838360005b83811015610e5e578181015183820152602001610e46565b50505050905090810190601f168015610e8b5780820380516001836020036101000a031916815260200191505b50935050505060405180910390a25050505050565b6000805460408051636563f6b160e11b815290516001600160a01b039092169263cac7ed629260048084019382900301818387803b158015610ee157600080fd5b505af1158015610ef5573d6000803e3d6000fd5b50505050565b6040518060c001604052806000815260200160608152602001600081526020016060815260200160001515815260200160006001600160a01b031681525090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610f7d57805160ff1916838001178555610faa565b82800160010185558215610faa579182015b82811115610faa578251825591602001919060010190610f8f565b50610fb6929150610fba565b5090565b61069d91905b80821115610fb65760008155600101610fc056fea264697066735822122009","81ff4653cae96b23dab2457709c988089653deb1c43cd011d3fea7960cddd464736f6c634300060a0033"};
+
+    public static final String BINARY = org.fisco.bcos.sdk.utils.StringUtils.joinAll("", BINARY_ARRAY);
+
+    public static final String[] SM_BINARY_ARRAY = {"608060405234801561001057600080fd5b5061100c806100206000396000f3fe6080604052600436106100555760003560e01c8063078806f31461005a5780632a3db26b1461019a5780632ce271ab146102ff5780636b4164a714610314578063c0f25f4314610453578063eda1cd8a1461047a575b600080fd5b34801561006657600080fd5b506101986004803603606081101561007d57600080fd5b810190602081018135600160201b81111561009757600080fd5b8201836020820111156100a957600080fd5b803590602001918460018302840111600160201b831117156100ca57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092958435959094909350604081019250602001359050600160201b81111561012457600080fd5b82018360208201111561013657600080fd5b803590602001918460018302840111600160201b8311171561015757600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295506104a6945050505050565b005b3480156101a657600080fd5b506102eb600480360360c08110156101bd57600080fd5b81359190810190604081016020820135600160201b8111156101de57600080fd5b8201836020820111156101f057600080fd5b803590602001918460018302840111600160201b8311171561021157600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295949360208101935035915050600160201b81111561026357600080fd5b82018360208201111561027557600080fd5b803590602001918460018302840111600160201b8311171561029657600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295505082359350505060208101356001600160a01b03169060400135610641565b604080519115158252519081900360200190f35b34801561030b57600080fd5b506101986107bd565b34801561032057600080fd5b5061034d6004803603604081101561033757600080fd5b506001600160a01b038135169060200135610818565b6040805187815290810185905282151560808201526001600160a01b03821660a082015260c060208083018281528851928401929092528751606084019160e0850191908a019080838360005b838110156103b257818101518382015260200161039a565b50505050905090810190601f1680156103df5780820380516001836020036101000a031916815260200191505b50838103825286518152865160209182019188019080838360005b838110156104125781810151838201526020016103fa565b50505050905090810190601f16801561043f5780820380516001836020036101000a031916815260200191505b509850505050505050505060405180910390f35b34801561045f57600080fd5b5061046861098d565b60408051918252519081900360200190f35b6101986004803603604081101561049057600080fd5b506001600160a01b038135169060200135610a0b565b336000908152600160205260409020546104be610efd565b506040805160c0810182528281526020808201878152828401879052606083018690526000608084018190523360a0850181905281526001808452948120805480870182559082529083902084516005909202019081559051805193948594929361052e93918501920190610f3e565b506040820151600282015560608201518051610554916003840191602090910190610f3e565b5060808201516004909101805460a0909301516001600160a01b031661010002610100600160a81b031992151560ff199094169390931791909116919091179055604080516020808201879052828252875192820192909252865133927f80e863492b63f6a162c0f7ef99ef9f59519410da2dc51148db147b762173afeb92899289928291606083019186019080838360005b838110156105ff5781810151838201526020016105e7565b50505050905090810190601f16801561062c5780820380516001836020036101000a031916815260200191505b50935050505060405180910390a25050505050565b60008060028888888888336040516020018087815260200186805190602001908083835b602083106106845780518252601f199092019160209182019101610665565b51815160209384036101000a600019018019909216911617905288519190930192880191508083835b602083106106cc5780518252601f1990920191602091820191016106ad565b51815160209384036101000a6000190180199092169116179052920195865250606093841b6bffffffffffffffffffffffff19908116868301529290931b909116603484015250604080518084036028018152604890930190819052825192955093508392508401908083835b602083106107585780518252601f199092019160209182019101610739565b51815160209384036101000a60001901801990921691161790526040519190930194509192505080830381855afa158015610797573d6000803e3d6000fd5b5050506040513d60208110156107ac57600080fd5b505183149150509695505050505050565b6000805460408051632ce271ab60e01b815290516001600160a01b0390921692632ce271ab9260048084019382900301818387803b1580156107fe57600080fd5b505af1158015610812573d6000803e3d6000fd5b50505050565b6001602052816000526040600020818154811061083157fe5b60009182526020918290206005919091020180546001808301805460408051600294831615610100026000190190921693909304601f810187900487028201870190935282815292965092945090928301828280156108d15780601f106108a6576101008083540402835291602001916108d1565b820191906000526020600020905b8154815290600101906020018083116108b457829003601f168201915b505050506002838101546003850180546040805160206001841615610100026000190190931695909504601f8101839004830286018301909152808552959692959294509091908301828280156109695780601f1061093e57610100808354040283529160200191610969565b820191906000526020600020905b81548152906001019060200180831161094c57829003601f168201915b5050506004909301549192505060ff8116906001600160a01b036101009091041686565b6000805460408051630fc6ebe160e21b815233600482015290516001600160a01b0390921691633f1baf8491602480820192602092909190829003018186803b1580156109d957600080fd5b505afa1580156109ed573d6000803e3d6000fd5b505050506040513d6020811015610a0357600080fd5b505190505b90565b610a13610efd565b6001600160a01b0383166000908152600160205260409020805483908110610a3757fe5b90600052602060002090600502016040518060c001604052908160008201548152602001600182018054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610af35780601f10610ac857610100808354040283529160200191610af3565b820191906000526020600020905b815481529060010190602001808311610ad657829003601f168201915b505050918352505060028281015460208084019190915260038401805460408051601f60001961010060018616150201909316959095049182018490048402850184018152818552909401939091830182828015610b925780601f10610b6757610100808354040283529160200191610b92565b820191906000526020600020905b815481529060010190602001808311610b7557829003601f168201915b50505091835250506004919091015460ff81161515602083015261010090046001600160a01b0316604090910152608081015190915015610c0a5760408051636381e58960e11b815260206004820152600c60248201526b125d195b481a5cc81cdbdb1960a21b604482015290519081900360640190fd5b3481604001511115610c595760408051636381e58960e11b8152602060048201526012602482015271496e73756666696369656e742066756e647360701b604482015290519081900360640190fd5b600160808201526040516001600160a01b038416903480156108fc02916000818181858888f19350505050158015610c95573d6000803e3d6000fd5b506000600282600001518360200151846040015185606001518660a00151336040516020018087815260200186805190602001908083835b60208310610cec5780518252601f199092019160209182019101610ccd565b51815160209384036101000a60001901801990921691161790529201878152865190830192870191508083835b60208310610d385780518252601f199092019160209182019101610d19565b6001836020036101000a038019825116818451168082178552505050505050905001836001600160a01b03166001600160a01b031660601b8152601401826001600160a01b03166001600160a01b031660601b815260140196505050505050506040516020818303038152906040526040518082805190602001908083835b60208310610dd65780518252601f199092019160209182019101610db7565b51815160209384036101000a60001901801990921691161790526040519190930194509192505080830381855afa158015610e15573d6000803e3d6000fd5b5050506040513d6020811015610e2a57600080fd5b505160208381015160408086015181518085018290523392810183905260608101869052608080825284519082015283519596506001600160a01b038a16957f2dc3a6e22bb6987009c0ed28d9c22b5f1ffb46dc2d6b654b2505dd1b3d59a96495929392889291829160a08301919088019080838360005b83811015610eba578181015183820152602001610ea2565b50505050905090810190601f168015610ee75780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a250505050565b6040518060c001604052806000815260200160608152602001600081526020016060815260200160001515815260200160006001600160a01b031681525090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610f7f57805160ff1916838001178555610fac565b82800160010185558215610fac579182015b82811115610fac578251825591602001919060010190610f91565b50610fb8929150610fbc565b5090565b610a0891905b80821115610fb85760008155600101610fc256fea26469706673582212","20315e3fed7462bd22f6cdfef46303024429355676a58ea2e6666a60c8a4544e3f64736f6c634300060a0033"};
+
+    public static final String SM_BINARY = org.fisco.bcos.sdk.utils.StringUtils.joinAll("", SM_BINARY_ARRAY);
+
+    public static final String[] ABI_ARRAY = {"[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"}],\"name\":\"ItemSold\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"NewItemAdd\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"name\":\"addItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"buyItem\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"items\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"isSold\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"registerAsset\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"itemName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"itemDescription\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"itemPrice\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"itemSeller\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"itemHash\",\"type\":\"bytes32\"}],\"name\":\"verifyItem\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"};
+
+    public static final String ABI = org.fisco.bcos.sdk.utils.StringUtils.joinAll("", ABI_ARRAY);
+
+    public static final String FUNC_ADDITEM = "addItem";
+
+    public static final String FUNC_BUYITEM = "buyItem";
+
+    public static final String FUNC_GETBALANCE = "getBalance";
+
+    public static final String FUNC_ITEMS = "items";
+
+    public static final String FUNC_REGISTERASSET = "registerAsset";
+
+    public static final String FUNC_VERIFYITEM = "verifyItem";
+
+    public static final Event ITEMSOLD_EVENT = new Event("ItemSold",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Bytes32>() {}));
+    ;
+
+    public static final Event NEWITEMADD_EVENT = new Event("NewItemAdd",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}));
+    ;
+
+    protected ItemTradeSolidity(String contractAddress, Client client, CryptoKeyPair credential) {
+        super(getBinary(client.getCryptoSuite()), contractAddress, client, credential);
+    }
+
+    public static String getBinary(CryptoSuite cryptoSuite) {
+        return (cryptoSuite.getCryptoTypeConfig() == CryptoType.ECDSA_TYPE ? BINARY : SM_BINARY);
+    }
+
+    public List<ItemSoldEventResponse> getItemSoldEvents(TransactionReceipt transactionReceipt) {
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ITEMSOLD_EVENT, transactionReceipt);
+        ArrayList<ItemSoldEventResponse> responses = new ArrayList<ItemSoldEventResponse>(valueList.size());
+        for (Contract.EventValuesWithLog eventValues : valueList) {
+            ItemSoldEventResponse typedResponse = new ItemSoldEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.seller = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.name = (String) eventValues.getNonIndexedValues().get(0).getValue();
+            typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
+            typedResponse.buyer = (String) eventValues.getNonIndexedValues().get(2).getValue();
+            typedResponse.hash = (byte[]) eventValues.getNonIndexedValues().get(3).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public void subscribeItemSoldEvent(String fromBlock, String toBlock, List<String> otherTopics, EventCallback callback) {
+        String topic0 = eventEncoder.encode(ITEMSOLD_EVENT);
+        subscribeEvent(ABI,BINARY,topic0,fromBlock,toBlock,otherTopics,callback);
+    }
+
+    public void subscribeItemSoldEvent(EventCallback callback) {
+        String topic0 = eventEncoder.encode(ITEMSOLD_EVENT);
+        subscribeEvent(ABI,BINARY,topic0,callback);
+    }
+
+    public List<NewItemAddEventResponse> getNewItemAddEvents(TransactionReceipt transactionReceipt) {
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(NEWITEMADD_EVENT, transactionReceipt);
+        ArrayList<NewItemAddEventResponse> responses = new ArrayList<NewItemAddEventResponse>(valueList.size());
+        for (Contract.EventValuesWithLog eventValues : valueList) {
+            NewItemAddEventResponse typedResponse = new NewItemAddEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.seller = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.name = (String) eventValues.getNonIndexedValues().get(0).getValue();
+            typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public void subscribeNewItemAddEvent(String fromBlock, String toBlock, List<String> otherTopics, EventCallback callback) {
+        String topic0 = eventEncoder.encode(NEWITEMADD_EVENT);
+        subscribeEvent(ABI,BINARY,topic0,fromBlock,toBlock,otherTopics,callback);
+    }
+
+    public void subscribeNewItemAddEvent(EventCallback callback) {
+        String topic0 = eventEncoder.encode(NEWITEMADD_EVENT);
+        subscribeEvent(ABI,BINARY,topic0,callback);
+    }
+
+    public TransactionReceipt addItem(String name, BigInteger price, String description) {
+        final Function function = new Function(
+                FUNC_ADDITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Utf8String(name),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(price),
+                        new org.fisco.bcos.sdk.abi.datatypes.Utf8String(description)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeTransaction(function);
+    }
+
+    public byte[] addItem(String name, BigInteger price, String description, TransactionCallback callback) {
+        final Function function = new Function(
+                FUNC_ADDITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Utf8String(name),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(price),
+                        new org.fisco.bcos.sdk.abi.datatypes.Utf8String(description)),
+                Collections.<TypeReference<?>>emptyList());
+        return asyncExecuteTransaction(function, callback);
+    }
+
+    public String getSignedTransactionForAddItem(String name, BigInteger price, String description) {
+        final Function function = new Function(
+                FUNC_ADDITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Utf8String(name),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(price),
+                        new org.fisco.bcos.sdk.abi.datatypes.Utf8String(description)),
+                Collections.<TypeReference<?>>emptyList());
+        return createSignedTransaction(function);
+    }
+
+    public Tuple3<String, BigInteger, String> getAddItemInput(TransactionReceipt transactionReceipt) {
+        String data = transactionReceipt.getInput().substring(10);
+        final Function function = new Function(FUNC_ADDITEM,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}, new TypeReference<Utf8String>() {}));
+        List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
+        return new Tuple3<String, BigInteger, String>(
+
+                (String) results.get(0).getValue(),
+                (BigInteger) results.get(1).getValue(),
+                (String) results.get(2).getValue()
+        );
+    }
+
+    public TransactionReceipt buyItem(String seller, BigInteger index) {
+        final Function function = new Function(
+                FUNC_BUYITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(seller),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(index)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeTransaction(function);
+    }
+
+    public byte[] buyItem(String seller, BigInteger index, TransactionCallback callback) {
+        final Function function = new Function(
+                FUNC_BUYITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(seller),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(index)),
+                Collections.<TypeReference<?>>emptyList());
+        return asyncExecuteTransaction(function, callback);
+    }
+
+    public String getSignedTransactionForBuyItem(String seller, BigInteger index) {
+        final Function function = new Function(
+                FUNC_BUYITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(seller),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(index)),
+                Collections.<TypeReference<?>>emptyList());
+        return createSignedTransaction(function);
+    }
+
+    public Tuple2<String, BigInteger> getBuyItemInput(TransactionReceipt transactionReceipt) {
+        String data = transactionReceipt.getInput().substring(10);
+        final Function function = new Function(FUNC_BUYITEM,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+        List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
+        return new Tuple2<String, BigInteger>(
+
+                (String) results.get(0).getValue(),
+                (BigInteger) results.get(1).getValue()
+        );
+    }
+
+    public BigInteger getBalance() throws ContractException {
+        final Function function = new Function(FUNC_GETBALANCE,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeCallWithSingleValueReturn(function, BigInteger.class);
+    }
+
+    public Tuple6<BigInteger, String, BigInteger, String, Boolean, String> items(String param0, BigInteger param1) throws ContractException {
+        final Function function = new Function(FUNC_ITEMS,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(param0),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(param1)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Bool>() {}, new TypeReference<Address>() {}));
+        List<Type> results = executeCallWithMultipleValueReturn(function);
+        return new Tuple6<BigInteger, String, BigInteger, String, Boolean, String>(
+                (BigInteger) results.get(0).getValue(),
+                (String) results.get(1).getValue(),
+                (BigInteger) results.get(2).getValue(),
+                (String) results.get(3).getValue(),
+                (Boolean) results.get(4).getValue(),
+                (String) results.get(5).getValue());
+    }
+
+    public TransactionReceipt registerAsset() {
+        final Function function = new Function(
+                FUNC_REGISTERASSET,
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        return executeTransaction(function);
+    }
+
+    public byte[] registerAsset(TransactionCallback callback) {
+        final Function function = new Function(
+                FUNC_REGISTERASSET,
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        return asyncExecuteTransaction(function, callback);
+    }
+
+    public String getSignedTransactionForRegisterAsset() {
+        final Function function = new Function(
+                FUNC_REGISTERASSET,
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        return createSignedTransaction(function);
+    }
+
+    public Boolean verifyItem(BigInteger itemId, String itemName, String itemDescription, BigInteger itemPrice, String itemSeller, byte[] itemHash) throws ContractException {
+        final Function function = new Function(FUNC_VERIFYITEM,
+                Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(itemId),
+                        new org.fisco.bcos.sdk.abi.datatypes.Utf8String(itemName),
+                        new org.fisco.bcos.sdk.abi.datatypes.Utf8String(itemDescription),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(itemPrice),
+                        new org.fisco.bcos.sdk.abi.datatypes.Address(itemSeller),
+                        new org.fisco.bcos.sdk.abi.datatypes.generated.Bytes32(itemHash)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeCallWithSingleValueReturn(function, Boolean.class);
+    }
+
+    public static ItemTradeSolidity load(String contractAddress, Client client, CryptoKeyPair credential) {
+        return new ItemTradeSolidity(contractAddress, client, credential);
+    }
+
+    public static ItemTradeSolidity deploy(Client client, CryptoKeyPair credential) throws ContractException {
+        return deploy(ItemTradeSolidity.class, client, credential, getBinary(client.getCryptoSuite()), "");
+    }
+
+    public static class ItemSoldEventResponse {
+        public TransactionReceipt.Logs log;
+
+        public String seller;
+
+        public String name;
+
+        public BigInteger price;
+
+        public String buyer;
+
+        public byte[] hash;
+    }
+
+    public static class NewItemAddEventResponse {
+        public TransactionReceipt.Logs log;
+
+        public String seller;
+
+        public String name;
+
+        public BigInteger price;
+    }
+}

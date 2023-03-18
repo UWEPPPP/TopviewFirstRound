@@ -1,6 +1,6 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.AssetSolidity;
+import com.liujiahui.www.solidity.AssetSolidity;
 import org.fisco.bcos.sdk.BcosSDK;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;

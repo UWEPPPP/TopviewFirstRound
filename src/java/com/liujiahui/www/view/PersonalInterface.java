@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.UserEntryByConsumer;
+import com.liujiahui.www.controller.UserEntryController;
 import com.liujiahui.www.entity.vo.UserDetailedVO;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class PersonalInterface {
         }
         if(choice!=4){
             String change = in.next();
-            UserEntryByConsumer.changeUser(choice,change);
+            UserEntryController.changeUser(choice,change);
         }
         System.out.println("修改结束,是否继续修改？");
         System.out.println("1.是");

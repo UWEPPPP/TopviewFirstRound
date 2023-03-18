@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.UserEntryByConsumer;
+import com.liujiahui.www.controller.UserEntryController;
 import com.liujiahui.www.entity.vo.UserAfterLoginVO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
@@ -24,8 +24,9 @@ public class SupplierMainInterface {
                 System.out.println("请选择您要进行的操作");
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
+                System.out.println("3.产品上新");
                 int choice = in.nextInt();
-                UserEntryByConsumer.entry(choice);
+                UserEntryController.entry(choice);
             }while (true);
     }else {
             System.out.println("用户名或者密码错误");

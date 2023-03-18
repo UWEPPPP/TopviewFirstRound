@@ -11,17 +11,9 @@ contract Asset {
         require(users[account]==0,"Account already register");
         users[account]=1;
         balances[account]=1000;
-
     }
 
-    function transfer(address recipient,uint256 amount) public{
-        address sender = msg.sender;
-        require(balances[sender]>= amount,"Invalid amount");
-        balances[sender]-=amount;
-        balances[recipient]+=amount;
-    }
-
-    function getBalance() public view returns(uint256){
-        return balances[msg.sender];
+    function getBalance(address user) external view returns(uint256){
+        return balances[user];
     }
 }
