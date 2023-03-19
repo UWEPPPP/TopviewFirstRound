@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 import  "Asset.sol";
-contract ProductTrade {
+contract ItemTrade {
     Asset set;
 
     struct Item {
@@ -22,19 +22,21 @@ contract ProductTrade {
         set = Asset(assetAddress);
     }
 
-    function addItem(string memory name, uint256 price, string memory description) public {
+    function addItem(string memory name, uint256 price, string memory description) public returns(uint256){
         uint256 id=items[msg.sender].length;
         Item memory item = Item(id, name, price, description, false,msg.sender);
         items[msg.sender].push(item);
         emit NewItemAdd(msg.sender, name, price);
+        return items[msg.sender].length;
     }
 
     function buyItem(address seller,uint256 index)public payable {
         Item memory item=items[seller][index];
         require(item.isSold==false,"Item is sold");
-        require(item.price<=msg.value,"Insufficient funds");
+        require(item.price<=getBalance(),"Insufficient funds");
         item.isSold=true;
-        payable(seller).transfer(msg.value);
+        set.decreaseBalance(msg.sender,item.price);
+        set.increaseBalance(seller,item.price);
         bytes32 hash=sha256(abi.encodePacked(item.id,item.name,item.price,item.description,item.seller,msg.sender));
         emit ItemSold(seller, item.name, item.price,msg.sender,hash);
     }

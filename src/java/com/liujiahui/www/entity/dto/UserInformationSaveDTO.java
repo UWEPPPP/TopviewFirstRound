@@ -19,6 +19,7 @@ public class UserInformationSaveDTO {
     private String address;
     private String identity;
     private ItemTradeSolidity itemTradeSolidity;
+    private String account;
 
     private UserInformationSaveDTO() {}
 
@@ -90,6 +91,14 @@ public class UserInformationSaveDTO {
                 ", balance='" + balance + '\'' +
                 ", address='" + address + '\'' +
                 ", identity='" + identity + '\'' ;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getAccount() {
+        return account;
     }
 }
 

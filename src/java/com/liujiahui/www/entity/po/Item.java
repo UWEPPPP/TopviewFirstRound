@@ -1,5 +1,6 @@
 package com.liujiahui.www.entity.po;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -14,12 +15,32 @@ public class Item {
     private BigInteger price;
 
     private String description;
+    private String owner;
+    private BigDecimal index;
 
-    public Item(Integer id,String name,BigInteger price,String description) {
+    public Item(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
+        this.owner = owner;
+        this.index = index;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public BigDecimal getIndex() {
+        return index;
+    }
+
+    public void setIndex(BigDecimal index) {
+        this.index = index;
     }
 
     public String getName() {

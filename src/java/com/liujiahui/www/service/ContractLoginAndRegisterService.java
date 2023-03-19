@@ -21,7 +21,7 @@ public class ContractLoginAndRegisterService {
         BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
         Client client= bcosSDK.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair(privateKey);
-        ItemTradeSolidity asset = ItemTradeSolidity.load("0x87ed1ea99c3624a24db264c256e5ebc841b670a6",client, cryptoKeyPair);
+        ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da",client, cryptoKeyPair);
         UserInformationSaveDTO userInformationSaveDTO = UserInformationSaveDTO.getInstance();
         userInformationSaveDTO.setItemTradeSolidity(asset);
         return asset.getBalance();
@@ -31,7 +31,7 @@ public class ContractLoginAndRegisterService {
         Client client = bcosSDK.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ItemTradeSolidity asset = ItemTradeSolidity.load("0x87ed1ea99c3624a24db264c256e5ebc841b670a6", client, cryptoKeyPair);
+        ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da", client, cryptoKeyPair);
         asset.registerAsset();
         UserAccountOnContractDTO userAccountOnContractDTO = new UserAccountOnContractDTO();
         userAccountOnContractDTO.setAccountAddress(accountAddress);

@@ -23,10 +23,16 @@ public class UserMainInterface {
         System.out.println("您的余额为"+userAfterLoginVO.getBalance());
         System.out.println("请选择您要进行的操作");
         System.out.println("1.查看产品信息");
-        System.out.println("2.查看个人信息");
-        int choice=in.nextInt();
-        UserEntryController.entry(choice);
+        System.out.println("2.查看个人信息"); int choice = in.nextInt();
+                if(choice!=0){
+                    UserEntryController.entry(choice);
+                }else {
+                    System.out.println("退出登录成功");
+                    System.out.println("即将返回登录界面");
+                    break;
+                }
             }while (true);
+            UserInitInterface.start();
     }else {
             System.out.println("用户名或者密码错误");
             System.out.println("即将返回登录界面");
@@ -42,10 +48,17 @@ public class UserMainInterface {
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
                 System.out.println("3.产品上新");
+                System.out.println("0.退出登录");
                 int choice = in.nextInt();
-                UserEntryController.entry(choice);
-                System.out.println("返回主界面中");
+                if(choice!=0){
+                    UserEntryController.entry(choice);
+                }else {
+                    System.out.println("退出登录成功");
+                    System.out.println("即将返回登录界面");
+                    break;
+                }
             }while (true);
+            UserInitInterface.start();
         }else {
             System.out.println("用户名或者密码错误");
             System.out.println("即将返回登录界面");

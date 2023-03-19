@@ -16,4 +16,12 @@ contract Asset {
     function getBalance(address user) external view returns(uint256){
         return balances[user];
     }
+
+    function decreaseBalance(address user,uint256 amount) public {
+        balances[user]-=amount;
+    }
+
+    function increaseBalance(address user,uint256 amount) public {
+        balances[user]+=amount;
+    }
 }
