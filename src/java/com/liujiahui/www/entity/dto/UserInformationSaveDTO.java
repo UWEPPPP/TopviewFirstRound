@@ -1,6 +1,8 @@
 package com.liujiahui.www.entity.dto;
 
 
+import com.liujiahui.www.solidity.ItemTradeSolidity;
+
 /**
  * 用户信息保存dto
  *单例模式
@@ -15,9 +17,8 @@ public class UserInformationSaveDTO {
     private String phone;
     private String balance;
     private String address;
-    private String privateKey;
-    private String accountAddress;
     private String identity;
+    private ItemTradeSolidity itemTradeSolidity;
 
     private UserInformationSaveDTO() {}
 
@@ -25,6 +26,12 @@ public class UserInformationSaveDTO {
         return INSTANCE;
     }
 
+    public ItemTradeSolidity getItemTradeSolidity() {
+        return itemTradeSolidity;
+    }
+    public void setItemTradeSolidity(ItemTradeSolidity itemTradeSolidity) {
+        this.itemTradeSolidity = itemTradeSolidity;
+    }
     public String getIdentity() {
         return identity;
     }
@@ -73,21 +80,6 @@ public class UserInformationSaveDTO {
         this.address = address;
     }
 
-    public String getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public String getAccountAddress() {
-        return accountAddress;
-    }
-
-    public void setAccountAddress(String accountAddress) {
-        this.accountAddress = accountAddress;
-    }
 
     @Override
     public String toString() {
@@ -97,9 +89,7 @@ public class UserInformationSaveDTO {
                 ", phone='" + phone + '\'' +
                 ", balance='" + balance + '\'' +
                 ", address='" + address + '\'' +
-                ", privateKey='" + privateKey + '\'' +
-                ", accountAddress='" + accountAddress + '\'' +
-                '}';
+                ", identity='" + identity + '\'' ;
     }
 }
 

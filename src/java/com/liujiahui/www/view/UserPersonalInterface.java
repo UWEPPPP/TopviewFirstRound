@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class PersonalInterface {
+public class UserPersonalInterface {
     static Scanner in = new Scanner(System.in);
     public static void showPersonalInterface(UserDetailedVO userDetailedVO) throws SQLException, IOException {
         System.out.println("用户名：" + userDetailedVO.getUserName());

@@ -1,9 +1,8 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.UserRegisterBO;
-import com.liujiahui.www.service.UserRegisterService;
-import com.liujiahui.www.view.RegisterInterface;
-import com.liujiahui.www.view.ReturnInterface;
+import com.liujiahui.www.service.UserRegisterAndLoginService;
+import com.liujiahui.www.view.UserRegisterInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class UserRegisterController {
         userRegisterBO.setPhone(phone);
         userRegisterBO.setAddress(address);
         userRegisterBO.setPassword(password);
-        ReturnInterface.returnInterface(UserRegisterService.registerBySupplier(userRegisterBO));
+        UserRegisterInterface.returnInterface(UserRegisterAndLoginService.registerBySupplier(userRegisterBO));
     }
 
     public static void registerByConsumer(String name, String gender, String phone, String password) throws SQLException, IOException, ContractException {
@@ -32,14 +31,14 @@ public class UserRegisterController {
         userRegisterBO.setPassword(password);
         userRegisterBO.setGender(gender);
         userRegisterBO.setPhone(phone);
-        ReturnInterface.returnInterface(UserRegisterService.registerByConsumer(userRegisterBO));
+        UserRegisterInterface.returnInterface(UserRegisterAndLoginService.registerByConsumer(userRegisterBO));
     }
 
     public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException {
         if(choice2 == 1){
-            new RegisterInterface().registerBySupplier();
+            new UserRegisterInterface().registerBySupplier();
     }else {
-            new RegisterInterface().registerByConsumer();
+            new UserRegisterInterface().registerByConsumer();
         }
     }
 }

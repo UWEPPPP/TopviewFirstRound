@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @author 刘家辉
  * @date 2023/03/16
  */
-public class LoginInterface {
+public class UserLoginInterface {
    static Scanner in = new Scanner(System.in);
     public void loginByConsumer() throws SQLException, IOException, ContractException {
         System.out.println("进入消费者登录界面");
@@ -31,5 +31,10 @@ public class LoginInterface {
         System.out.println("请输入您的密码：");
         String password = in.next();
         UserLoginController.loginBySupplier(account,password);
+    }
+    public static void loginReturnInterface() throws SQLException, IOException, ContractException {
+        System.out.println("登录失败,用户名或密码错误");
+        System.out.println("即将返回主界面");
+        UserInitInterface.start();
     }
 }

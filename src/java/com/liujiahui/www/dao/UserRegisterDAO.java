@@ -3,7 +3,7 @@ package com.liujiahui.www.dao;
 import com.liujiahui.www.entity.po.Supplier;
 import com.liujiahui.www.entity.po.User;
 import com.liujiahui.www.entity.dto.UserAccountOnContractDTO;
-import com.liujiahui.www.service.ContractRegisterService;
+import com.liujiahui.www.service.ContractLoginAndRegisterService;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -35,7 +35,7 @@ public class UserRegisterDAO {
         if(checkUserExist(table,user.getName(),connection)){
             return false;
         }
-        UserAccountOnContractDTO userAccountOnContractDTO = ContractRegisterService.initByContract();
+        UserAccountOnContractDTO userAccountOnContractDTO = ContractLoginAndRegisterService.initByContract();
         String sql="insert into user."+tableAndLimit;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, user.getName());

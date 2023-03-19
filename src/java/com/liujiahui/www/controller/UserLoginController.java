@@ -3,11 +3,9 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.bo.UserLoginBO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.vo.UserAfterLoginVO;
-import com.liujiahui.www.service.UserLoginService;
-import com.liujiahui.www.view.ConsumerMainInterface;
-import com.liujiahui.www.view.LoginInterface;
-import com.liujiahui.www.view.ReturnInterface;
-import com.liujiahui.www.view.SupplierMainInterface;
+import com.liujiahui.www.service.UserRegisterAndLoginService;
+import com.liujiahui.www.view.UserMainInterface;
+import com.liujiahui.www.view.UserLoginInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -24,27 +22,27 @@ public class UserLoginController {
     public static void loginByConsumer(String account, String password) throws SQLException, IOException, ContractException {
         UserLoginBO userLoginBO = new UserLoginBO(account,password,"consumer");
         identity="consumer";
-        UserInformationSaveDTO login=UserLoginService.login(userLoginBO);
+        UserInformationSaveDTO login= UserRegisterAndLoginService.login(userLoginBO);
         loginBackView(login);
     }
 
     public static void loginBySupplier(String account, String password) throws ContractException, SQLException, IOException {
         UserLoginBO userLoginBO = new UserLoginBO(account,password,"suppliers");
         identity="suppliers";
-        UserInformationSaveDTO login = UserLoginService.login(userLoginBO);
+        UserInformationSaveDTO login = UserRegisterAndLoginService.login(userLoginBO);
         loginBackView(login);
     }
 
     public static void loginBackView(UserInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException {
         if(userInformationDTO == null){
-            ReturnInterface.loginReturnInterface();
+            UserLoginInterface.loginReturnInterface();
         }
         UserAfterLoginVO userAfterLoginVO = new UserAfterLoginVO(userInformationDTO.getUserName(),userInformationDTO.getBalance(),identity);
         String identityCheck ="consumer";
         if(identity.equals(identityCheck)) {
-            ConsumerMainInterface.view(userAfterLoginVO);
+            UserMainInterface.viewConsumer(userAfterLoginVO);
         }else {
-            SupplierMainInterface.view(userAfterLoginVO);
+            UserMainInterface.viewSupplier(userAfterLoginVO);
         }
     }
 
@@ -54,9 +52,9 @@ public class UserLoginController {
      */
     public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException {
         if(choice1 == 1){
-            new LoginInterface().loginBySupplier();
+            new UserLoginInterface().loginBySupplier();
         }else {
-            new LoginInterface().loginByConsumer();
+            new UserLoginInterface().loginByConsumer();
         }
     }
 

@@ -18,6 +18,10 @@ contract ProductTrade {
     event NewItemAdd(address indexed seller, string name, uint256 price);
     event ItemSold(address indexed seller, string name, uint256 price,address buyer,bytes32 hash);
 
+    constructor(address assetAddress) public {
+        set = Asset(assetAddress);
+    }
+
     function addItem(string memory name, uint256 price, string memory description) public {
         uint256 id=items[msg.sender].length;
         Item memory item = Item(id, name, price, description, false,msg.sender);
@@ -41,7 +45,7 @@ contract ProductTrade {
     }
 
     function registerAsset() public{
-        set.registerAsset();
+        set.registerAsset(msg.sender);
     }
 
     function getBalance() public view returns(uint256){

@@ -3,14 +3,18 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.bo.AddItemBO;
 import com.liujiahui.www.entity.bo.UserChangePersonalBO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
+import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.UserDetailedVO;
-import com.liujiahui.www.service.AddItemService;
+import com.liujiahui.www.service.UserItemAddService;
 import com.liujiahui.www.service.UserChangePersonalService;
-import com.liujiahui.www.view.PersonalInterface;
-import com.liujiahui.www.view.RegisterItemInterface;
+import com.liujiahui.www.service.UserItemShowService;
+import com.liujiahui.www.view.UserPersonalInterface;
+import com.liujiahui.www.view.UserItemRegisterAndShowInterface;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 用户输入由消费者
@@ -20,7 +24,7 @@ import java.sql.SQLException;
  */
 public class UserEntryController {
     public static void entry(int choice) throws SQLException, IOException {
-        if(UserInformationSaveDTO.getInstance().getIdentity().equals("consumer")){
+        if("consumer".equals(UserInformationSaveDTO.getInstance().getIdentity())){
             consumerEntry(choice);
      }else {
             supplierEntry(choice);
@@ -29,12 +33,12 @@ public class UserEntryController {
     public static void consumerEntry(int choice) throws SQLException, IOException {
         switch (choice){
             case 1:
+                showItemList();
                 break;
             case 2:
                 showUser();
                 break;
             case 3:
-                RegisterItemInterface.registerItem();
                 break;
             case 4:
 
@@ -45,14 +49,22 @@ public class UserEntryController {
             default:
         }
     }
+
+    private static void showItemList() throws SQLException, IOException {
+        List<Item> items = UserItemShowService.showItem();
+        UserItemRegisterAndShowInterface.showItem(items);
+    }
+
     public static void supplierEntry(int choice) throws SQLException, IOException {
         switch (choice){
             case 1:
+                showItemList();
                 break;
             case 2:
                 showUser();
                 break;
             case 3:
+                UserItemRegisterAndShowInterface.registerItem();
                 break;
             default:
         }
@@ -65,7 +77,7 @@ public class UserEntryController {
         vo.setPhone(information.getPhone());
         vo.setBalance(information.getBalance());
         vo.setIdentify(information.getIdentity());
-        PersonalInterface.showPersonalInterface(vo);
+        UserPersonalInterface.showPersonalInterface(vo);
     }
     public static void changeUser(int choice,String change) throws SQLException, IOException {
         UserChangePersonalBO userChangeServiceBO = new UserChangePersonalBO();
@@ -87,11 +99,13 @@ public class UserEntryController {
         }
     }
 
-    public static void registerItem(String name, String price, String description) {
+    public static void registerItem(String name, BigInteger price, String description, String realName, String realDescription) throws SQLException, IOException {
         AddItemBO addItemBO = new AddItemBO();
         addItemBO.setName(name);
         addItemBO.setPrice(price);
         addItemBO.setDescription(description);
-        AddItemService.addItem(addItemBO);
+        addItemBO.setRealName(realName);
+        addItemBO.setRealDescription(realDescription);
+        UserItemAddService.addItem(addItemBO);
     }
 }

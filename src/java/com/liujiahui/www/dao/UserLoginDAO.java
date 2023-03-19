@@ -2,7 +2,7 @@ package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.dto.UserAccountOnJavaDTO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
-import com.liujiahui.www.service.ContractLoginService;
+import com.liujiahui.www.service.ContractLoginAndRegisterService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -24,41 +24,24 @@ public class UserLoginDAO {
         String userAccount=account.getAccount();
         String userPassword=account.getPassword();
         String identity=account.getIdentity();
-        Connection connection = UtilDAO.getConnection();
-        PreparedStatement preparedStatement;
-        if(!checkUserRight(identity,userAccount,userPassword,connection)){
-            return null;
-        }
-        try {
-            preparedStatement = connection.prepareStatement("select * from user." + identity + " where user_name=?");
+        try (Connection connection = UtilDAO.getConnection()) {
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement("select * from user." + identity + " where user_name=? and password=?");
             preparedStatement.setString(1, userAccount);
+            preparedStatement.setString(2, userPassword);
             ResultSet set = preparedStatement.executeQuery();
-            set.next();
-            UserInformationSaveDTO user =UserInformationSaveDTO.getInstance();
-            String balance= String.valueOf(ContractLoginService.getBalance(set.getString("account_address"),set.getString("private_key")));
-            user.setUserName(set.getString("user_name"));
-            user.setAccountAddress(set.getString("account_address"));
-            user.setBalance(balance);
-            user.setPrivateKey(set.getString("private_key"));
-            user.setGender(set.getString("gender"));
-            user.setPhone(set.getString("phone_number"));
-            user.setIdentity(identity);
-            return user;
-        } finally {
-            connection.close();
-        }
-    }
-    public static Boolean checkUserRight(String table, String name, String password, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement=null;
-        ResultSet set=null;
-        try {
-            preparedStatement = connection.prepareStatement("select * from user." + table + " where user_name=? and password=?");
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, password);
-            set = preparedStatement.executeQuery();
-            return set.next();
-        } finally {
-            close(null,set , preparedStatement);
+            if (set.next()) {
+                UserInformationSaveDTO user = UserInformationSaveDTO.getInstance();
+                String balance = String.valueOf(ContractLoginAndRegisterService.getBalance(set.getString("private_key")));
+                user.setUserName(set.getString("user_name"));
+                user.setBalance(balance);
+                user.setGender(set.getString("gender"));
+                user.setPhone(set.getString("phone_number"));
+                user.setIdentity(identity);
+                return user;
+            } else {
+                return null;
+            }
         }
     }
 

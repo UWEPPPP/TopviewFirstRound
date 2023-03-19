@@ -14,7 +14,7 @@ import java.util.Scanner;
  * @author 刘家辉
  * @date 2023/03/16
  */
-public class InitInterface {
+public class UserInitInterface {
     public static void start() throws SQLException, IOException, ContractException {
         Scanner in = new Scanner(System.in);
         System.out.println("欢迎来到Topview集团旗下的产品溯源系统");

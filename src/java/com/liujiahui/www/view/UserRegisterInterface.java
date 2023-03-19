@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @author 刘家辉
  * @date 2023/03/16
  */
-public class RegisterInterface {
+public class UserRegisterInterface {
     static Scanner in = new Scanner(System.in);
     public void registerByConsumer() throws SQLException, IOException, ContractException {
         System.out.println("进入消费者注册界面");
@@ -41,5 +41,16 @@ public class RegisterInterface {
         System.out.println("请输入您要设置的密码：");
         String password = in.next();
         UserRegisterController.registerBySupplier(name,gender,phone,address,password);
+    }
+    public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException {
+        if(bool){
+            System.out.println("注册成功");
+            System.out.println("登录时账号即为您输入的名字"+" ,密码为你设置的密码 "+" ,账号初始余额为1000");
+            System.out.println("即将返回主界面");
+        }else {
+            System.out.println("注册失败,用户名已存在");
+            System.out.println("即将返回主界面");
+        }
+        UserInitInterface.start();
     }
 }
