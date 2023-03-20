@@ -2,6 +2,7 @@ package com.liujiahui.www.entity.dto;
 
 
 import com.liujiahui.www.solidity.ItemTradeSolidity;
+import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
 
 /**
  * 用户信息保存dto
@@ -20,6 +21,7 @@ public class UserInformationSaveDTO {
     private String identity;
     private ItemTradeSolidity itemTradeSolidity;
     private String account;
+    private TransactionDecoderInterface decoder;
 
     private UserInformationSaveDTO() {}
 
@@ -99,6 +101,14 @@ public class UserInformationSaveDTO {
 
     public String getAccount() {
         return account;
+    }
+
+    public void setDecoder(TransactionDecoderInterface decoder) {
+        this.decoder = decoder;
+    }
+
+    public TransactionDecoderInterface getDecoder() {
+        return decoder;
     }
 }
 

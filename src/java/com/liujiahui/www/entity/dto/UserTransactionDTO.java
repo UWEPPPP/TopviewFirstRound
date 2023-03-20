@@ -8,6 +8,7 @@ import com.liujiahui.www.solidity.ItemTradeSolidity;
 public class UserTransactionDTO {
   private ItemTradeSolidity.ItemSoldEventResponse itemSoldEventResponse;
   private String balance;
+  private String returnMessage;
 
   public ItemTradeSolidity.ItemSoldEventResponse getItemSoldEventResponse() {
     return itemSoldEventResponse;
@@ -32,4 +33,12 @@ public class UserTransactionDTO {
             ", balance='" + balance + '\'' +
             '}';
   }
+
+    public void setReturnMessage(String returnMessage) {
+        this.returnMessage = returnMessage;
+    }
+
+    public String getReturnMessage() {
+        return returnMessage;
+    }
 }

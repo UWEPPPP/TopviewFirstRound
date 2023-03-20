@@ -4,17 +4,34 @@ import java.math.BigInteger;
 
 public class TranscationVO {
     private String balance;
-    private String seller;
-    private String buyer;
     private BigInteger price;
     private String name;
+    private String seller;
+    private String buyer;
+    private String hash;
 
     public String getSeller() {
         return seller;
     }
 
+    public void setSeller(String seller) {
+        this.seller = seller;
+    }
+
     public String getBuyer() {
         return buyer;
+    }
+
+    public void setBuyer(String buyer) {
+        this.buyer = buyer;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public void setBalance(String balance) {
@@ -25,12 +42,6 @@ public class TranscationVO {
         return balance;
     }
 
-    public void setSeller(String seller) {
-    }
-
-    public void setBuyer(String buyer) {
-
-    }
 
     public void setPrice(BigInteger price) {
         this.price = price;

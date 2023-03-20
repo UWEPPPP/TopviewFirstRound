@@ -8,6 +8,7 @@ import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.solidity.ItemTradeSolidity;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
+import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -42,11 +43,16 @@ public class UserItemService {
         BigInteger bigInteger = index.toBigInteger();
         bigInteger=bigInteger.subtract(BigInteger.ONE);
         TransactionReceipt transactionReceipt = itemTradeSolidity.buyItem(seller, bigInteger);
+        TransactionResponse transactionResponse = instance.getDecoder().decodeReceiptStatus(transactionReceipt);
+        UserTransactionDTO userTransactionDTO = new UserTransactionDTO();
+        if(transactionResponse.getReturnMessage()!=null){
+            userTransactionDTO.setReturnMessage(transactionResponse.getReturnMessage());
+            return null;
+        }
         List<ItemTradeSolidity.ItemSoldEventResponse> itemSoldEvents = itemTradeSolidity.getItemSoldEvents(transactionReceipt);
         ItemTradeSolidity.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
         BigInteger balance = itemTradeSolidity.getBalance();
         instance.setBalance(String.valueOf(balance));
-        UserTransactionDTO userTransactionDTO = new UserTransactionDTO();
         userTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);
         userTransactionDTO.setBalance(String.valueOf(balance));
         return userTransactionDTO;

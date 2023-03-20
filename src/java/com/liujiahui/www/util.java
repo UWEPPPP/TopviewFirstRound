@@ -23,7 +23,7 @@ public class util {
         System.out.println(asset.getContractAddress());
         CryptoKeyPair keyPair = client.getCryptoSuite().createKeyPair();
         ItemTradeSolidity load = ItemTradeSolidity.load(asset.getContractAddress(), client, keyPair);
-        load.registerAsset();
+      //  load.registerAsset();
         TransactionReceipt transactionReceipt1 = load.addItem("1", BigInteger.valueOf(21), "1");
         List<ItemTradeSolidity.NewItemAddEventResponse> newItemAddEvents = load.getNewItemAddEvents(transactionReceipt1);
         for (ItemTradeSolidity.NewItemAddEventResponse newItemAddEvent : newItemAddEvents) {
@@ -32,7 +32,7 @@ public class util {
         }
         CryptoKeyPair keyPair1 = client.getCryptoSuite().createKeyPair();
         ItemTradeSolidity load1 = ItemTradeSolidity.load(asset.getContractAddress(), client, keyPair1);
-        load1.registerAsset();
+       // load1.registerAsset();
         System.out.println(load1.getBalance());
         TransactionReceipt transactionReceipt = load1.buyItem(keyPair.getAddress(), BigInteger.valueOf(0));
         List<ItemTradeSolidity.ItemSoldEventResponse> itemSoldEvents = load1.getItemSoldEvents(transactionReceipt);

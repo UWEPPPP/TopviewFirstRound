@@ -35,7 +35,7 @@ public class UserRegisterDAO {
         if(checkUserExist(table,user.getName(),connection)){
             return false;
         }
-        UserAccountOnContractDTO userAccountOnContractDTO = ContractLoginAndRegisterService.initByContract();
+        UserAccountOnContractDTO userAccountOnContractDTO = ContractLoginAndRegisterService.initByContract(table);
         String sql="insert into user."+tableAndLimit;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, user.getName());

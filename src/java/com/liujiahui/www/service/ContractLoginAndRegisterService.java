@@ -5,7 +5,10 @@ import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.solidity.ItemTradeSolidity;
 import org.fisco.bcos.sdk.BcosSDK;
 import org.fisco.bcos.sdk.client.Client;
+import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
+import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
+import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.math.BigInteger;
@@ -20,19 +23,26 @@ public class ContractLoginAndRegisterService {
     public static BigInteger getBalance(String privateKey) throws ContractException {
         BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
         Client client= bcosSDK.getClient(1);
-        CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair(privateKey);
-        ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da",client, cryptoKeyPair);
+        CryptoSuite cryptoSuite = client.getCryptoSuite();
+        CryptoKeyPair keyPair = cryptoSuite.createKeyPair(privateKey);
+        TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
+        ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da",client, keyPair);
         UserInformationSaveDTO userInformationSaveDTO = UserInformationSaveDTO.getInstance();
+        userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
         return asset.getBalance();
     }
-    public static UserAccountOnContractDTO initByContract() {
+    public static UserAccountOnContractDTO initByContract(String table) {
         BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
         Client client = bcosSDK.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
         ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da", client, cryptoKeyPair);
-        asset.registerAsset();
+        if(table.equals("supplier")) {
+            asset.registerAsset(BigInteger.valueOf(1));
+        }else {
+           asset.registerAsset(BigInteger.valueOf(2));
+        }
         UserAccountOnContractDTO userAccountOnContractDTO = new UserAccountOnContractDTO();
         userAccountOnContractDTO.setAccountAddress(accountAddress);
         userAccountOnContractDTO.setPrivateKey(cryptoKeyPair.getHexPrivateKey());

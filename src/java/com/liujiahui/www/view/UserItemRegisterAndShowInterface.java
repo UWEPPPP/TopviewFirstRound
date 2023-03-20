@@ -5,6 +5,7 @@ import com.liujiahui.www.controller.UserEntryController;
 import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.TranscationVO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -69,6 +70,8 @@ public class UserItemRegisterAndShowInterface {
         System.out.println("交易卖家："+transcationVO.getSeller());
         System.out.println("交易商品："+transcationVO.getName());
         System.out.println("交易价格："+transcationVO.getPrice());
+        System.out.println("交易验伪hash："+transcationVO.getHash());
         System.out.println("交易后余额："+transcationVO.getBalance());
+
     }
 }

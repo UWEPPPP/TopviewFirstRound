@@ -39,6 +39,7 @@ public class UserEntryController {
                 showUser();
                 break;
             case 3:
+                showUserItem();
                 break;
             case 4:
 
@@ -48,6 +49,10 @@ public class UserEntryController {
                 break;
             default:
         }
+    }
+
+    private static void showUserItem() {
+
     }
 
     private static void showItemList() throws SQLException, IOException, ContractException {
@@ -66,9 +71,16 @@ public class UserEntryController {
             case 3:
                 UserItemRegisterAndShowInterface.registerItem();
                 break;
+            case 4:
+                showSupplierItem();
             default:
         }
     }
+
+    private static void showSupplierItem() {
+
+    }
+
     public static void showUser() throws SQLException, IOException {
         UserInformationSaveDTO information = UserInformationSaveDTO.getInstance();
         UserDetailedVO vo = new UserDetailedVO();
