@@ -1,6 +1,10 @@
 package com.liujiahui.www.dao;
 
+import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.po.Item;
+import com.liujiahui.www.solidity.ItemTrade;
+import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,19 +25,19 @@ import java.util.List;
 public class UserItemAddAndShowDAO {
     public static void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "insert into user.item (name, price, description, seller, `index`) values (?,?,?,?,?)";
+        String sql = "insert into user.item (name, price, description, owner, `index`,isSold) values (?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,name);
         BigDecimal bigDecimal = new BigDecimal(price);
         preparedStatement.setBigDecimal(2,bigDecimal);
         preparedStatement.setString(3,description);
         preparedStatement.setString(4,accountAddress);
-        BigDecimal bigDecimal1 = new BigDecimal(index);
-        preparedStatement.setBigDecimal(5,bigDecimal1);
+        long longValue = index.longValue();
+        preparedStatement.setLong(5,longValue);
+        preparedStatement.setBoolean(6,false);
         preparedStatement.executeUpdate();
-        UtilDAO.close(connection,null,preparedStatement);
     }
-    public static List<Item> showItem() throws SQLException, IOException {
+    public static List<Item> showAllItem() throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String sql = "select * from user.item";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -41,10 +45,40 @@ public class UserItemAddAndShowDAO {
         List<Item> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("seller"),set.getBigDecimal("index"));
+            Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
             list.add(item);
         }
         UtilDAO.close(connection,null,preparedStatement);
+        return list;
+    }
+
+    public static List<Item> showMyItem(String accountAddress) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "select * from user.item where owner = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,accountAddress);
+        ResultSet set = preparedStatement.executeQuery();
+        List<Item> list = new ArrayList<>();
+        while (set.next()){
+            BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
+            Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
+            list.add(item);
+        }
+        UtilDAO.close(connection,null,preparedStatement);
+        return list;
+    }
+
+    public static List<Item> showSoldItem() throws SQLException, IOException, ContractException {
+        UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
+        DynamicArray<ItemTrade.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
+        List<Item> list = new ArrayList<>();
+        int index=0;
+        for (ItemTrade.Item item : soldItem.getValue()) {
+            Item item1 = new Item(item.name,item.price,item.description);
+            item1.setIndex(new BigDecimal(index));
+            list.add(item1);
+            index++;
+        }
         return list;
     }
 }

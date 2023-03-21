@@ -2,7 +2,7 @@ package com.liujiahui.www.service;
 
 import com.liujiahui.www.entity.dto.UserAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
-import com.liujiahui.www.solidity.ItemTradeSolidity;
+import com.liujiahui.www.solidity.ItemTrade;
 import org.fisco.bcos.sdk.BcosSDK;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
@@ -26,7 +26,7 @@ public class ContractLoginAndRegisterService {
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(privateKey);
         TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
-        ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da",client, keyPair);
+        ItemTrade asset = ItemTrade.load("0xf92f75db5183c06a00a7515be0d1f965f1d1c649",client, keyPair);
         UserInformationSaveDTO userInformationSaveDTO = UserInformationSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
@@ -37,7 +37,7 @@ public class ContractLoginAndRegisterService {
         Client client = bcosSDK.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ItemTradeSolidity asset = ItemTradeSolidity.load("0x5f39d4a82908f207a8519f89bb86abd3c3e863da", client, cryptoKeyPair);
+        ItemTrade asset = ItemTrade.load("0xf92f75db5183c06a00a7515be0d1f965f1d1c649", client, cryptoKeyPair);
         if(table.equals("supplier")) {
             asset.registerAsset(BigInteger.valueOf(1));
         }else {

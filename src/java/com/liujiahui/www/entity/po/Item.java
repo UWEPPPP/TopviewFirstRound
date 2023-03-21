@@ -17,14 +17,30 @@ public class Item {
     private String description;
     private String owner;
     private BigDecimal index;
+    private Boolean isSold;
 
-    public Item(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index) {
+    public Item(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index,Boolean isSold) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.owner = owner;
         this.index = index;
+        this.isSold=isSold;
+    }
+
+    public Item(String name, BigInteger price, String description) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
+
+    public Boolean getSold() {
+        return isSold;
+    }
+
+    public void setSold(Boolean sold) {
+        isSold = sold;
     }
 
     public String getOwner() {

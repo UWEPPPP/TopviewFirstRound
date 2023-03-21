@@ -51,13 +51,14 @@ public class UserEntryController {
         }
     }
 
-    private static void showUserItem() {
-
+    private static void showUserItem() throws SQLException, IOException, ContractException {
+        List<Item> items = UserItemService.showMyItem();
+        UserItemRegisterAndShowInterface.showMyItem(items);
     }
 
     private static void showItemList() throws SQLException, IOException, ContractException {
-        List<Item> items = UserItemService.showItem();
-        UserItemRegisterAndShowInterface.showItem(items);
+        List<Item> items = UserItemService.showAllItem();
+        UserItemRegisterAndShowInterface.showAndBuyItem(items);
     }
 
     public static void supplierEntry(int choice) throws SQLException, IOException, ContractException {
@@ -77,8 +78,8 @@ public class UserEntryController {
         }
     }
 
-    private static void showSupplierItem() {
-
+    private static void showSupplierItem() throws ContractException, SQLException, IOException {
+        UserItemRegisterAndShowInterface.showSoldItem(UserItemService.showSoldItem());
     }
 
     public static void showUser() throws SQLException, IOException {

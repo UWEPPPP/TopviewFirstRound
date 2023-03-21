@@ -1,17 +1,17 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.entity.dto.RealItemDTO;
 import com.liujiahui.www.entity.dto.UserTransactionDTO;
 import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.TranscationVO;
 import com.liujiahui.www.service.UserItemService;
-import com.liujiahui.www.solidity.ItemTradeSolidity;
+import com.liujiahui.www.solidity.ItemTrade;
 import com.liujiahui.www.view.UserItemRegisterAndShowInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,13 +27,10 @@ public class UserBuyController {
                 UserTransactionDTO userTransactionDTO = UserItemService.buyItem(item.getOwner(), item.getIndex());
                 if(userTransactionDTO.getReturnMessage()==null){
                 String balance = userTransactionDTO.getBalance();
-                ItemTradeSolidity.ItemSoldEventResponse itemSoldEventResponse = userTransactionDTO.getItemSoldEventResponse();
+                ItemTrade.ItemSoldEventResponse itemSoldEventResponse = userTransactionDTO.getItemSoldEventResponse();
                 String hash =   Numeric.toHexString(itemSoldEventResponse.hash);
                 TranscationVO transcationVO = new TranscationVO();
                 transcationVO.setName(item.getName());
-                transcationVO.setPrice(itemSoldEventResponse.price);
-                transcationVO.setBuyer(itemSoldEventResponse.buyer);
-                transcationVO.setSeller(itemSoldEventResponse.seller);
                 transcationVO.setHash(hash);
                 transcationVO.setBalance(balance);
                 UserItemRegisterAndShowInterface.showResult(transcationVO);
@@ -43,5 +40,18 @@ public class UserBuyController {
                 }
             }
         }
+    }
+
+    public static void updateLogistics(int id, String logistics) {
+
+    }
+
+    public static TranscationVO check( String hash) throws ContractException {
+        RealItemDTO realItemDTO = UserItemService.checkByHash(hash);
+        TranscationVO transcationVO = new TranscationVO();
+        transcationVO.setName(realItemDTO.getName());
+        transcationVO.setHash(hash);
+        transcationVO.setDescription(realItemDTO.getDescription());
+        return transcationVO;
     }
 }

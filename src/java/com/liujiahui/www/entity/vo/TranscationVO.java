@@ -9,6 +9,15 @@ public class TranscationVO {
     private String seller;
     private String buyer;
     private String hash;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getSeller() {
         return seller;

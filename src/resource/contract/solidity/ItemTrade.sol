@@ -16,7 +16,7 @@ contract ItemTrade {
 
     bool private isProcess = false;
 
-    event NewItemAdd(address indexed seller, string name, uint256 price);
+    event NewItemAdd(address indexed seller, string name, uint256 price,uint256 length);
     event ItemSold(address indexed seller, string name, uint256 price,address buyer,bytes32 hash);
 
     constructor(address assetAddress) public {
@@ -31,18 +31,18 @@ contract ItemTrade {
     }
 
     modifier NoReentrant(){
-        require(!isProcess,"Renntrant Call");
+        require(!isProcess,"Reentrant Call");
         isProcess=true;
         _;
         isProcess=false;
     }
 
-    function addItem(string memory name, uint256 price, string memory description) external OnlySupplier returns(uint256){
+    function addItem(string memory name, uint256 price, string memory description) external OnlySupplier {
         uint256 id=items[msg.sender].length;
         Item memory item = Item(id, name, price, description, false,msg.sender);
         items[msg.sender].push(item);
-        emit NewItemAdd(msg.sender, name, price);
-        return items[msg.sender].length;
+        emit NewItemAdd(msg.sender, name, price,items[msg.sender].length);
+
     }
 
     function buyItem(address seller,uint256 index)external payable NoReentrant {
