@@ -2,6 +2,7 @@ package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.UserAddItemBO;
 import com.liujiahui.www.entity.bo.UserChangePersonalBO;
+import com.liujiahui.www.entity.bo.UserItemUpdateBO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.UserDetailedVO;
@@ -77,15 +78,25 @@ public class UserEntryController {
             case 4:
                 showSupplierItem();
                 break;
-            case 5:
-                updateItem();
-                break;
             default:
         }
     }
 
-    private static void updateItem() {
 
+    public static void updateItem(int index, List<Item> items, String name, String description, String price) throws SQLException, IOException {
+        String oldName = null;
+        for ( Item item:items) {
+            if(item.getIndex().intValue()==index){
+                oldName=item.getName();
+            }
+        }
+        UserItemUpdateBO updateBO = new UserItemUpdateBO();
+        updateBO.setIndex(index);
+        updateBO.setOldName(oldName);
+        updateBO.setName(name);
+        updateBO.setDescription(description);
+        updateBO.setPrice(price);
+        UserItemService.updateItem(updateBO);
     }
 
     private static void showSupplierItem() throws ContractException, SQLException, IOException {

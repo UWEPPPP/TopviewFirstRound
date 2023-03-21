@@ -1,8 +1,10 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.entity.dto.UserItemStatusDTO;
 import com.liujiahui.www.entity.dto.UserRealItemDTO;
 import com.liujiahui.www.entity.dto.UserTransactionDTO;
 import com.liujiahui.www.entity.po.Item;
+import com.liujiahui.www.entity.vo.UserItemStatusVO;
 import com.liujiahui.www.entity.vo.UserTranscationVO;
 import com.liujiahui.www.service.UserItemService;
 import com.liujiahui.www.solidity.ItemTrade;
@@ -42,8 +44,8 @@ public class UserBuyController {
         }
     }
 
-    public static void updateLogistics(int id, String logistics) {
-
+    public static void updateLogistics(int id, String logistics, int status) {
+        UserItemService.updateLogistics(id, logistics, status);
     }
 
     public static UserTranscationVO check(String hash) throws ContractException, NoSuchAlgorithmException {
@@ -53,5 +55,14 @@ public class UserBuyController {
         userTranscationVO.setHash(hash);
         userTranscationVO.setDescription(userRealItemDTO.getDescription());
         return userTranscationVO;
+    }
+
+    public static UserItemStatusVO checkStatus(String hash1) throws ContractException {
+        UserItemStatusDTO userItemStatusDTO = UserItemService.checkStatus(hash1);
+        UserItemStatusVO userItemStatusVO = new UserItemStatusVO();
+        userItemStatusVO.setDate(userItemStatusDTO.getDate());
+        userItemStatusVO.setPlace(userItemStatusDTO.getPlace());
+        userItemStatusVO.setStatus(userItemStatusDTO.getStatus());
+        return userItemStatusVO;
     }
 }

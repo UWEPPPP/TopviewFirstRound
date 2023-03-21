@@ -1,5 +1,7 @@
 package com.liujiahui.www.entity.po;
 
+import org.fisco.bcos.sdk.utils.Numeric;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -18,6 +20,7 @@ public class Item {
     private String owner;
     private BigDecimal index;
     private Boolean isSold;
+    private byte[] hashes;
 
     public Item(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index,Boolean isSold) {
         this.id = id;
@@ -33,6 +36,25 @@ public class Item {
         this.name = name;
         this.price = price;
         this.description = description;
+    }
+
+    public Item(int id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, byte[] hashes) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.owner = owner;
+        this.index = index;
+        this.isSold = isSold;
+        this.hashes = hashes;
+    }
+
+    public String getHashes() {
+        return Numeric.toHexString(hashes);
+    }
+
+    public void setHashes(byte[] hashes) {
+        this.hashes = hashes;
     }
 
     public Boolean getSold() {

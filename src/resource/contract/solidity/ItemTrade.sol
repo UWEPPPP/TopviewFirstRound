@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import  "Asset.sol";
 contract ItemTrade {
     Asset set;
+
     struct Item {
         uint256 id;
         string name;
@@ -14,8 +15,21 @@ contract ItemTrade {
         bytes32 hash;
     }
 
+    struct ItemLife{
+        uint256 date;
+        string place;
+        Status status;
+    }
+
+    enum Status{
+        NotDelivered,
+        InDelivering,
+        Delivered
+    }
+
     mapping( address => Item[] ) private items;
     mapping( bytes32 => Item) private itemFollow;
+    mapping( bytes32 => ItemLife ) private ItemStatus;
 
     bool private isProcess = false;
 
@@ -55,10 +69,11 @@ contract ItemTrade {
         items[seller][index].isSold=true;
         set.decreaseBalance(msg.sender,item.price);
         set.increaseBalance(seller,item.price);
+
         emit ItemSold(seller,msg.sender,item.hash);
     }
 
-    function getSoldItem() external view returns(Item[] memory itemSold){
+    function getSoldItem() external view OnlySupplier returns(Item[] memory itemSold){
         return items[msg.sender];
     }
 
@@ -68,11 +83,28 @@ contract ItemTrade {
         return (name,description);
     }
 
-    function registerAsset(uint256 choice) public{
+    function registerAsset(uint256 choice) external{
         set.registerAsset(msg.sender,choice);
     }
 
     function getBalance() public view returns(uint256){
         return set.getBalance(msg.sender);
     }
+
+    function updateItem(uint index,uint256 price) external{
+        items[msg.sender][index].price=price;
+    }
+
+    function updateStatus(uint index,string memory place,uint deliver) external {
+        require(items[msg.sender][index].isSold==true,"Not Sold Yet");
+        bytes32 hash=items[msg.sender][index].hash;
+        ItemStatus[hash].status=Status(uint256(ItemStatus[hash].status)+deliver);
+        ItemStatus[hash].date=now;
+        ItemStatus[hash].place=place;
+    }
+
+    function checkStatus(bytes32 hash) external{
+
+    }
 }
+

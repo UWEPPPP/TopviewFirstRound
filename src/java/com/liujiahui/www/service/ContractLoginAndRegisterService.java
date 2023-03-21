@@ -26,7 +26,7 @@ public class ContractLoginAndRegisterService {
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(privateKey);
         TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
-        ItemTrade asset = ItemTrade.load("0xf92f75db5183c06a00a7515be0d1f965f1d1c649",client, keyPair);
+        ItemTrade asset = ItemTrade.load("0x5ac60f14632f3f199544b506d3220970767037a0",client, keyPair);
         UserInformationSaveDTO userInformationSaveDTO = UserInformationSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
@@ -37,7 +37,7 @@ public class ContractLoginAndRegisterService {
         Client client = bcosSDK.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ItemTrade asset = ItemTrade.load("0xf92f75db5183c06a00a7515be0d1f965f1d1c649", client, cryptoKeyPair);
+        ItemTrade asset = ItemTrade.load("0x5ac60f14632f3f199544b506d3220970767037a0", client, cryptoKeyPair);
         String identity="suppliers";
         if(table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));

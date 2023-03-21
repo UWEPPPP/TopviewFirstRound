@@ -10,9 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static com.liujiahui.www.dao.UtilDAO.close;
-
 /**
  * 用户登录持久层
  *

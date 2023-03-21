@@ -1,8 +1,10 @@
 package com.liujiahui.www.service;
 
 import com.liujiahui.www.dao.UserBuyDAO;
-import com.liujiahui.www.dao.UserItemAddAndShowDAO;
+import com.liujiahui.www.dao.UserItemDAO;
 import com.liujiahui.www.entity.bo.UserAddItemBO;
+import com.liujiahui.www.entity.bo.UserItemUpdateBO;
+import com.liujiahui.www.entity.dto.UserItemStatusDTO;
 import com.liujiahui.www.entity.dto.UserRealItemDTO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.dto.UserTransactionDTO;
@@ -10,6 +12,7 @@ import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.solidity.ItemTrade;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,20 +40,20 @@ public class UserItemService {
         Tuple1<BigInteger> addItemOutput = itemTradeSolidity.getAddItemOutput(transactionReceipt);
         System.out.println(addItemOutput);
         System.out.println(addItemOutput.getValue1());
-        UserItemAddAndShowDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getAccount(),addItemOutput.getValue1());
+        UserItemDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getAccount(),addItemOutput.getValue1());
         System.out.println(addItemOutput.getValue1());
     }
 
     public static List<Item> showAllItem() throws SQLException, IOException {
-        return UserItemAddAndShowDAO.showAllItem();
+        return UserItemDAO.showAllItem();
     }
 
     public static List<Item> showMyItem() throws SQLException, IOException {
-        return UserItemAddAndShowDAO.showMyItem(UserInformationSaveDTO.getInstance().getAccount());
+        return UserItemDAO.showMyItem(UserInformationSaveDTO.getInstance().getAccount());
     }
 
     public static List<Item> showSoldItem() throws SQLException, IOException, ContractException {
-        return UserItemAddAndShowDAO.showSoldItem();
+        return UserItemDAO.showSoldItem();
     }
     public static UserTransactionDTO buyItem(String seller, BigDecimal index) throws ContractException, SQLException, IOException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
@@ -57,21 +61,18 @@ public class UserItemService {
         BigInteger bigInteger = index.toBigInteger();
         bigInteger=bigInteger.subtract(BigInteger.ONE);
         TransactionReceipt transactionReceipt = itemTradeSolidity.buyItem(seller, bigInteger);
+
         TransactionResponse transactionResponse = instance.getDecoder().decodeReceiptStatus(transactionReceipt);
         UserTransactionDTO userTransactionDTO = new UserTransactionDTO();
-        if(Objects.equals(transactionResponse.getReturnMessage(), "")){
-            System.out.println("yeah");
-            return null;
-        }
-        System.out.println(transactionResponse.getReturnMessage());
         if(!Objects.equals(transactionResponse.getReturnMessage(), "Success")){
             userTransactionDTO.setReturnMessage(transactionResponse.getReturnMessage());
             return null;
         }
-        BigInteger bigInteger1 = index.toBigInteger();
-        UserBuyDAO.buyItem(seller,bigInteger1);
         List<ItemTrade.ItemSoldEventResponse> itemSoldEvents = itemTradeSolidity.getItemSoldEvents(transactionReceipt);
         ItemTrade.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
+        System.out.println(itemSoldEventResponse);
+        BigInteger bigInteger1 = index.toBigInteger();
+        UserBuyDAO.buyItem(seller,bigInteger1,itemSoldEventResponse.hash);
         BigInteger balance = itemTradeSolidity.getBalance();
         instance.setBalance(String.valueOf(balance));
         userTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);
@@ -87,4 +88,36 @@ public class UserItemService {
         userRealItemDTO.setDescription(realItem.getValue2());
         return userRealItemDTO;
     }
-}
+
+    public static void updateItem(UserItemUpdateBO userItemUpdateBO) throws SQLException, IOException {
+        String oldName = userItemUpdateBO.getOldName();
+        String name = userItemUpdateBO.getName();
+        String description = userItemUpdateBO.getDescription();
+        String price = userItemUpdateBO.getPrice();
+        UserItemDAO.updateItem(oldName,name,description,price);
+        UserInformationSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(userItemUpdateBO.getIndex())), BigInteger.valueOf(Integer.parseInt(price)));
+    }
+
+    public static void updateLogistics(int index, String logistics, int status) {
+          UserInformationSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index),logistics,BigInteger.valueOf(status));
+    }
+
+    public static UserItemStatusDTO checkStatus(String hash1) throws ContractException {
+        byte[] bytes = Numeric.hexStringToByteArray(hash1);
+        Tuple3<BigInteger, String, BigInteger> status = UserInformationSaveDTO.getInstance().getItemTradeSolidity().checkStatus(bytes);
+        UserItemStatusDTO userItemStatusDTO = new UserItemStatusDTO();
+        long longValue = status.getValue1().longValue();
+        Date date = new Date(longValue * 1000);
+        userItemStatusDTO.setDate(date);
+        userItemStatusDTO.setPlace(status.getValue2());
+        BigInteger value3 = status.getValue3();
+        int intValue = value3.intValue();
+        if(intValue==0){
+          userItemStatusDTO.setStatus("未出库，正在准备中");
+        }else if(intValue==1){
+            userItemStatusDTO.setStatus("已出库，正在运送中");
+    }else {
+            userItemStatusDTO.setStatus("已送达");
+        }
+        return userItemStatusDTO;
+}}

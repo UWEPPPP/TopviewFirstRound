@@ -52,8 +52,7 @@ public class UserMainInterface {
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
                 System.out.println("3.产品上新");
-                System.out.println("4.查看我卖出的产品");
-                System.out.println("5.修改我的产品信息");
+                System.out.println("4.进入我的产品主页");
                 System.out.println("0.退出登录");
                 int choice = in.nextInt();
                 if(choice!=0){
