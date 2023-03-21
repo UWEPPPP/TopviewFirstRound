@@ -21,6 +21,10 @@ public class Test {
       AssetSolidity deploy = AssetSolidity.deploy(client, cryptoKeyPair);
        ItemTrade asset = ItemTrade.deploy(client, cryptoKeyPair, deploy.getContractAddress());
         System.out.println(asset.getContractAddress());
+        asset.registerAsset(BigInteger.valueOf(1));
+        TransactionReceipt transactionReceipt = asset.addItem("1", BigInteger.valueOf(1), "1");
+        Tuple1<BigInteger> addItemOutput = asset.getAddItemOutput(transactionReceipt);
+        System.out.println(addItemOutput.getValue1());
 
     }
 }

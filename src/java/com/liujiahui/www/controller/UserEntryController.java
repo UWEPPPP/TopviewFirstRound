@@ -1,6 +1,6 @@
 package com.liujiahui.www.controller;
 
-import com.liujiahui.www.entity.bo.AddItemBO;
+import com.liujiahui.www.entity.bo.UserAddItemBO;
 import com.liujiahui.www.entity.bo.UserChangePersonalBO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.po.Item;
@@ -13,6 +13,7 @@ import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,14 +24,15 @@ import java.util.List;
  * @date 2023/03/18
  */
 public class UserEntryController {
-    public static void entry(int choice) throws SQLException, IOException, ContractException {
-        if("consumer".equals(UserInformationSaveDTO.getInstance().getIdentity())){
+    public static void entry(int choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+        String identity="consumer";
+        if(identity.equals(UserInformationSaveDTO.getInstance().getIdentity())){
             consumerEntry(choice);
      }else {
             supplierEntry(choice);
         }
     }
-    public static void consumerEntry(int choice) throws SQLException, IOException, ContractException {
+    public static void consumerEntry(int choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         switch (choice){
             case 1:
                 showItemList();
@@ -51,7 +53,7 @@ public class UserEntryController {
         }
     }
 
-    private static void showUserItem() throws SQLException, IOException, ContractException {
+    private static void showUserItem() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         List<Item> items = UserItemService.showMyItem();
         UserItemRegisterAndShowInterface.showMyItem(items);
     }
@@ -74,8 +76,16 @@ public class UserEntryController {
                 break;
             case 4:
                 showSupplierItem();
+                break;
+            case 5:
+                updateItem();
+                break;
             default:
         }
+    }
+
+    private static void updateItem() {
+
     }
 
     private static void showSupplierItem() throws ContractException, SQLException, IOException {
@@ -113,12 +123,12 @@ public class UserEntryController {
     }
 
     public static void registerItem(String name, BigInteger price, String description, String realName, String realDescription) throws SQLException, IOException {
-        AddItemBO addItemBO = new AddItemBO();
-        addItemBO.setName(name);
-        addItemBO.setPrice(price);
-        addItemBO.setDescription(description);
-        addItemBO.setRealName(realName);
-        addItemBO.setRealDescription(realDescription);
-        UserItemService.addItem(addItemBO);
+        UserAddItemBO userAddItemBO = new UserAddItemBO();
+        userAddItemBO.setName(name);
+        userAddItemBO.setPrice(price);
+        userAddItemBO.setDescription(description);
+        userAddItemBO.setRealName(realName);
+        userAddItemBO.setRealDescription(realDescription);
+        UserItemService.addItem(userAddItemBO);
     }
 }

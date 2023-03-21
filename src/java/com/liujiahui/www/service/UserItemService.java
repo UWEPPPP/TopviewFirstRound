@@ -2,8 +2,8 @@ package com.liujiahui.www.service;
 
 import com.liujiahui.www.dao.UserBuyDAO;
 import com.liujiahui.www.dao.UserItemAddAndShowDAO;
-import com.liujiahui.www.entity.bo.AddItemBO;
-import com.liujiahui.www.entity.dto.RealItemDTO;
+import com.liujiahui.www.entity.bo.UserAddItemBO;
+import com.liujiahui.www.entity.dto.UserRealItemDTO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.dto.UserTransactionDTO;
 import com.liujiahui.www.entity.po.Item;
@@ -13,12 +13,14 @@ import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 添加物品服务
@@ -27,14 +29,14 @@ import java.util.List;
  * @date 2023/03/18
  */
 public class UserItemService {
-    public static void addItem(AddItemBO addItemBO) throws SQLException, IOException {
+    public static void addItem(UserAddItemBO userAddItemBO) throws SQLException, IOException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
         ItemTrade itemTradeSolidity = instance.getItemTradeSolidity();
-        TransactionReceipt transactionReceipt = itemTradeSolidity.addItem(addItemBO.getRealName(), addItemBO.getPrice(), addItemBO.getRealDescription());
+        TransactionReceipt transactionReceipt = itemTradeSolidity.addItem(userAddItemBO.getRealName(), userAddItemBO.getPrice(), userAddItemBO.getRealDescription());
         Tuple1<BigInteger> addItemOutput = itemTradeSolidity.getAddItemOutput(transactionReceipt);
         System.out.println(addItemOutput);
         System.out.println(addItemOutput.getValue1());
-        UserItemAddAndShowDAO.addItem(addItemBO.getName(),addItemBO.getPrice(),addItemBO.getDescription(),instance.getAccount(),addItemOutput.getValue1());
+        UserItemAddAndShowDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getAccount(),addItemOutput.getValue1());
         System.out.println(addItemOutput.getValue1());
     }
 
@@ -57,7 +59,12 @@ public class UserItemService {
         TransactionReceipt transactionReceipt = itemTradeSolidity.buyItem(seller, bigInteger);
         TransactionResponse transactionResponse = instance.getDecoder().decodeReceiptStatus(transactionReceipt);
         UserTransactionDTO userTransactionDTO = new UserTransactionDTO();
-        if(transactionResponse.getReturnMessage()!=null){
+        if(Objects.equals(transactionResponse.getReturnMessage(), "")){
+            System.out.println("yeah");
+            return null;
+        }
+        System.out.println(transactionResponse.getReturnMessage());
+        if(!Objects.equals(transactionResponse.getReturnMessage(), "Success")){
             userTransactionDTO.setReturnMessage(transactionResponse.getReturnMessage());
             return null;
         }
@@ -72,11 +79,12 @@ public class UserItemService {
         return userTransactionDTO;
     }
 
-    public static RealItemDTO checkByHash(String hash) throws ContractException {
-        Tuple2<String, String> realItem = UserInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(hash.getBytes());
-        RealItemDTO realItemDTO = new RealItemDTO();
-        realItemDTO.setName(realItem.getValue1());
-        realItemDTO.setDescription(realItem.getValue2());
-        return realItemDTO;
+    public static UserRealItemDTO checkByHash(String hash) throws ContractException {
+        byte[] bytes = Numeric.hexStringToByteArray(hash);
+        Tuple2<String, String> realItem = UserInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
+        UserRealItemDTO userRealItemDTO = new UserRealItemDTO();
+        userRealItemDTO.setName(realItem.getValue1());
+        userRealItemDTO.setDescription(realItem.getValue2());
+        return userRealItemDTO;
     }
 }

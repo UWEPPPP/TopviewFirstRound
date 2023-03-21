@@ -2,7 +2,13 @@ package com.liujiahui.www.entity.vo;
 
 import java.math.BigInteger;
 
-public class TranscationVO {
+/**
+ * 用户事务处理签证官
+ *
+ * @author 刘家辉
+ * @date 2023/03/21
+ */
+public class UserTranscationVO {
     private String balance;
     private BigInteger price;
     private String name;

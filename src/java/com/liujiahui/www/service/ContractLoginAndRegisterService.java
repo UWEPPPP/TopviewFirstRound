@@ -38,7 +38,8 @@ public class ContractLoginAndRegisterService {
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
         ItemTrade asset = ItemTrade.load("0xf92f75db5183c06a00a7515be0d1f965f1d1c649", client, cryptoKeyPair);
-        if(table.equals("supplier")) {
+        String identity="suppliers";
+        if(table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));
         }else {
            asset.registerAsset(BigInteger.valueOf(2));

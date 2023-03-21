@@ -9,6 +9,7 @@ import com.liujiahui.www.view.UserLoginInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
@@ -19,21 +20,21 @@ import java.sql.SQLException;
  */
 public class UserLoginController {
       public static String identity;
-    public static void loginByConsumer(String account, String password) throws SQLException, IOException, ContractException {
+    public static void loginByConsumer(String account, String password) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         UserLoginBO userLoginBO = new UserLoginBO(account,password,"consumer");
         identity="consumer";
         UserInformationSaveDTO login= UserRegisterAndLoginService.login(userLoginBO);
         loginBackView(login);
     }
 
-    public static void loginBySupplier(String account, String password) throws ContractException, SQLException, IOException {
+    public static void loginBySupplier(String account, String password) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
         UserLoginBO userLoginBO = new UserLoginBO(account,password,"suppliers");
         identity="suppliers";
         UserInformationSaveDTO login = UserRegisterAndLoginService.login(userLoginBO);
         loginBackView(login);
     }
 
-    public static void loginBackView(UserInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException {
+    public static void loginBackView(UserInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
         if(userInformationDTO == null){
             UserLoginInterface.loginReturnInterface();
         }
@@ -50,7 +51,7 @@ public class UserLoginController {
     /**
      * 登录
      */
-    public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException {
+    public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         if(choice1 == 1){
             new UserLoginInterface().loginBySupplier();
         }else {

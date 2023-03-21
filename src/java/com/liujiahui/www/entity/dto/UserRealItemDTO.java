@@ -6,7 +6,7 @@ package com.liujiahui.www.entity.dto;
  * @author 刘家辉
  * @date 2023/03/21
  */
-public class RealItemDTO {
+public class UserRealItemDTO {
     private String name;
     private String description;
 

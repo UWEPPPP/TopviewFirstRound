@@ -3,11 +3,12 @@ package com.liujiahui.www.view;
 import com.liujiahui.www.controller.UserBuyController;
 import com.liujiahui.www.controller.UserEntryController;
 import com.liujiahui.www.entity.po.Item;
-import com.liujiahui.www.entity.vo.TranscationVO;
+import com.liujiahui.www.entity.vo.UserTranscationVO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -64,12 +65,10 @@ public class UserItemRegisterAndShowInterface {
         }
     }
 
-    public static void showMyItem(List<Item> items) throws SQLException, IOException, ContractException {
+    public static void showMyItem(List<Item> items) throws IOException, ContractException, NoSuchAlgorithmException {
         System.out.println("这是您已购入的商品列表");
         for (Item item : items) {
-            if(!item.getSold()){
                 System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+"商品所有人"+item.getOwner());
-            }
         }
         System.out.println("是否按照hash给商品验伪？");
         System.out.println("1.是");
@@ -80,10 +79,10 @@ public class UserItemRegisterAndShowInterface {
             case 1:
                 System.out.println("请输入商品hash");
                 String hash = in.next();
-                TranscationVO check = UserBuyController.check(hash);
+                UserTranscationVO check = UserBuyController.check(hash);
                 System.out.println("根据hash "+check.getHash()+"查到的产品信息是");
-                System.out.println(check.getName());
-                System.out.println(check.getDescription());
+                System.out.println("名字"+check.getName());
+                System.out.println("详情"+check.getDescription());
                 break;
             case 2:
                 break;
@@ -115,15 +114,14 @@ public class UserItemRegisterAndShowInterface {
             default:
         }
     }
-    public static void showResult(TranscationVO transcationVO) {
+    public static void showResult(UserTranscationVO userTranscationVO) {
         System.out.println("交易结果");
         Date date = new Date();
         System.out.println("交易时间："+date);
-        System.out.println("交易买家："+transcationVO.getBuyer());
-        System.out.println("交易卖家："+transcationVO.getSeller());
-        System.out.println("交易商品："+transcationVO.getName());
-        System.out.println("交易价格："+transcationVO.getPrice());
-        System.out.println("交易验伪hash："+transcationVO.getHash());
-        System.out.println("交易后余额："+transcationVO.getBalance());
+        System.out.println("交易买家："+ userTranscationVO.getBuyer());
+        System.out.println("交易卖家："+ userTranscationVO.getSeller());
+        System.out.println("交易商品："+ userTranscationVO.getName());
+        System.out.println("交易验伪hash："+ userTranscationVO.getHash()+" 请妥善保管");
+        System.out.println("交易后余额："+ userTranscationVO.getBalance());
     }
 }

@@ -22,7 +22,11 @@ public class UserBuyDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1,true);
         preparedStatement.setString(2,account);
+        System.out.println(account);
+        System.out.println(accountAddress);
+        System.out.println(id);
         preparedStatement.setString(3,accountAddress);
+        System.out.println(new java.math.BigDecimal(id));
         preparedStatement.setBigDecimal(4,new java.math.BigDecimal(id));
         preparedStatement.executeUpdate();
         UtilDAO.close(connection,null,preparedStatement);

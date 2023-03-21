@@ -5,6 +5,7 @@ import com.liujiahui.www.entity.vo.UserAfterLoginVO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ import java.util.Scanner;
  */
 public class UserMainInterface {
     static Scanner in = new Scanner(System.in);
-    public static void viewConsumer(UserAfterLoginVO userAfterLoginVO) throws ContractException, SQLException, IOException {
+    public static void viewConsumer(UserAfterLoginVO userAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
         if(userAfterLoginVO!=null){
             do{
         System.out.println("您好消费者"+userAfterLoginVO.getName()+"欢迎您来到Topview的产品溯源系统");
@@ -25,6 +26,7 @@ public class UserMainInterface {
         System.out.println("1.查看产品信息");
         System.out.println("2.查看个人信息");
         System.out.println("3.查看我购买的产品");
+        System.out.println("0.退出登录");
         int choice = in.nextInt();
                 if(choice!=0){
                     UserEntryController.entry(choice);
@@ -41,7 +43,7 @@ public class UserMainInterface {
             UserInitInterface.start();
         }
     }
-    public static void viewSupplier(UserAfterLoginVO userAfterLoginVO) throws ContractException, SQLException, IOException {
+    public static void viewSupplier(UserAfterLoginVO userAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
         if(userAfterLoginVO!=null){
             System.out.println("您好 供应商" + userAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             do {
@@ -50,7 +52,8 @@ public class UserMainInterface {
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
                 System.out.println("3.产品上新");
-                System.out.println("4.查看我上架的产品");
+                System.out.println("4.查看我卖出的产品");
+                System.out.println("5.修改我的产品信息");
                 System.out.println("0.退出登录");
                 int choice = in.nextInt();
                 if(choice!=0){

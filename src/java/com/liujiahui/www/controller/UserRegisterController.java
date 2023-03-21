@@ -6,6 +6,7 @@ import com.liujiahui.www.view.UserRegisterInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
@@ -15,7 +16,7 @@ import java.sql.SQLException;
  * @date 2023/03/16
  */
 public class UserRegisterController {
-    public static void registerBySupplier(String name, String gender, String phone, String address, String password) throws SQLException, IOException, ContractException {
+    public static void registerBySupplier(String name, String gender, String phone, String address, String password) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         UserRegisterBO userRegisterBO = new UserRegisterBO();
         userRegisterBO.setName(name);
         userRegisterBO.setGender(gender);
@@ -25,7 +26,7 @@ public class UserRegisterController {
         UserRegisterInterface.returnInterface(UserRegisterAndLoginService.registerBySupplier(userRegisterBO));
     }
 
-    public static void registerByConsumer(String name, String gender, String phone, String password) throws SQLException, IOException, ContractException {
+    public static void registerByConsumer(String name, String gender, String phone, String password) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         UserRegisterBO userRegisterBO = new UserRegisterBO();
         userRegisterBO.setName(name);
         userRegisterBO.setPassword(password);
@@ -34,7 +35,7 @@ public class UserRegisterController {
         UserRegisterInterface.returnInterface(UserRegisterAndLoginService.registerByConsumer(userRegisterBO));
     }
 
-    public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException {
+    public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         if(choice2 == 1){
             new UserRegisterInterface().registerBySupplier();
     }else {

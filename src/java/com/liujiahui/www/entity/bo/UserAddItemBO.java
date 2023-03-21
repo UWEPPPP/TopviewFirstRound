@@ -1,6 +1,5 @@
 package com.liujiahui.www.entity.bo;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -9,7 +8,7 @@ import java.math.BigInteger;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class AddItemBO {
+public class UserAddItemBO {
     private String name;
     private BigInteger price;
     private String description;
