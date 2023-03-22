@@ -2,7 +2,7 @@ package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.po.Item;
-import com.liujiahui.www.solidity.ItemTrade;
+import com.liujiahui.www.service.ContractTradeService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
@@ -94,10 +94,10 @@ public class UserItemDAO {
 
     public static List<Item> showRealItem() throws ContractException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
-        DynamicArray<ItemTrade.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
+        DynamicArray<ContractTradeService.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
         List<Item> list = new ArrayList<>();
         int index=0;
-        for (ItemTrade.Item item : soldItem.getValue()) {
+        for (ContractTradeService.Item item : soldItem.getValue()) {
             Item item1 = new Item(item.name,item.price,item.description);
             item1.setIndex(new BigDecimal(index));
             item1.setSold(item.isSold);

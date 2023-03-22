@@ -4,14 +4,12 @@ import com.liujiahui.www.dao.UserBuyDAO;
 import com.liujiahui.www.dao.UserItemDAO;
 import com.liujiahui.www.entity.bo.UserAddItemBO;
 import com.liujiahui.www.entity.bo.UserItemUpdateBO;
+import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.dto.UserItemStatusDTO;
 import com.liujiahui.www.entity.dto.UserRealItemDTO;
-import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
 import com.liujiahui.www.entity.dto.UserTransactionDTO;
 import com.liujiahui.www.entity.po.Item;
-import com.liujiahui.www.solidity.ItemTrade;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
@@ -35,9 +33,9 @@ import java.util.Objects;
 public class UserItemService {
     public static void addItem(UserAddItemBO userAddItemBO) throws SQLException, IOException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
-        ItemTrade itemTradeSolidity = instance.getItemTradeSolidity();
-        TransactionReceipt transactionReceipt = itemTradeSolidity.addItem(userAddItemBO.getRealName(), userAddItemBO.getPrice(), userAddItemBO.getRealDescription());
-        Tuple1<BigInteger> addItemOutput = itemTradeSolidity.getAddItemOutput(transactionReceipt);
+        ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
+        TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(userAddItemBO.getRealName(), userAddItemBO.getPrice(), userAddItemBO.getRealDescription());
+        Tuple1<BigInteger> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
         System.out.println(addItemOutput);
         System.out.println(addItemOutput.getValue1());
         UserItemDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName());
@@ -52,19 +50,19 @@ public class UserItemService {
         return UserItemDAO.showMyItem(UserInformationSaveDTO.getInstance().getContractAccount());
     }
 
-    public static List<Item> showRealItem() throws SQLException, IOException, ContractException {
+    public static List<Item> showRealItem() throws ContractException {
         return UserItemDAO.showRealItem();
     }
 
-    public static List<Item> showOutsideItem() throws SQLException, IOException, ContractException {
+    public static List<Item> showOutsideItem() throws SQLException, IOException {
         return UserItemDAO.showOutsideItem(UserInformationSaveDTO.getInstance().getContractAccount());
     }
     public static UserTransactionDTO buyItem(String seller, BigDecimal index) throws ContractException, SQLException, IOException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
-        ItemTrade itemTradeSolidity = instance.getItemTradeSolidity();
+        ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         BigInteger bigInteger = index.toBigInteger();
         bigInteger=bigInteger.subtract(BigInteger.ONE);
-        TransactionReceipt transactionReceipt = itemTradeSolidity.buyItem(seller, bigInteger);
+        TransactionReceipt transactionReceipt = contractTradeServiceSolidity.buyItem(seller, bigInteger);
 
         TransactionResponse transactionResponse = instance.getDecoder().decodeReceiptStatus(transactionReceipt);
         UserTransactionDTO userTransactionDTO = new UserTransactionDTO();
@@ -72,12 +70,12 @@ public class UserItemService {
             userTransactionDTO.setReturnMessage(transactionResponse.getReturnMessage());
             return null;
         }
-        List<ItemTrade.ItemSoldEventResponse> itemSoldEvents = itemTradeSolidity.getItemSoldEvents(transactionReceipt);
-        ItemTrade.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
+        List<ContractTradeService.ItemSoldEventResponse> itemSoldEvents = contractTradeServiceSolidity.getItemSoldEvents(transactionReceipt);
+        ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
         System.out.println(itemSoldEventResponse);
         BigInteger bigInteger1 = index.toBigInteger();
         UserBuyDAO.buyItem(seller,bigInteger1,itemSoldEventResponse.hash);
-        BigInteger balance = itemTradeSolidity.getBalance();
+        BigInteger balance = contractTradeServiceSolidity.getBalance();
         instance.setBalance(String.valueOf(balance));
         userTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);
         userTransactionDTO.setBalance(String.valueOf(balance));
@@ -86,10 +84,12 @@ public class UserItemService {
 
     public static UserRealItemDTO checkByHash(String hash) throws ContractException {
         byte[] bytes = Numeric.hexStringToByteArray(hash);
-        Tuple2<String, String> realItem = UserInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
+        Tuple3<String, String, String> realItem = UserInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
+
         UserRealItemDTO userRealItemDTO = new UserRealItemDTO();
         userRealItemDTO.setName(realItem.getValue1());
         userRealItemDTO.setDescription(realItem.getValue2());
+        userRealItemDTO.setSeller(realItem.getValue3().toString());
         return userRealItemDTO;
     }
 

@@ -77,10 +77,11 @@ contract ItemTrade {
         return items[msg.sender];
     }
 
-    function getRealItem(bytes32 hash) external view returns(string memory name,string memory description){
-        name =itemFollow[hash].name;
+    function getRealItem(bytes32 hash) external view returns(string memory name,string memory description,address seller){
+        name =        itemFollow[hash].name;
         description = itemFollow[hash].description;
-        return (name,description);
+        seller=       itemFollow[hash].seller;
+        return (name,description,seller);
     }
 
     function registerAsset(uint256 choice) external{
@@ -98,13 +99,14 @@ contract ItemTrade {
     function updateStatus(uint index,string memory place,uint deliver) external {
         require(items[msg.sender][index].isSold==true,"Not Sold Yet");
         bytes32 hash=items[msg.sender][index].hash;
-        ItemStatus[hash].status=Status(uint256(ItemStatus[hash].status)+deliver);
+        ItemStatus[hash].status=Status(deliver);
         ItemStatus[hash].date=now;
         ItemStatus[hash].place=place;
     }
 
-    function checkStatus(bytes32 hash) external{
-
+    function checkStatus(bytes32 hash) external view returns(uint256 time,string memory place,uint256 status){
+        string memory places=ItemStatus[hash].place;
+        return (ItemStatus[hash].date,places,uint256(ItemStatus[hash].status));
     }
 }
 

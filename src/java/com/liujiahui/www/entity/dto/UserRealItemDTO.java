@@ -9,6 +9,15 @@ package com.liujiahui.www.entity.dto;
 public class UserRealItemDTO {
     private String name;
     private String description;
+    private String seller;
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(String seller) {
+        this.seller = seller;
+    }
 
     public String getName() {
         return name;

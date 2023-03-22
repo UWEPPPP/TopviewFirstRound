@@ -54,7 +54,7 @@ public class UserEntryController {
         }
     }
 
-    private static void showUserItem() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    private static void showUserItem() throws SQLException, IOException, ContractException {
         List<Item> items = UserItemService.showMyItem();
         UserItemInterface.showMyItem(items);
     }

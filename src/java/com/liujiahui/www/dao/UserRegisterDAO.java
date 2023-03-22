@@ -27,7 +27,7 @@ public class UserRegisterDAO {
         String tableAndLimit;
         if(user instanceof Supplier){
             table = "suppliers";
-            tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?)";
+            tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?,?,?)";
         }else{
             table = "consumer";
             tableAndLimit = "consumer(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";

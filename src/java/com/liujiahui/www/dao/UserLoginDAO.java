@@ -36,7 +36,6 @@ public class UserLoginDAO {
                 user.setPhone(set.getString("phone_number"));
                 user.setIdentity(identity);
                 user.setContractAccount(set.getString("account_address"));
-                System.out.println(set.getString("account_address"));
                 return user;
             } else {
                 return null;

@@ -1,20 +1,20 @@
 package com.liujiahui.www.entity.dto;
 
-import com.liujiahui.www.solidity.ItemTrade;
+import com.liujiahui.www.service.ContractTradeService;
 
 /**
  * @author LiuJiaHui
  */
 public class UserTransactionDTO {
-  private ItemTrade.ItemSoldEventResponse itemSoldEventResponse;
+  private ContractTradeService.ItemSoldEventResponse itemSoldEventResponse;
   private String balance;
   private String returnMessage;
 
-  public ItemTrade.ItemSoldEventResponse getItemSoldEventResponse() {
+  public ContractTradeService.ItemSoldEventResponse getItemSoldEventResponse() {
     return itemSoldEventResponse;
   }
 
-  public void setItemSoldEventResponse(ItemTrade.ItemSoldEventResponse itemSoldEventResponse) {
+  public void setItemSoldEventResponse(ContractTradeService.ItemSoldEventResponse itemSoldEventResponse) {
     this.itemSoldEventResponse = itemSoldEventResponse;
   }
 

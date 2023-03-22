@@ -1,15 +1,11 @@
 package com.liujiahui.www;
 
-import com.liujiahui.www.solidity.Asset;
-import com.liujiahui.www.solidity.ItemTrade;
+import com.liujiahui.www.service.ContractAssetService;
+import com.liujiahui.www.service.ContractTradeService;
 import org.fisco.bcos.sdk.BcosSDK;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
-import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
-
-import java.math.BigInteger;
 
 public class Test {
     public static void main(String[] args) throws ContractException {
@@ -18,8 +14,8 @@ public class Test {
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
         System.out.println(accountAddress);
-        Asset deploy = Asset.deploy(client, cryptoKeyPair);
-        ItemTrade asset = ItemTrade.deploy(client, cryptoKeyPair, deploy.getContractAddress());
+        ContractAssetService deploy = ContractAssetService.deploy(client, cryptoKeyPair);
+        ContractTradeService asset = ContractTradeService.deploy(client, cryptoKeyPair, deploy.getContractAddress());
         System.out.println(asset.getContractAddress());
 
 

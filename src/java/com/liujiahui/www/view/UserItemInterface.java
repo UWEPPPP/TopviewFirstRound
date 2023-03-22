@@ -2,6 +2,7 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.UserBuyController;
 import com.liujiahui.www.controller.UserEntryController;
+import com.liujiahui.www.controller.UserFeedbackController;
 import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.UserItemStatusVO;
 import com.liujiahui.www.entity.vo.UserTransactionVO;
@@ -50,9 +51,9 @@ public class UserItemInterface {
                 System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 未售出 卖家："+item.getOwnerName());
             }
         }
-        System.out.println("是否要购买商品？");
-        System.out.println("1.是");
-        System.out.println("2.否");
+        System.out.println("1:购买产品");
+        System.out.println("2:查看卖家的历史");
+        System.out.println("3:返回列表");
         Scanner in = new Scanner(System.in);
         int choice = in.nextInt();
         switch (choice) {
@@ -62,12 +63,15 @@ public class UserItemInterface {
                 UserBuyController.buy(id,items);
                 break;
             case 2:
+                System.out.println("请输入卖家的名字");
+                String name = in.next();
+                UserBuyController.showHistory(name);
                 break;
             default:
         }
     }
 
-    public static void showMyItem(List<Item> items) throws ContractException {
+    public static void showMyItem(List<Item> items) throws ContractException, SQLException, IOException {
         System.out.println("这是您已购入的商品列表");
         for (Item item : items) {
                 System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述:" + item.getDescription()+" 商品hash:"+item.getHashes());
@@ -98,7 +102,7 @@ public class UserItemInterface {
                             case 1:
                                 System.out.println("说几句简短的话鼓励商家吧~");
                                 String comment = in.next();
-                                UserBuyController.giveGoodComment(check.getSeller(),comment);
+                                UserFeedbackController.feedback(1,check.getSeller(),comment,check.getHash());
                                 System.out.println("感谢您的好评");
                                 break;
                             case 2:
@@ -111,7 +115,7 @@ public class UserItemInterface {
                         System.out.println("鉴定为假品，进行举报");
                         System.out.println("请描述情况");
                         String description = in.next();
-                        UserBuyController.report(check.getSeller(),description);
+                        UserFeedbackController.feedback(2,check.getSeller(),description,check.getHash());
                         System.out.println("感谢您的举报");
                         System.out.println("管理员会尽快处理");
                         break;

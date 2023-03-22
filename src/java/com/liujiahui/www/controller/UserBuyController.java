@@ -7,7 +7,7 @@ import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.UserItemStatusVO;
 import com.liujiahui.www.entity.vo.UserTransactionVO;
 import com.liujiahui.www.service.UserItemService;
-import com.liujiahui.www.solidity.ItemTrade;
+import com.liujiahui.www.service.ContractTradeService;
 import com.liujiahui.www.view.UserItemInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
@@ -29,7 +29,7 @@ public class UserBuyController {
                 UserTransactionDTO userTransactionDTO = UserItemService.buyItem(item.getOwner(), item.getIndex());
                 if (userTransactionDTO != null && userTransactionDTO.getReturnMessage() == null) {
                     String balance = userTransactionDTO.getBalance();
-                    ItemTrade.ItemSoldEventResponse itemSoldEventResponse = userTransactionDTO.getItemSoldEventResponse();
+                    ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = userTransactionDTO.getItemSoldEventResponse();
                     String hash = Numeric.toHexString(itemSoldEventResponse.hash);
                     UserTransactionVO userTransactionVO = new UserTransactionVO();
                     userTransactionVO.setName(item.getName());
@@ -53,6 +53,7 @@ public class UserBuyController {
         userTransactionVO.setName(userRealItemDTO.getName());
         userTransactionVO.setHash(hash);
         userTransactionVO.setDescription(userRealItemDTO.getDescription());
+        userTransactionVO.setSeller(userRealItemDTO.getSeller());
         return userTransactionVO;
     }
 
@@ -65,10 +66,8 @@ public class UserBuyController {
         return userItemStatusVO;
     }
 
-    public static void giveGoodComment(String seller, String comment) {
-    }
 
-    public static void report(String seller, String description) {
+    public static void showHistory(String name) {
 
     }
 }
