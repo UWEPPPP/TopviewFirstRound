@@ -9,7 +9,7 @@ import com.liujiahui.www.entity.vo.UserDetailedVO;
 import com.liujiahui.www.service.UserItemService;
 import com.liujiahui.www.service.UserChangePersonalService;
 import com.liujiahui.www.view.UserPersonalInterface;
-import com.liujiahui.www.view.UserItemRegisterAndShowInterface;
+import com.liujiahui.www.view.UserItemInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -56,12 +56,12 @@ public class UserEntryController {
 
     private static void showUserItem() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         List<Item> items = UserItemService.showMyItem();
-        UserItemRegisterAndShowInterface.showMyItem(items);
+        UserItemInterface.showMyItem(items);
     }
 
     private static void showItemList() throws SQLException, IOException, ContractException {
         List<Item> items = UserItemService.showAllItem();
-        UserItemRegisterAndShowInterface.showAndBuyItem(items);
+        UserItemInterface.showAndBuyItem(items);
     }
 
     public static void supplierEntry(int choice) throws SQLException, IOException, ContractException {
@@ -73,7 +73,7 @@ public class UserEntryController {
                 showUser();
                 break;
             case 3:
-                UserItemRegisterAndShowInterface.registerItem();
+                UserItemInterface.registerItem();
                 break;
             case 4:
                 showSupplierItem();
@@ -100,7 +100,7 @@ public class UserEntryController {
     }
 
     private static void showSupplierItem() throws ContractException, SQLException, IOException {
-        UserItemRegisterAndShowInterface.showSoldItem(UserItemService.showSoldItem());
+        UserItemInterface.showSupplierItem(UserItemService.showRealItem(),UserItemService.showOutsideItem());
     }
 
     public static void showUser() throws SQLException, IOException {

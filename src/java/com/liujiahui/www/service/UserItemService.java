@@ -40,7 +40,7 @@ public class UserItemService {
         Tuple1<BigInteger> addItemOutput = itemTradeSolidity.getAddItemOutput(transactionReceipt);
         System.out.println(addItemOutput);
         System.out.println(addItemOutput.getValue1());
-        UserItemDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getAccount(),addItemOutput.getValue1());
+        UserItemDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName());
         System.out.println(addItemOutput.getValue1());
     }
 
@@ -49,11 +49,15 @@ public class UserItemService {
     }
 
     public static List<Item> showMyItem() throws SQLException, IOException {
-        return UserItemDAO.showMyItem(UserInformationSaveDTO.getInstance().getAccount());
+        return UserItemDAO.showMyItem(UserInformationSaveDTO.getInstance().getContractAccount());
     }
 
-    public static List<Item> showSoldItem() throws SQLException, IOException, ContractException {
-        return UserItemDAO.showSoldItem();
+    public static List<Item> showRealItem() throws SQLException, IOException, ContractException {
+        return UserItemDAO.showRealItem();
+    }
+
+    public static List<Item> showOutsideItem() throws SQLException, IOException, ContractException {
+        return UserItemDAO.showOutsideItem(UserInformationSaveDTO.getInstance().getContractAccount());
     }
     public static UserTransactionDTO buyItem(String seller, BigDecimal index) throws ContractException, SQLException, IOException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();

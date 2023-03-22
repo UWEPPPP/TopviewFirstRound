@@ -21,23 +21,23 @@ import java.math.BigInteger;
  */
 public class ContractLoginAndRegisterService {
     public static BigInteger getBalance(String privateKey) throws ContractException {
-        BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
-        Client client= bcosSDK.getClient(1);
+        BcosSDK sdk = BcosSDK.build("config-example.toml");
+        Client client= sdk.getClient(1);
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(privateKey);
         TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
-        ItemTrade asset = ItemTrade.load("0x5ac60f14632f3f199544b506d3220970767037a0",client, keyPair);
+        ItemTrade asset = ItemTrade.load("0x8a4eb0e4c000876b1e4662fe4d8f14bf67f95e4a",client, keyPair);
         UserInformationSaveDTO userInformationSaveDTO = UserInformationSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
         return asset.getBalance();
     }
     public static UserAccountOnContractDTO initByContract(String table) {
-        BcosSDK bcosSDK = BcosSDK.build("config-example.toml");
-        Client client = bcosSDK.getClient(1);
+        BcosSDK sdk = BcosSDK.build("config-example.toml");
+        Client client = sdk.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ItemTrade asset = ItemTrade.load("0x5ac60f14632f3f199544b506d3220970767037a0", client, cryptoKeyPair);
+        ItemTrade asset = ItemTrade.load("0x8a4eb0e4c000876b1e4662fe4d8f14bf67f95e4a", client, cryptoKeyPair);
         String identity="suppliers";
         if(table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));

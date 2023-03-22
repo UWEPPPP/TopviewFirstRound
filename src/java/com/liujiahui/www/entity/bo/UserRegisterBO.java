@@ -9,7 +9,7 @@ package com.liujiahui.www.entity.bo;
 public class UserRegisterBO {
    private   String  name;
    private   String  gender;
-   private   String     phone;
+   private   String  phone;
    private   String  address;
    private   String  password;
 

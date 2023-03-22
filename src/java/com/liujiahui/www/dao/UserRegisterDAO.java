@@ -27,7 +27,7 @@ public class UserRegisterDAO {
         String tableAndLimit;
         if(user instanceof Supplier){
             table = "suppliers";
-            tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address) values(?,?,?,?,?,?,?)";
+            tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?)";
         }else{
             table = "consumer";
             tableAndLimit = "consumer(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";
@@ -46,6 +46,8 @@ public class UserRegisterDAO {
         preparedStatement.setString(6, userAccountOnContractDTO.getAccountAddress());
         if(user instanceof Supplier){
             preparedStatement.setString(7, ((Supplier) user).getAddress());
+            preparedStatement.setLong(8, 0);
+            preparedStatement.setLong(9, 0);
         }
         preparedStatement.executeUpdate();
         close(connection, null, preparedStatement);

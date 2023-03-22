@@ -24,9 +24,9 @@ import java.util.List;
  * @date 2023/03/19
  */
 public class UserItemDAO {
-    public static void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index) throws SQLException, IOException {
+    public static void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index,String userName) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "insert into user.item (name, price, description, owner, `index`,isSold) values (?,?,?,?,?,?)";
+        String sql = "insert into user.item (name, price, description, owner, `index`,isSold,seller,owner_name) values (?,?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,name);
         BigDecimal bigDecimal = new BigDecimal(price);
@@ -36,6 +36,8 @@ public class UserItemDAO {
         long longValue = index.longValue();
         preparedStatement.setLong(5,longValue);
         preparedStatement.setBoolean(6,false);
+        preparedStatement.setString(7,accountAddress);
+        preparedStatement.setString(8,userName);
         preparedStatement.executeUpdate();
     }
     public static List<Item> showAllItem() throws SQLException, IOException {
@@ -46,7 +48,7 @@ public class UserItemDAO {
         List<Item> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
+            Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"),set.getString("owner_name"));
             list.add(item);
         }
         UtilDAO.close(connection,null,preparedStatement);
@@ -68,8 +70,29 @@ public class UserItemDAO {
         UtilDAO.close(connection,null,preparedStatement);
         return list;
     }
+    public static List<Item> showOutsideItem(String accountAddress) throws SQLException, IOException {
+        System.out.println(accountAddress);
+        Connection connection = UtilDAO.getConnection();
+        String sql = "select * from user.item where seller = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1,accountAddress);
+        ResultSet set = preparedStatement.executeQuery();
+        List<Item> list = new ArrayList<>();
+        while (set.next()){
+            BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
+            Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
+            list.add(item);
+        }
+        for (Item item : list) {
+            System.out.println(item);
+        }
+        UtilDAO.close(connection,null,preparedStatement);
+        return list;
+    }
 
-    public static List<Item> showSoldItem() throws SQLException, IOException, ContractException {
+
+
+    public static List<Item> showRealItem() throws ContractException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
         DynamicArray<ItemTrade.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
         List<Item> list = new ArrayList<>();

@@ -18,8 +18,8 @@ public class Test {
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
         System.out.println(accountAddress);
-      Asset deploy = Asset.deploy(client, cryptoKeyPair);
-       ItemTrade asset = ItemTrade.deploy(client, cryptoKeyPair, deploy.getContractAddress());
+        Asset deploy = Asset.deploy(client, cryptoKeyPair);
+        ItemTrade asset = ItemTrade.deploy(client, cryptoKeyPair, deploy.getContractAddress());
         System.out.println(asset.getContractAddress());
 
 

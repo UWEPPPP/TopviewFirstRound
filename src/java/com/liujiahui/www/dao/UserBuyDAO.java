@@ -16,9 +16,9 @@ import java.sql.SQLException;
  * @date 2023/03/21
  */
 public class UserBuyDAO {
-    public static void buyItem(String accountAddress, BigInteger id, byte[] hash) throws SQLException, IOException, SQLException, IOException {
+    public static void buyItem(String accountAddress, BigInteger id, byte[] hash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String account = UserInformationSaveDTO.getInstance().getAccount();
+        String account = UserInformationSaveDTO.getInstance().getContractAccount();
         String sql = "update user.item set isSold = ?,owner = ?,hash=? where owner = ? and `index` = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1,true);

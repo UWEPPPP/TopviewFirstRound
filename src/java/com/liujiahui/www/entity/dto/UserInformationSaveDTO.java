@@ -17,10 +17,10 @@ public class UserInformationSaveDTO {
     private String gender;
     private String phone;
     private String balance;
-    private String address;
+    private String userAddress;
     private String identity;
     private ItemTrade itemTradeSolidity;
-    private String account;
+    private String contractAccount;
     private TransactionDecoderInterface decoder;
 
     private UserInformationSaveDTO() {}
@@ -75,12 +75,12 @@ public class UserInformationSaveDTO {
         this.phone = phone;
     }
 
-    public String getAddress() {
-        return address;
+    public String getUserAddress() {
+        return userAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setUserAddress(String userAddress) {
+        this.userAddress = userAddress;
     }
 
 
@@ -91,16 +91,16 @@ public class UserInformationSaveDTO {
                 ", gender='" + gender + '\'' +
                 ", phone='" + phone + '\'' +
                 ", balance='" + balance + '\'' +
-                ", address='" + address + '\'' +
+                ", address='" + userAddress + '\'' +
                 ", identity='" + identity + '\'' ;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setContractAccount(String contractAccount) {
+        this.contractAccount = contractAccount;
     }
 
-    public String getAccount() {
-        return account;
+    public String getContractAccount() {
+        return contractAccount;
     }
 
     public void setDecoder(TransactionDecoderInterface decoder) {

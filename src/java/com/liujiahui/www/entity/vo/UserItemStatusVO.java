@@ -2,6 +2,12 @@ package com.liujiahui.www.entity.vo;
 
 import java.util.Date;
 
+/**
+ * 用户项状态签证官
+ *
+ * @author 刘家辉
+ * @date 2023/03/22
+ */
 public class UserItemStatusVO {
          private Date    date;
          private String      place;

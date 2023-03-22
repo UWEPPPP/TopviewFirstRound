@@ -11,7 +11,7 @@ public class UserItemUpdateBO {
     private String price;
     private String description;
     private String oldName;
-    private int index;
+    private Integer index;
 
     public String getName() {
         return name;
@@ -58,7 +58,7 @@ public class UserItemUpdateBO {
         this.index = index;
     }
 
-    public int getIndex() {
+    public Integer getIndex() {
         return index;
     }
 }

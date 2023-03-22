@@ -5,15 +5,14 @@ import com.liujiahui.www.entity.dto.UserRealItemDTO;
 import com.liujiahui.www.entity.dto.UserTransactionDTO;
 import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.UserItemStatusVO;
-import com.liujiahui.www.entity.vo.UserTranscationVO;
+import com.liujiahui.www.entity.vo.UserTransactionVO;
 import com.liujiahui.www.service.UserItemService;
 import com.liujiahui.www.solidity.ItemTrade;
-import com.liujiahui.www.view.UserItemRegisterAndShowInterface;
+import com.liujiahui.www.view.UserItemInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -32,13 +31,13 @@ public class UserBuyController {
                     String balance = userTransactionDTO.getBalance();
                     ItemTrade.ItemSoldEventResponse itemSoldEventResponse = userTransactionDTO.getItemSoldEventResponse();
                     String hash = Numeric.toHexString(itemSoldEventResponse.hash);
-                    UserTranscationVO userTranscationVO = new UserTranscationVO();
-                    userTranscationVO.setName(item.getName());
-                    userTranscationVO.setHash(hash);
-                    userTranscationVO.setBalance(balance);
-                    userTranscationVO.setBuyer(itemSoldEventResponse.buyer);
-                    userTranscationVO.setSeller(itemSoldEventResponse.seller);
-                    UserItemRegisterAndShowInterface.showResult(userTranscationVO);
+                    UserTransactionVO userTransactionVO = new UserTransactionVO();
+                    userTransactionVO.setName(item.getName());
+                    userTransactionVO.setHash(hash);
+                    userTransactionVO.setBalance(balance);
+                    userTransactionVO.setBuyer(itemSoldEventResponse.buyer);
+                    userTransactionVO.setSeller(itemSoldEventResponse.seller);
+                    UserItemInterface.showResult(userTransactionVO);
                 }
             }
         }
@@ -48,13 +47,13 @@ public class UserBuyController {
         UserItemService.updateLogistics(id, logistics, status);
     }
 
-    public static UserTranscationVO check(String hash) throws ContractException, NoSuchAlgorithmException {
+    public static UserTransactionVO check(String hash) throws ContractException {
         UserRealItemDTO userRealItemDTO = UserItemService.checkByHash(hash);
-        UserTranscationVO userTranscationVO = new UserTranscationVO();
-        userTranscationVO.setName(userRealItemDTO.getName());
-        userTranscationVO.setHash(hash);
-        userTranscationVO.setDescription(userRealItemDTO.getDescription());
-        return userTranscationVO;
+        UserTransactionVO userTransactionVO = new UserTransactionVO();
+        userTransactionVO.setName(userRealItemDTO.getName());
+        userTransactionVO.setHash(hash);
+        userTransactionVO.setDescription(userRealItemDTO.getDescription());
+        return userTransactionVO;
     }
 
     public static UserItemStatusVO checkStatus(String hash1) throws ContractException {
@@ -64,5 +63,12 @@ public class UserBuyController {
         userItemStatusVO.setPlace(userItemStatusDTO.getPlace());
         userItemStatusVO.setStatus(userItemStatusDTO.getStatus());
         return userItemStatusVO;
+    }
+
+    public static void giveGoodComment(String seller, String comment) {
+    }
+
+    public static void report(String seller, String description) {
+
     }
 }

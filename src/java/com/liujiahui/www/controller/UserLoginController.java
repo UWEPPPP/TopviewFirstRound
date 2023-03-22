@@ -38,7 +38,10 @@ public class UserLoginController {
         if(userInformationDTO == null){
             UserLoginInterface.loginReturnInterface();
         }
-        UserAfterLoginVO userAfterLoginVO = new UserAfterLoginVO(userInformationDTO.getUserName(),userInformationDTO.getBalance(),identity);
+        UserAfterLoginVO userAfterLoginVO = null;
+        if (userInformationDTO != null) {
+            userAfterLoginVO = new UserAfterLoginVO(userInformationDTO.getUserName(),userInformationDTO.getBalance(),identity);
+        }
         String identityCheck ="consumer";
         if(identity.equals(identityCheck)) {
             UserMainInterface.viewConsumer(userAfterLoginVO);

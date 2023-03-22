@@ -21,8 +21,28 @@ public class Item {
     private BigDecimal index;
     private Boolean isSold;
     private byte[] hashes;
+    private String ownerName;
 
-    public Item(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index,Boolean isSold) {
+    public Item(int id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, String ownerName) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.owner = owner;
+        this.index = index;
+        this.isSold = isSold;
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public Item(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, Boolean isSold) {
         this.id = id;
         this.name = name;
         this.price = price;

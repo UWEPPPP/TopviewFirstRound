@@ -8,7 +8,7 @@ import java.math.BigInteger;
  * @author 刘家辉
  * @date 2023/03/21
  */
-public class UserTranscationVO {
+public class UserTransactionVO {
     private String balance;
     private BigInteger price;
     private String name;
@@ -72,5 +72,18 @@ public class UserTranscationVO {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "UserTransactionVO{" +
+                "balance='" + balance + '\'' +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                ", seller='" + seller + '\'' +
+                ", buyer='" + buyer + '\'' +
+                ", hash='" + hash + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
