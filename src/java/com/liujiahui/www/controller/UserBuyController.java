@@ -67,7 +67,5 @@ public class UserBuyController {
     }
 
 
-    public static void showHistory(String name) {
 
-    }
 }

@@ -2,10 +2,13 @@ package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.UserFeedbackBO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
+import com.liujiahui.www.entity.po.Feedback;
 import com.liujiahui.www.service.UserFeedbackService;
+import com.liujiahui.www.view.UserHistoryInterface;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 用户反馈控制器
@@ -22,5 +25,9 @@ public class UserFeedbackController {
         userFeedbackBO.setChoice(score);
         userFeedbackBO.setBuyer(UserInformationSaveDTO.getInstance().getContractAccount());
         UserFeedbackService.supplierWriteDownService(userFeedbackBO);
+    }
+    public static void showHistory(String name) throws SQLException, IOException {
+        List<Feedback> history = UserFeedbackService.getHistory(name);
+        UserHistoryInterface.showHistory(history);
     }
 }

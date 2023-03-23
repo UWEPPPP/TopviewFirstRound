@@ -46,7 +46,7 @@ public class UserItemInterface {
         System.out.println("商品列表");
         for (Item item : items) {
             if(item.getSold()){
-            System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 已售出 ");
+            System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 已售出 买家 "+item.getOwnerName()+"");
         }else {
                 System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 未售出 卖家："+item.getOwnerName());
             }
@@ -65,7 +65,7 @@ public class UserItemInterface {
             case 2:
                 System.out.println("请输入卖家的名字");
                 String name = in.next();
-                UserBuyController.showHistory(name);
+                UserFeedbackController.showHistory(name);
                 break;
             default:
         }

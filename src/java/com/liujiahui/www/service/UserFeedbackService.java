@@ -1,10 +1,12 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.dao.TraceSupplierWriteDownDAO;
+import com.liujiahui.www.dao.UserTraceHistoryDAO;
 import com.liujiahui.www.entity.bo.UserFeedbackBO;
+import com.liujiahui.www.entity.po.Feedback;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 用户反馈服务
@@ -19,6 +21,10 @@ public class UserFeedbackService {
         String itemHash = userFeedbackBO.getItemHash();
         String comment = userFeedbackBO.getComment();
         int choice = userFeedbackBO.getChoice();
-        TraceSupplierWriteDownDAO.writeDown(seller,buyer,comment,choice,itemHash);
+        UserTraceHistoryDAO.writeDown(seller,buyer,comment,choice,itemHash);
+    }
+
+    public static List<Feedback> getHistory(String name) throws SQLException, IOException {
+        return UserTraceHistoryDAO.getHistory(name);
     }
 }
