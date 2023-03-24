@@ -26,7 +26,7 @@ public class UserMainInterface {
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
                 System.out.println("3.查看我购买的产品");
-            } while (mainInterface());
+            } while (mainInterface(false));
             UserInitInterface.start();
     }else {
             System.out.println("用户名或者密码错误");
@@ -35,11 +35,18 @@ public class UserMainInterface {
         }
     }
 
-    private static boolean mainInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    private static boolean mainInterface(Boolean bool) throws SQLException, IOException, ContractException {
         System.out.println("0.退出登录");
         int choice = in.nextInt();
         if(choice!=0){
-            UserEntryController.entry(choice);
+            UserEntryController userEntryController;
+            if(bool){
+                userEntryController=new UserEntryController(true);
+            }else {
+                userEntryController=new UserEntryController(false);
+            }
+
+            userEntryController.entry(choice);
         }else {
             System.out.println("退出登录成功");
             System.out.println("即将返回登录界面");
@@ -58,7 +65,7 @@ public class UserMainInterface {
                 System.out.println("2.查看个人信息");
                 System.out.println("3.产品上新");
                 System.out.println("4.进入我的产品主页");
-            } while (mainInterface());
+            } while (mainInterface(true));
             UserInitInterface.start();
         }else {
             System.out.println("用户名或者密码错误");

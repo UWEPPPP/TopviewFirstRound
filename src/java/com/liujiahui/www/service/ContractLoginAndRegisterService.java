@@ -10,6 +10,7 @@ import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
 
 /**

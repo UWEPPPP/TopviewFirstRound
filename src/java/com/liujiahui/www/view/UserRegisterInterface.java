@@ -1,6 +1,7 @@
 package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.UserRegisterController;
+import com.liujiahui.www.entity.dto.TraceRegisterDTO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -26,7 +27,14 @@ public class UserRegisterInterface {
         String phone = in.next();
         System.out.println("请输入您要设置的密码：");
         String password = in.next();
-        UserRegisterController.registerByConsumer(name,gender,phone,password);
+        TraceRegisterDTO traceRegisterDTO = new TraceRegisterDTO();
+        traceRegisterDTO.setName(name);
+        traceRegisterDTO.setGender(gender);
+        traceRegisterDTO.setPhone(phone);
+        traceRegisterDTO.setPassword(password);
+        traceRegisterDTO.setChoice(false);
+        UserRegisterController userRegisterController = new UserRegisterController();
+        userRegisterController.register(traceRegisterDTO);
     }
 
     public void registerBySupplier() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
@@ -41,7 +49,15 @@ public class UserRegisterInterface {
         String address = in.next();
         System.out.println("请输入您要设置的密码：");
         String password = in.next();
-        UserRegisterController.registerBySupplier(name,gender,phone,address,password);
+        TraceRegisterDTO traceRegisterDTO = new TraceRegisterDTO();
+        traceRegisterDTO.setName(name);
+        traceRegisterDTO.setGender(gender);
+        traceRegisterDTO.setPhone(phone);
+        traceRegisterDTO.setPassword(password);
+        traceRegisterDTO.setAddress(address);
+        traceRegisterDTO.setChoice(true);
+        UserRegisterController userRegisterController = new UserRegisterController();
+        userRegisterController.register(traceRegisterDTO);
     }
     public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         if(bool){

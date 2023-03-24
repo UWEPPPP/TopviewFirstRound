@@ -4,17 +4,21 @@ import com.liujiahui.www.entity.bo.UserAddItemBO;
 import com.liujiahui.www.entity.bo.UserChangePersonalBO;
 import com.liujiahui.www.entity.bo.UserItemUpdateBO;
 import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
+import com.liujiahui.www.entity.dto.UserItemStatusDTO;
+import com.liujiahui.www.entity.dto.UserRealItemDTO;
 import com.liujiahui.www.entity.po.Item;
 import com.liujiahui.www.entity.vo.UserDetailedVO;
-import com.liujiahui.www.service.UserItemService;
-import com.liujiahui.www.service.UserChangePersonalService;
-import com.liujiahui.www.view.UserPersonalInterface;
+import com.liujiahui.www.entity.vo.UserItemStatusVO;
+import com.liujiahui.www.entity.vo.UserTransactionVO;
+import com.liujiahui.www.service.TraceItemPersonalService;
+import com.liujiahui.www.service.impl.TraceItemPersonalByConsumerServiceImpl;
+import com.liujiahui.www.service.impl.TraceItemPersonalBySupplierServiceImpl;
 import com.liujiahui.www.view.UserItemInterface;
+import com.liujiahui.www.view.UserPersonalInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,7 +29,18 @@ import java.util.List;
  * @date 2023/03/18
  */
 public class UserEntryController {
-    public static void entry(int choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+     private TraceItemPersonalService traceItemPersonalService;
+
+    public UserEntryController(Boolean choice) {
+        if(choice){
+         this.traceItemPersonalService=TraceItemPersonalBySupplierServiceImpl.getInstance();
+        }else {
+            this.traceItemPersonalService=TraceItemPersonalByConsumerServiceImpl.getInstance();
+        }
+    }
+
+
+    public  void entry(int choice) throws SQLException, IOException, ContractException {
         String identity="consumer";
         if(identity.equals(UserInformationSaveDTO.getInstance().getIdentity())){
             consumerEntry(choice);
@@ -33,7 +48,7 @@ public class UserEntryController {
             supplierEntry(choice);
         }
     }
-    public static void consumerEntry(int choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public  void consumerEntry(int choice) throws SQLException, IOException, ContractException {
         switch (choice){
             case 1:
                 showItemList();
@@ -54,17 +69,22 @@ public class UserEntryController {
         }
     }
 
-    private static void showUserItem() throws SQLException, IOException, ContractException {
-        List<Item> items = UserItemService.showMyItem();
+    private  void showUserItem() throws SQLException, IOException, ContractException {
+        List<Item> items = traceItemPersonalService.showItem().get("item");
         UserItemInterface.showMyItem(items);
     }
 
-    private static void showItemList() throws SQLException, IOException, ContractException {
-        List<Item> items = UserItemService.showAllItem();
-        UserItemInterface.showAndBuyItem(items);
+    private  void showItemList() throws SQLException, IOException, ContractException {
+        List<Item> items = TraceItemPersonalService.showAllItem();
+        String check="consumer";
+        if(check.equals(UserInformationSaveDTO.getInstance().getIdentity())){
+         UserItemInterface.showAndBuyItemByConsumer(items);
+        }else {
+            UserItemInterface.showAndBuyItemBySupplier(items);
+        }
     }
 
-    public static void supplierEntry(int choice) throws SQLException, IOException, ContractException {
+    public  void supplierEntry(int choice) throws SQLException, IOException, ContractException {
         switch (choice){
             case 1:
                 showItemList();
@@ -83,7 +103,7 @@ public class UserEntryController {
     }
 
 
-    public static void updateItem(int index, List<Item> items, String name, String description, String price) throws SQLException, IOException {
+    public  void updateItem(int index, List<Item> items, String name, String description, String price) throws SQLException, IOException {
         String oldName = null;
         for ( Item item:items) {
             if(item.getIndex().intValue()==index){
@@ -96,14 +116,14 @@ public class UserEntryController {
         updateBO.setName(name);
         updateBO.setDescription(description);
         updateBO.setPrice(price);
-        UserItemService.updateItem(updateBO);
+        ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).updateItem(updateBO);
     }
 
-    private static void showSupplierItem() throws ContractException, SQLException, IOException {
-        UserItemInterface.showSupplierItem(UserItemService.showRealItem(),UserItemService.showOutsideItem());
+    private  void showSupplierItem() throws ContractException, SQLException, IOException {
+        UserItemInterface.showSupplierItem(traceItemPersonalService.showItem());
     }
 
-    public static void showUser() throws SQLException, IOException {
+    public  void showUser() throws SQLException, IOException {
         UserInformationSaveDTO information = UserInformationSaveDTO.getInstance();
         UserDetailedVO vo = new UserDetailedVO();
         vo.setUserName(information.getUserName());
@@ -113,12 +133,12 @@ public class UserEntryController {
         vo.setIdentify(information.getIdentity());
         UserPersonalInterface.showPersonalInterface(vo);
     }
-    public static void changeUser(int choice,String change) throws SQLException, IOException {
+    public  void changeUser(int choice,String change) throws SQLException, IOException {
         UserChangePersonalBO userChangeServiceBO = new UserChangePersonalBO();
         userChangeServiceBO.setChange(change);
         userChangeServiceBO.setChoice(choice);
         userChangeServiceBO.setIdentity(UserInformationSaveDTO.getInstance().getIdentity());
-        UserChangePersonalService.change(userChangeServiceBO);
+        TraceItemPersonalService.updatePersonalMessage(userChangeServiceBO);
         switch (choice){
             case 1:
                 UserInformationSaveDTO.getInstance().setUserName(change);
@@ -133,13 +153,37 @@ public class UserEntryController {
         }
     }
 
-    public static void registerItem(String name, BigInteger price, String description, String realName, String realDescription) throws SQLException, IOException {
+    public  void registerItem(String name, BigInteger price, String description, String realName, String realDescription) throws SQLException, IOException {
         UserAddItemBO userAddItemBO = new UserAddItemBO();
         userAddItemBO.setName(name);
         userAddItemBO.setPrice(price);
         userAddItemBO.setDescription(description);
         userAddItemBO.setRealName(realName);
         userAddItemBO.setRealDescription(realDescription);
-        UserItemService.addItem(userAddItemBO);
+        ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).addItem(userAddItemBO);
+    }
+
+
+    public  void updateLogistics(int id, String logistics, int status) {
+        ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).updateLogistics(id, logistics, status);
+    }
+
+    public UserTransactionVO check(String hash) throws ContractException {
+        UserRealItemDTO userRealItemDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).checkByHash(hash);
+        UserTransactionVO userTransactionVO = new UserTransactionVO();
+        userTransactionVO.setName(userRealItemDTO.getName());
+        userTransactionVO.setHash(hash);
+        userTransactionVO.setDescription(userRealItemDTO.getDescription());
+        userTransactionVO.setSeller(userRealItemDTO.getSeller());
+        return userTransactionVO;
+    }
+
+    public UserItemStatusVO checkStatus(String hash1) throws ContractException {
+        UserItemStatusDTO userItemStatusDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).checkStatus(hash1);
+        UserItemStatusVO userItemStatusVO = new UserItemStatusVO();
+        userItemStatusVO.setDate(userItemStatusDTO.getDate());
+        userItemStatusVO.setPlace(userItemStatusDTO.getPlace());
+        userItemStatusVO.setStatus(userItemStatusDTO.getStatus());
+        return userItemStatusVO;
     }
 }

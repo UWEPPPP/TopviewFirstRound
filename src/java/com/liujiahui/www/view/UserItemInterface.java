@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -38,19 +39,13 @@ public class UserItemInterface {
         String realName = in.nextLine();
         System.out.println("请输入商品真实描述");
         String realDescription = in.nextLine();
-        UserEntryController.registerItem(name,price,description,realName,realDescription);
+        UserEntryController userEntryController = new UserEntryController(true);
+        userEntryController.registerItem(name,price,description,realName,realDescription);
         System.out.println("商品上架成功");
     }
 
-    public static void showAndBuyItem (List<Item> items) throws SQLException, IOException, ContractException {
-        System.out.println("商品列表");
-        for (Item item : items) {
-            if(item.getSold()){
-            System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 已售出 买家 "+item.getOwnerName()+"");
-        }else {
-                System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 未售出 卖家："+item.getOwnerName());
-            }
-        }
+    public static void showAndBuyItemByConsumer (List<Item> items) throws SQLException, IOException, ContractException {
+        showItem(items);
         System.out.println("1:购买产品");
         System.out.println("2:查看卖家的历史");
         System.out.println("3:返回列表");
@@ -60,7 +55,8 @@ public class UserItemInterface {
             case 1:
                 System.out.println("请输入商品id");
                 int id = in.nextInt();
-                UserBuyController.buy(id,items);
+                UserBuyController userBuyController = new UserBuyController();
+                userBuyController.buy(id,items);
                 break;
             case 2:
                 System.out.println("请输入卖家的名字");
@@ -68,6 +64,32 @@ public class UserItemInterface {
                 UserFeedbackController.showHistory(name);
                 break;
             default:
+        }
+    }
+    public static void showAndBuyItemBySupplier (List<Item> items) throws SQLException, IOException, ContractException {
+        showItem(items);
+        System.out.println("1:查看卖家的历史");
+        System.out.println("2:返回列表");
+        Scanner in = new Scanner(System.in);
+        int choice = in.nextInt();
+        switch (choice) {
+            case 1:
+                System.out.println("请输入卖家的名字");
+                String name = in.next();
+                UserFeedbackController.showHistory(name);
+                break;
+            default:
+        }
+    }
+
+    private static void showItem(List<Item> items) {
+        System.out.println("商品列表");
+        for (Item item : items) {
+            if(item.getSold()){
+                System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 已售出 卖家 "+item.getOwnerName()+"");
+            }else {
+                System.out.println(item.getId()+" "+"商品名称：" + item.getName() + " 商品价格：" + item.getPrice() + " 商品描述：" + item.getDescription()+" 未售出 卖家："+item.getOwnerName());
+            }
         }
     }
 
@@ -84,7 +106,8 @@ public class UserItemInterface {
             case 1:
                 System.out.println("请输入商品hash");
                 String hash = in.next();
-                UserTransactionVO check = UserBuyController.check(hash);
+                UserEntryController userEntryController = new UserEntryController(false);
+                UserTransactionVO check = userEntryController.check(hash);
                 System.out.println("根据hash "+check.getHash()+"查到的产品信息是");
                 System.out.println("名字"+check.getName());
                 System.out.println("详情"+check.getDescription());
@@ -126,7 +149,8 @@ public class UserItemInterface {
             case 2:
                 System.out.println("请输入商品hash");
                 String hash1 = in.next();
-                UserItemStatusVO userItemStatusVO = UserBuyController.checkStatus(hash1);
+                UserEntryController entryController = new UserEntryController(false);
+                UserItemStatusVO userItemStatusVO = entryController.checkStatus(hash1);
                 System.out.println("产品状态如下");
                 System.out.println("时间:"+userItemStatusVO.getDate());
                 System.out.println("状态:"+userItemStatusVO.getStatus());
@@ -135,14 +159,15 @@ public class UserItemInterface {
             default:
         }
     }
-    public static void showSupplierItem (List<Item> items, List<Item> itemList) throws SQLException, IOException {
+    public static void showSupplierItem (Map<String,List<Item>> items) throws SQLException, IOException {
         System.out.println("对外公布商品列表");
-        showSimilar(itemList);
+        showSimilar(items.get("Outside"));
         System.out.println("真实信息列表");
-        showSimilar(items);
+        showSimilar(items.get("real"));
         System.out.println("1.更新未售出产品的信息");
         System.out.println("2.更新已售出产品的状态");
         Scanner in = new Scanner(System.in);
+        UserEntryController userEntryController = new UserEntryController(true);
         int choice = in.nextInt();
         switch (choice) {
             case 1:
@@ -155,7 +180,7 @@ public class UserItemInterface {
             String description = in.nextLine();
             System.out.println("请输入新价格");
             String price = in.nextLine();
-            UserEntryController.updateItem(index,items,name, description, price);
+                userEntryController.updateItem(index,items.get("Outside"),name, description, price);
             System.out.println("更新成功");
             break;
             case 2:
@@ -165,7 +190,7 @@ public class UserItemInterface {
                 String location = in.next();
                 System.out.println("请输入物流状态（未发货=0 运送中=1 已送达=2）");
                 int logistics = in.nextInt();
-                UserBuyController.updateLogistics(id,location,logistics);
+                userEntryController.updateLogistics(id,location,logistics);
                 System.out.println("更新成功");
                 break;
 

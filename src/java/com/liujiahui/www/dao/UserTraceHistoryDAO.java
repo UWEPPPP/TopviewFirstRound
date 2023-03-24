@@ -66,7 +66,7 @@ public class UserTraceHistoryDAO {
             }
             feedback.setItemHash(set1.getString("item"));
             feedback.setComment(set1.getString("comment"));
-            feedback.setItemName(set1.getString("itemName"));
+            feedback.setItemName(set1.getString("Name"));
             list.add(feedback);
         }
         UtilDAO.close(connection,set,preparedStatement);

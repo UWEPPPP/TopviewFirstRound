@@ -22,7 +22,8 @@ public class UserLoginInterface {
         String account = in.next();
         System.out.println("请输入您的密码：");
         String password = in.next();
-        UserLoginController.loginByConsumer(account,password);
+        UserLoginController userLoginController = new UserLoginController();
+        userLoginController.login(account,password,false);
     }
 
     public void loginBySupplier() throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
@@ -31,7 +32,8 @@ public class UserLoginInterface {
         String account = in.next();
         System.out.println("请输入您的密码：");
         String password = in.next();
-        UserLoginController.loginBySupplier(account,password);
+        UserLoginController userLoginController = new UserLoginController();
+        userLoginController.login(account,password,true);
     }
     public static void loginReturnInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         System.out.println("登录失败,用户名或密码错误");

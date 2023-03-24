@@ -1,24 +1,28 @@
 package com.liujiahui.www.service;
 
 import com.liujiahui.www.dao.UserChangePersonalDAO;
+import com.liujiahui.www.dao.UserItemDAO;
 import com.liujiahui.www.entity.bo.UserChangePersonalBO;
+import com.liujiahui.www.entity.po.Item;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
-/**
- * 用户改变个人服务
- *
- * @author 刘家辉
- * @date 2023/03/18
- */
-public class UserChangePersonalService {
-    public static void change(UserChangePersonalBO userChangeServiceBO) throws SQLException, IOException {
+public interface TraceItemPersonalService {
+    Map<String, List<Item>> showItem() throws ContractException, SQLException, IOException;
+    static List<Item> showAllItem() throws SQLException, IOException {
+        return UserItemDAO.showAllItem();
+    }
+
+    static void updatePersonalMessage(UserChangePersonalBO userChangeServiceBO) throws SQLException, IOException {
         Integer choice = userChangeServiceBO.getChoice();
         String change = userChangeServiceBO.getChange();
         String identity = userChangeServiceBO.getIdentity();
         String type = null;
-        switch (choice){
+        switch (choice) {
             case 1:
                 type = "user_name";
                 break;
@@ -30,6 +34,6 @@ public class UserChangePersonalService {
                 break;
             default:
         }
-        UserChangePersonalDAO.change(type,change,identity);
+        UserChangePersonalDAO.change(type, change, identity);
     }
 }

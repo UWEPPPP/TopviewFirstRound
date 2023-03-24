@@ -15,7 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户条目添加刀
@@ -70,7 +72,7 @@ public class UserItemDAO {
         UtilDAO.close(connection,null,preparedStatement);
         return list;
     }
-    public static List<Item> showOutsideItem(String accountAddress) throws SQLException, IOException {
+    public static Map<String, List<Item>> showSupplierItem(String accountAddress) throws SQLException, IOException, ContractException {
         System.out.println(accountAddress);
         Connection connection = UtilDAO.getConnection();
         String sql = "select * from user.item where seller = ?";
@@ -83,28 +85,22 @@ public class UserItemDAO {
             Item item = new Item(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
             list.add(item);
         }
-        for (Item item : list) {
-            System.out.println(item);
-        }
-        UtilDAO.close(connection,null,preparedStatement);
-        return list;
-    }
-
-
-
-    public static List<Item> showRealItem() throws ContractException {
         UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
         DynamicArray<ContractTradeService.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
-        List<Item> list = new ArrayList<>();
+        List<Item> list1=new ArrayList<>();
         int index=0;
         for (ContractTradeService.Item item : soldItem.getValue()) {
             Item item1 = new Item(item.name,item.price,item.description);
             item1.setIndex(new BigDecimal(index));
             item1.setSold(item.isSold);
-            list.add(item1);
+            list1.add(item1);
             index++;
         }
-        return list;
+        Map<String,List<Item>> map = new HashMap<>(2);
+        map.put("real",list);
+        map.put("Outside",list1);
+        UtilDAO.close(connection,null,preparedStatement);
+        return map;
     }
 
     public static void updateItem(String oldName, String name, String description, String price) throws SQLException, IOException {

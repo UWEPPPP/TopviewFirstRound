@@ -44,7 +44,8 @@ public class UserPersonalInterface {
         }
         if(choice!=4){
             String change = in.next();
-            UserEntryController.changeUser(choice,change);
+            UserEntryController userEntryController = new UserEntryController(true);
+            userEntryController.changeUser(choice,change);
         }
         System.out.println("修改结束,是否继续修改？");
         System.out.println("1.是");

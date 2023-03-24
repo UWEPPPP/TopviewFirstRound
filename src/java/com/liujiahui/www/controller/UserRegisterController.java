@@ -1,7 +1,11 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.UserRegisterBO;
-import com.liujiahui.www.service.UserRegisterAndLoginService;
+import com.liujiahui.www.entity.dto.TraceRegisterDTO;
+import com.liujiahui.www.service.TraceFactoryService;
+import com.liujiahui.www.service.TraceRegisterAndLoginService;
+import com.liujiahui.www.service.impl.TraceRegisterAndLoginByConsumerServiceImpl;
+import com.liujiahui.www.service.impl.TraceRegisterAndLoginBySupplierServiceImpl;
 import com.liujiahui.www.view.UserRegisterInterface;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
@@ -16,25 +20,16 @@ import java.sql.SQLException;
  * @date 2023/03/16
  */
 public class UserRegisterController {
-    public static void registerBySupplier(String name, String gender, String phone, String address, String password) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void register(TraceRegisterDTO traceRegisterDTO) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         UserRegisterBO userRegisterBO = new UserRegisterBO();
-        userRegisterBO.setName(name);
-        userRegisterBO.setGender(gender);
-        userRegisterBO.setPhone(phone);
-        userRegisterBO.setAddress(address);
-        userRegisterBO.setPassword(password);
-        UserRegisterInterface.returnInterface(UserRegisterAndLoginService.registerBySupplier(userRegisterBO));
+        userRegisterBO.setName(traceRegisterDTO.getName());
+        userRegisterBO.setGender(traceRegisterDTO.getGender());
+        userRegisterBO.setPhone(traceRegisterDTO.getPhone());
+        userRegisterBO.setPassword(traceRegisterDTO.getPassword());
+        userRegisterBO.setAddress(traceRegisterDTO.getAddress());
+        TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryService.getTraceRegisterAndLoginService(traceRegisterDTO.getChoice());
+        UserRegisterInterface.returnInterface(traceRegisterAndLoginService.register(userRegisterBO));
     }
-
-    public static void registerByConsumer(String name, String gender, String phone, String password) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
-        UserRegisterBO userRegisterBO = new UserRegisterBO();
-        userRegisterBO.setName(name);
-        userRegisterBO.setPassword(password);
-        userRegisterBO.setGender(gender);
-        userRegisterBO.setPhone(phone);
-        UserRegisterInterface.returnInterface(UserRegisterAndLoginService.registerByConsumer(userRegisterBO));
-    }
-
     public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
         if(choice2 == 1){
             new UserRegisterInterface().registerBySupplier();
