@@ -1,8 +1,12 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.entity.bo.UserLoginBO;
-import com.liujiahui.www.entity.bo.UserRegisterBO;
-import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
+import com.liujiahui.www.dao.TraceRegisterDAO;
+import com.liujiahui.www.dao.impl.TraceFactoryDAO;
+import com.liujiahui.www.dao.impl.TraceLoginDAOImpl;
+import com.liujiahui.www.entity.bo.TraceLoginBO;
+import com.liujiahui.www.entity.bo.TraceRegisterBO;
+import com.liujiahui.www.entity.dto.TraceAccountOnJavaDTO;
+import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -15,15 +19,29 @@ import java.sql.SQLException;
  * @date 2023/03/24
  */
 public interface TraceRegisterAndLoginService {
-    /**
-     * @param userRegisterBO 用户登记薄
-     * @return {@link Boolean}
-     */
-    Boolean register(UserRegisterBO userRegisterBO) throws SQLException, IOException;
+    static final TraceRegisterDAO TRACE_REGISTER_DAO = TraceFactoryDAO.getTraceRegisterDAO();
+    static final TraceLoginDAOImpl TRACE_LOGIN_DAO = TraceFactoryDAO.getTraceLoginDAO();
 
     /**
-     * @param userLoginBO 用户登录博
-     * @return {@link UserInformationSaveDTO}
+     * @param traceRegisterBO 用户登记薄
+     * @return {@link Boolean}
+     * 用于用户注册
      */
-    UserInformationSaveDTO login(UserLoginBO userLoginBO) throws ContractException, SQLException, IOException;
+    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException;
+
+    /**
+     * @param traceLoginBO 用户登录博
+     * @return {@link TraceInformationSaveDTO}
+     * 用于用户登录
+     */
+    static TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException, SQLException, IOException{
+        String account = traceLoginBO.getAccount();
+        String password = traceLoginBO.getPassword();
+        String identity = traceLoginBO.getIdentity();
+        TraceAccountOnJavaDTO traceAccountOnJavaDTO = new TraceAccountOnJavaDTO();
+        traceAccountOnJavaDTO.setAccount(account);
+        traceAccountOnJavaDTO.setPassword(password);
+        traceAccountOnJavaDTO.setIdentity(identity);
+        return TRACE_LOGIN_DAO.login(traceAccountOnJavaDTO);
+    }
 }

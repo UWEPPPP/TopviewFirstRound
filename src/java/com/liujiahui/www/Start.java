@@ -1,6 +1,6 @@
 package com.liujiahui.www;
 
-import com.liujiahui.www.view.UserInitInterface;
+import com.liujiahui.www.view.TraceInitView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -15,6 +15,6 @@ import java.sql.SQLException;
  */
 public class Start {
     public static void main(String[] args) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
-        UserInitInterface.start();
+        TraceInitView.start();
     }
 }

@@ -1,11 +1,13 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.UserItemDAO;
-import com.liujiahui.www.entity.bo.UserAddItemBO;
-import com.liujiahui.www.entity.bo.UserItemUpdateBO;
-import com.liujiahui.www.entity.dto.UserInformationSaveDTO;
-import com.liujiahui.www.entity.po.Item;
-import com.liujiahui.www.service.ContractTradeService;
+import com.liujiahui.www.dao.impl.TraceSupplierDAOImpl;
+import com.liujiahui.www.dao.impl.TraceFactoryDAO;
+import com.liujiahui.www.dao.TraceUserDAO;
+import com.liujiahui.www.entity.bo.TraceAddItemBO;
+import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
+import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
+import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.service.TraceItemPersonalService;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
@@ -24,39 +26,38 @@ import java.util.Map;
  * @date 2023/03/18
  */
 public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonalService {
-    private static final TraceItemPersonalBySupplierServiceImpl SERVICE = new TraceItemPersonalBySupplierServiceImpl();
+    private static final TraceItemPersonalBySupplierServiceImpl INSTANCE = new TraceItemPersonalBySupplierServiceImpl();
     private TraceItemPersonalBySupplierServiceImpl() {
     }
     public static TraceItemPersonalBySupplierServiceImpl getInstance() {
-        return SERVICE;
+        return INSTANCE;
     }
-      public  void addItem(UserAddItemBO userAddItemBO) throws SQLException, IOException {
-          UserInformationSaveDTO instance = UserInformationSaveDTO.getInstance();
+
+    private static final TraceUserDAO TRACE_USER_DAO = TraceFactoryDAO.getTraceFactoryDAO(true);
+      public  void addItem(TraceAddItemBO traceAddItemBO) throws SQLException, IOException {
+          TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
           ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
-          TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(userAddItemBO.getRealName(), userAddItemBO.getPrice(), userAddItemBO.getRealDescription());
+          TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceAddItemBO.getRealName(), traceAddItemBO.getPrice(), traceAddItemBO.getRealDescription());
           Tuple1<BigInteger> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
-          System.out.println(addItemOutput);
-          System.out.println(addItemOutput.getValue1());
-          UserItemDAO.addItem(userAddItemBO.getName(), userAddItemBO.getPrice(), userAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName());
-          System.out.println(addItemOutput.getValue1());
+          ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceAddItemBO.getName(), traceAddItemBO.getPrice(), traceAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName());
       }
 
 
-      public void updateItem(UserItemUpdateBO userItemUpdateBO) throws SQLException, IOException {
-       String oldName = userItemUpdateBO.getOldName();
-       String name = userItemUpdateBO.getName();
-       String description = userItemUpdateBO.getDescription();
-       String price = userItemUpdateBO.getPrice();
-       UserItemDAO.updateItem(oldName,name,description,price);
-       UserInformationSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(userItemUpdateBO.getIndex())), BigInteger.valueOf(Integer.parseInt(price)));
+      public void updateItem(TraceItemUpdateBO traceItemUpdateBO) throws SQLException, IOException {
+       String oldName = traceItemUpdateBO.getOldName();
+       String name = traceItemUpdateBO.getName();
+       String description = traceItemUpdateBO.getDescription();
+       String price = traceItemUpdateBO.getPrice();
+       ((TraceSupplierDAOImpl) TRACE_USER_DAO).updateItem(oldName,name,description,price);
+       TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(traceItemUpdateBO.getIndex())), new BigInteger(price));
      }
      public  void updateLogistics(int index, String logistics, int status) {
-         UserInformationSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index),logistics,BigInteger.valueOf(status));
+         TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index),logistics,BigInteger.valueOf(status));
      }
 
     @Override
-      public Map<String, List<Item>> showItem() throws ContractException, SQLException, IOException {
-        return  UserItemDAO.showSupplierItem(UserInformationSaveDTO.getInstance().getContractAccount());
+      public Map<String, List<TraceItemPO>> showItem() throws ContractException, SQLException, IOException {
+        return  TRACE_USER_DAO.showItem(TraceInformationSaveDTO.getInstance().getContractAccount());
     }
 
 }

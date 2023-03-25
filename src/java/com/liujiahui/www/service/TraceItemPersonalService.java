@@ -1,9 +1,9 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.dao.UserChangePersonalDAO;
-import com.liujiahui.www.dao.UserItemDAO;
-import com.liujiahui.www.entity.bo.UserChangePersonalBO;
-import com.liujiahui.www.entity.po.Item;
+import com.liujiahui.www.dao.TraceUserDAO;
+import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
+import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.po.TraceItemPO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -11,13 +11,30 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author 刘家辉
+ * @date 2023/03/25
+ */
 public interface TraceItemPersonalService {
-    Map<String, List<Item>> showItem() throws ContractException, SQLException, IOException;
-    static List<Item> showAllItem() throws SQLException, IOException {
-        return UserItemDAO.showAllItem();
+    /**
+     * 显示项
+     *不同类型用户显示不同的产品
+     */
+    Map<String, List<TraceItemPO>> showItem() throws ContractException, SQLException, IOException;
+
+    /**
+     * 显示所有项
+     *查看所有产品的功能
+     */
+    static List<TraceItemPO> showAllItem() throws SQLException, IOException {
+        return TraceUserDAO.showAllItem();
     }
 
-    static void updatePersonalMessage(UserChangePersonalBO userChangeServiceBO) throws SQLException, IOException {
+    /**
+     * 更新个人信息
+
+     */
+    static void updatePersonalMessage(TraceChangePersonalBO userChangeServiceBO) throws SQLException, IOException {
         Integer choice = userChangeServiceBO.getChoice();
         String change = userChangeServiceBO.getChange();
         String identity = userChangeServiceBO.getIdentity();
@@ -34,6 +51,19 @@ public interface TraceItemPersonalService {
                 break;
             default:
         }
-        UserChangePersonalDAO.change(type, change, identity);
+        TraceUserDAO.updatePersonalInformation(type, change, identity);
+    }
+
+
+    /**
+     * 输出商家的历史评价
+     *
+     * @param name 名字
+     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @throws SQLException sqlexception异常
+     * @throws IOException  ioexception
+     */
+    static List<TraceFeedbackPO> getHistory(String name) throws SQLException, IOException {
+        return TraceUserDAO.getHistory(name);
     }
 }
