@@ -22,6 +22,7 @@ public class TraceItemPO {
     private Boolean isSold;
     private byte[] hashes;
     private String ownerName;
+    private String type;
 
     public TraceItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, String ownerName) {
         this.id = id;
@@ -67,6 +68,9 @@ public class TraceItemPO {
         this.index = index;
         this.isSold = isSold;
         this.hashes = hashes;
+    }
+
+    public TraceItemPO() {
     }
 
     public String getHashes() {
@@ -142,5 +146,13 @@ public class TraceItemPO {
                 ", price='" + price + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

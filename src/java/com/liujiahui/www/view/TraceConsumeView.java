@@ -2,6 +2,7 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceConsumeController;
 import com.liujiahui.www.controller.TraceEntryController;
+import com.liujiahui.www.controller.TraceQueryController;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
@@ -104,7 +105,8 @@ public class TraceConsumeView {
         TraceEntryController traceEntryController = new TraceEntryController();
         System.out.println("1:购买产品");
         System.out.println("2:查看卖家的历史");
-        System.out.println("3:返回列表");
+        System.out.println("3:按照条件筛选产品");
+        System.out.println("4:返回列表");
         Scanner in = new Scanner(System.in);
         int choice = in.nextInt();
         switch (choice) {
@@ -119,7 +121,51 @@ public class TraceConsumeView {
                 String name = in.next();
                 traceEntryController.showHistory(name);
                 break;
+            case 3:
+                System.out.println("1:按照价格筛选");
+                System.out.println("2:按照关键词筛选");
+                System.out.println("3:按照商品种类筛选");
+                System.out.println("4:按照商家筛选");
+                int choice1 = in.nextInt();
+                TraceQueryController traceQueryController = new TraceQueryController();
+                switch (choice1){
+                    case 1:
+                        System.out.println("请输入你希望的最高价位");
+                        int price = in.nextInt();
+                        System.out.println("请输入你希望的最低价位");
+                        int price1 = in.nextInt();
+                        System.out.println("1:按照价格从低到高筛选");
+                        System.out.println("2:按照价格从高到低筛选");
+                        int choice2 = in.nextInt();
+                        switch (choice2){
+                            case 1:
+                                traceQueryController.queryByPrice(price1,price,1);
+                                break;
+                            case 2:
+                                traceQueryController.queryByPrice(price1,price,2);
+                                break;
+                            default:
+                        }
+                        break;
+                    case 2:
+                        System.out.println("请输入关键词");
+                        String keyword = in.next();
+                        traceQueryController.queryByKeyword(keyword);
+                        break;
+                    case 3:
+                        System.out.println("请输入商品种类");
+                        String type = in.next();
+                        traceQueryController.queryByType(type);
+                        break;
+                    case 4:
+                        System.out.println("请输入商家名字");
+                        String seller = in.next();
+                        traceQueryController.queryBySeller(seller);
+                        break;
+                    default:
+                }
             default:
+
         }
     }
 

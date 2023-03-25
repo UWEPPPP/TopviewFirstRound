@@ -21,6 +21,8 @@ public class TraceSupplyView {
     private static final TraceEntryController USER_ENTRY_CONTROLLER = new TraceEntryController();
     public static void registerItem() throws SQLException, IOException {
         Scanner in = new Scanner(System.in);
+        System.out.println("请输入产品种类");
+        String type = in.next();
         System.out.println("请输入产品名称");
         String name = in.next();
         System.out.println("请输入产品价格");
@@ -36,7 +38,7 @@ public class TraceSupplyView {
         System.out.println("请输入商品真实描述");
         String realDescription = in.nextLine();
         TraceSupplyController traceSupplyController = new TraceSupplyController();
-        traceSupplyController.registerItem(name,price,description,realName,realDescription);
+        traceSupplyController.registerItem(name,price,description,realName,realDescription,type);
         System.out.println("商品上架成功");
     }
 

@@ -64,9 +64,9 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         UtilDAO.close(connection,null,preparedStatement);
         return map;
     }
-    public  void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index,String userName) throws SQLException, IOException {
+    public  void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index,String userName,String type) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "insert into user.item (name, price, description, owner, `index`,isSold,seller,owner_name) values (?,?,?,?,?,?,?,?)";
+        String sql = "insert into user.item (name, price, description, owner, `index`,isSold,seller,owner_name,type) values (?,?,?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,name);
         BigDecimal bigDecimal = new BigDecimal(price);
@@ -78,6 +78,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         preparedStatement.setBoolean(6,false);
         preparedStatement.setString(7,accountAddress);
         preparedStatement.setString(8,userName);
+        preparedStatement.setString(9,type);
         preparedStatement.executeUpdate();
     }
 
