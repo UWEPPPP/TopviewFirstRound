@@ -4,7 +4,11 @@ import com.liujiahui.www.controller.TraceLoginController;
 import com.liujiahui.www.controller.TraceRegisterController;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -16,7 +20,7 @@ import java.util.Scanner;
  * @date 2023/03/16
  */
 public class TraceInitView {
-    public static void start() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public static void start() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         Scanner in = new Scanner(System.in);
         System.out.println("欢迎来到Topview集团旗下的产品溯源系统");
         System.out.println("1.登录");

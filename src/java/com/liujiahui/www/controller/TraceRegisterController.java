@@ -7,7 +7,11 @@ import com.liujiahui.www.service.TraceRegisterAndLoginService;
 import com.liujiahui.www.view.TraceRegisterView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -18,7 +22,7 @@ import java.sql.SQLException;
  * @date 2023/03/16
  */
 public class TraceRegisterController {
-    public void register(TraceRegisterDTO traceRegisterDTO) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void register(TraceRegisterDTO traceRegisterDTO) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         TraceRegisterBO traceRegisterBO = new TraceRegisterBO();
         traceRegisterBO.setName(traceRegisterDTO.getName());
         traceRegisterBO.setGender(traceRegisterDTO.getGender());
@@ -28,7 +32,7 @@ public class TraceRegisterController {
         TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryImplService.getTraceRegisterAndLoginService(traceRegisterDTO.getChoice());
         TraceRegisterView.returnInterface(traceRegisterAndLoginService.register(traceRegisterBO));
     }
-    public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(choice2 == 1){
             new TraceRegisterView().registerBySupplier();
     }else {

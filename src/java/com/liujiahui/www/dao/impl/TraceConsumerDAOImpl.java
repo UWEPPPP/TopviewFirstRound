@@ -38,8 +38,8 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         List<TraceItemPO> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPO = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
-            list.add(traceItemPO);
+            TraceItemPO traceItem = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
+            list.add(traceItem);
         }
         UtilDAO.close(connection,null,preparedStatement);
         HashMap<String,List<TraceItemPO>> listHashMap=new HashMap<>(1);

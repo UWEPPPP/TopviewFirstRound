@@ -15,11 +15,17 @@ import java.util.Scanner;
 
 import static com.liujiahui.www.view.TraceSameView.showItem;
 
+/**
+ * 跟踪消费观点
+ *
+ * @author 刘家辉
+ * @date 2023/03/25
+ */
 public class TraceConsumeView {
-    public static void showMyItem(List<TraceItemPO> traceItemPOS) throws ContractException, SQLException, IOException {
+    public static void showMyItem(List<TraceItemPO> traceItems) throws ContractException, SQLException, IOException {
         System.out.println("这是您已购入的商品列表");
-        for (TraceItemPO traceItemPO : traceItemPOS) {
-            System.out.println(traceItemPO.getId()+" "+"商品名称：" + traceItemPO.getName() + " 商品价格：" + traceItemPO.getPrice() + " 商品描述:" + traceItemPO.getDescription()+" 商品hash:"+ traceItemPO.getHashes());
+        for (TraceItemPO traceItem : traceItems) {
+            System.out.println(traceItem.getId()+" "+"商品名称：" + traceItem.getName() + " 商品价格：" + traceItem.getPrice() + " 商品描述:" + traceItem.getDescription()+" 商品hash:"+ traceItem.getHashes());
         }
         System.out.println("1.通过产品购买时给予的hash值验伪");
         System.out.println("2.查看产品运送状态");
@@ -93,8 +99,8 @@ public class TraceConsumeView {
         System.out.println("交易后余额："+ traceTransactionVO.getBalance());
     }
 
-    public static void showAndBuyItemByConsumer (List<TraceItemPO> traceItemPOS) throws SQLException, IOException, ContractException {
-        showItem(traceItemPOS);
+    public static void showAndBuyItemByConsumer (List<TraceItemPO> traceItems) throws SQLException, IOException, ContractException {
+        showItem(traceItems);
         TraceEntryController traceEntryController = new TraceEntryController();
         System.out.println("1:购买产品");
         System.out.println("2:查看卖家的历史");
@@ -106,7 +112,7 @@ public class TraceConsumeView {
                 System.out.println("请输入商品id");
                 int id = in.nextInt();
                 TraceConsumeController traceConsumeController = new TraceConsumeController();
-                traceConsumeController.buy(id, traceItemPOS);
+                traceConsumeController.buy(id, traceItems);
                 break;
             case 2:
                 System.out.println("请输入卖家的名字");

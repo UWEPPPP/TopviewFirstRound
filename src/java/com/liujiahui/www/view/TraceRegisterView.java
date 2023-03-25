@@ -4,7 +4,11 @@ import com.liujiahui.www.controller.TraceRegisterController;
 import com.liujiahui.www.entity.dto.TraceRegisterDTO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -17,7 +21,7 @@ import java.util.Scanner;
  */
 public class TraceRegisterView {
     static Scanner in = new Scanner(System.in);
-    public void registerByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void registerByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("进入消费者注册界面");
         System.out.println("请输入您的姓名：");
         String name = in.next();
@@ -42,7 +46,7 @@ public class TraceRegisterView {
         return traceRegisterDTO;
     }
 
-    public void registerBySupplier() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void registerBySupplier() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("进入供应商注册界面");
         System.out.println("请输入您的姓名：");
         String name = in.next();
@@ -58,7 +62,7 @@ public class TraceRegisterView {
         TraceRegisterController traceRegisterController = new TraceRegisterController();
         traceRegisterController.register(traceRegisterDTO);
     }
-    public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(bool){
             System.out.println("注册成功");
             System.out.println("登录时账号即为您输入的名字"+" ,密码为你设置的密码 "+" ,账号初始余额为1000");

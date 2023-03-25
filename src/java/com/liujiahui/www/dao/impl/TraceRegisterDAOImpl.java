@@ -7,7 +7,12 @@ import com.liujiahui.www.entity.po.TraceSupplierPO;
 import com.liujiahui.www.entity.po.TraceUserPO;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,32 +33,32 @@ public class TraceRegisterDAOImpl implements TraceRegisterDAO {
         return INSTANCE;
     }
     @Override
-    public Boolean register(TraceUserPO traceUserPO) throws SQLException, IOException {
+    public Boolean register(TraceUserPO traceUserPo) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         Connection connection = UtilDAO.getConnection();
         PreparedStatement preparedStatement;
         String table;
         String tableAndLimit;
-        if(traceUserPO instanceof TraceSupplierPO){
+        if(traceUserPo instanceof TraceSupplierPO){
             table = "suppliers";
             tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?,?,?)";
         }else{
             table = "consumer";
             tableAndLimit = "consumer(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";
         }
-        if(checkUserExist(table, traceUserPO.getName(),connection)){
+        if(checkUserExist(table, traceUserPo.getName(),connection)){
             return false;
         }
         TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryImplService.getTraceContractService().initByContract(table);
         String sql="insert into user."+tableAndLimit;
         preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, traceUserPO.getName());
-        preparedStatement.setString(2, traceUserPO.getGender());
-        preparedStatement.setString(3, traceUserPO.getPhoneNumber());
-        preparedStatement.setString(4, traceUserPO.getPassword());
+        preparedStatement.setString(1, traceUserPo.getName());
+        preparedStatement.setString(2, traceUserPo.getGender());
+        preparedStatement.setString(3, traceUserPo.getPhoneNumber());
+        preparedStatement.setString(4, traceUserPo.getPassword());
         preparedStatement.setString(5, traceAccountOnContractDTO.getPrivateKey());
         preparedStatement.setString(6, traceAccountOnContractDTO.getAccountAddress());
-        if(traceUserPO instanceof TraceSupplierPO){
-            preparedStatement.setString(7, ((TraceSupplierPO) traceUserPO).getAddress());
+        if(traceUserPo instanceof TraceSupplierPO){
+            preparedStatement.setString(7, ((TraceSupplierPO) traceUserPo).getAddress());
             preparedStatement.setLong(8, 0);
             preparedStatement.setLong(9, 0);
         }

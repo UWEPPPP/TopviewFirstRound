@@ -4,7 +4,12 @@ import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.po.TraceConsumerPO;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
@@ -21,13 +26,13 @@ public class TraceRegisterAndLoginByConsumerServiceImpl implements TraceRegister
         return SERVICE;
     }
      @Override
-    public Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException {
-        TraceConsumerPO traceConsumerPO = new TraceConsumerPO();
-        traceConsumerPO.setName(traceRegisterBO.getName());
-        traceConsumerPO.setGender(traceRegisterBO.getGender());
-        traceConsumerPO.setPhoneNumber(traceRegisterBO.getPhone());
-        traceConsumerPO.setPassword(traceRegisterBO.getPassword());
-        return TRACE_REGISTER_DAO.register(traceConsumerPO);
+    public Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        TraceConsumerPO traceConsumer = new TraceConsumerPO();
+        traceConsumer.setName(traceRegisterBO.getName());
+        traceConsumer.setGender(traceRegisterBO.getGender());
+        traceConsumer.setPhoneNumber(traceRegisterBO.getPhone());
+        traceConsumer.setPassword(traceRegisterBO.getPassword());
+        return TRACE_REGISTER_DAO.register(traceConsumer);
     }
 
 

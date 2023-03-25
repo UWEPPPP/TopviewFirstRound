@@ -76,12 +76,12 @@ public class TraceEntryController {
      *以下均为公共方法
      */
     private  void showItemList() throws SQLException, IOException, ContractException {
-        List<TraceItemPO> traceItemPOS = TraceItemPersonalService.showAllItem();
+        List<TraceItemPO> traceItems = TraceItemPersonalService.showAllItem();
         String check="consumer";
         if(check.equals(TraceInformationSaveDTO.getInstance().getIdentity())){
-            TraceConsumeView.showAndBuyItemByConsumer(traceItemPOS);
+            TraceConsumeView.showAndBuyItemByConsumer(traceItems);
         }else {
-            TraceSupplyView.showAndBuyItemBySupplier(traceItemPOS);
+            TraceSupplyView.showAndBuyItemBySupplier(traceItems);
         }
     }
 

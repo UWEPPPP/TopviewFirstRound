@@ -69,8 +69,8 @@ public interface TraceUserDAO {
         List<TraceItemPO> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPO = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"),set.getString("owner_name"));
-            list.add(traceItemPO);
+            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"),set.getString("owner_name"));
+            list.add(traceItemPo);
         }
         UtilDAO.close(connection,null,preparedStatement);
         return list;
@@ -100,14 +100,14 @@ public interface TraceUserDAO {
         ResultSet set1 = preparedStatement1.executeQuery();
         List<TraceFeedbackPO> list= new ArrayList<>();
         while(set1.next()) {
-            TraceFeedbackPO traceFeedbackPO = new TraceFeedbackPO();
-            traceFeedbackPO.setBuyer(set1.getString("buyer_account"));
-            traceFeedbackPO.setSeller(set1.getString("seller_account"));
-            traceFeedbackPO.setLikeOrReport("like".equals(set1.getString("like_report")));
-            traceFeedbackPO.setItemHash(set1.getString("item"));
-            traceFeedbackPO.setComment(set1.getString("comment"));
-            traceFeedbackPO.setItemName(set1.getString("Name"));
-            list.add(traceFeedbackPO);
+            TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
+            traceFeedbackPo.setBuyer(set1.getString("buyer_account"));
+            traceFeedbackPo.setSeller(set1.getString("seller_account"));
+            traceFeedbackPo.setLikeOrReport("like".equals(set1.getString("like_report")));
+            traceFeedbackPo.setItemHash(set1.getString("item"));
+            traceFeedbackPo.setComment(set1.getString("comment"));
+            traceFeedbackPo.setItemName(set1.getString("Name"));
+            list.add(traceFeedbackPo);
         }
         UtilDAO.close(connection,set,preparedStatement);
         UtilDAO.close(null,set,preparedStatement1);

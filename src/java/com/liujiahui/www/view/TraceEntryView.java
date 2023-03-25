@@ -4,7 +4,11 @@ import com.liujiahui.www.controller.TraceEntryController;
 import com.liujiahui.www.entity.vo.TraceAfterLoginVO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -17,7 +21,7 @@ import java.util.Scanner;
  */
 public class TraceEntryView {
     static Scanner in = new Scanner(System.in);
-    public static void viewConsumer(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
+    public static void viewConsumer(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(traceAfterLoginVO !=null){
             do {
                 System.out.println("您好消费者" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
@@ -49,7 +53,7 @@ public class TraceEntryView {
         return true;
     }
 
-    public static void viewSupplier(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
+    public static void viewSupplier(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(traceAfterLoginVO !=null){
             System.out.println("您好 供应商" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             do {

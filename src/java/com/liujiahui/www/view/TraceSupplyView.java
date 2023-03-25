@@ -40,8 +40,8 @@ public class TraceSupplyView {
         System.out.println("商品上架成功");
     }
 
-    public static void showAndBuyItemBySupplier (List<TraceItemPO> traceItemPOS) throws SQLException, IOException {
-        showItem(traceItemPOS);
+    public static void showAndBuyItemBySupplier (List<TraceItemPO> pos) throws SQLException, IOException {
+        showItem(pos);
         System.out.println("1:查看卖家的历史");
         System.out.println("2:返回列表");
         Scanner in = new Scanner(System.in);
@@ -91,19 +91,19 @@ public class TraceSupplyView {
             default:
         }
     }
-    public static void showItem(List<TraceItemPO> traceItemPOS) {
-        for (TraceItemPO traceItemPO : traceItemPOS) {
-            if(traceItemPO.getSold()){
-                System.out.println(traceItemPO.getId()+" "+"商品名称：" + traceItemPO.getName() + " 商品价格：" + traceItemPO.getPrice() + " 商品描述：" + traceItemPO.getDescription()+" 已售出 ");
+    public static void showItem(List<TraceItemPO> pos) {
+        for (TraceItemPO itemPo : pos) {
+            if(itemPo.getSold()){
+                System.out.println(itemPo.getId()+" "+"商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription()+" 已售出 ");
             }else {
-                System.out.println(traceItemPO.getId()+" "+"商品名称：" + traceItemPO.getName() + " 商品价格：" + traceItemPO.getPrice() + " 商品描述：" + traceItemPO.getDescription()+" 未售出 ");
+                System.out.println(itemPo.getId()+" "+"商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription()+" 未售出 ");
             }
         }
     }
 
-    public static void showRealItem(List<TraceItemPO> traceItemPOS){
-        for (TraceItemPO traceItemPO : traceItemPOS) {
-            System.out.println("商品真实名称：" + traceItemPO.getName()  + " 商品真实描述：" + traceItemPO.getDescription());
+    public static void showRealItem(List<TraceItemPO> pos){
+        for (TraceItemPO po : pos) {
+            System.out.println("商品真实名称：" + po.getName()  + " 商品真实描述：" + po.getDescription());
         }
     }
 

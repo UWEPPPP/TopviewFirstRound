@@ -37,11 +37,11 @@ public class TraceSupplyController {
         ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).updateLogistics(id, logistics, status);
     }
 
-    public  void updateItem(int index, List<TraceItemPO> traceItemPOS, String name, String description, String price) throws SQLException, IOException {
+    public  void updateItem(int index, List<TraceItemPO> traceItemPos, String name, String description, String price) throws SQLException, IOException {
         String oldName = null;
-        for ( TraceItemPO traceItemPO : traceItemPOS) {
-            if(traceItemPO.getIndex().intValue()==index){
-                oldName= traceItemPO.getName();
+        for ( TraceItemPO traceItemPoOne : traceItemPos) {
+            if(traceItemPoOne.getIndex().intValue()==index){
+                oldName= traceItemPoOne.getName();
             }
         }
         TraceItemUpdateBO updateBO = new TraceItemUpdateBO();

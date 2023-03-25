@@ -31,16 +31,16 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
 public class TraceConsumeController {
     private final TraceItemPersonalService traceItemPersonalService = TraceFactoryImplService.getTraceItemPersonalService(false);
 
-    public  void buy(int id, List<TraceItemPO> traceItemPOS) throws ContractException, SQLException, IOException {
-        for (TraceItemPO traceItemPO : traceItemPOS) {
-            if (traceItemPO.getId() == id) {
-                TraceTransactionDTO traceTransactionDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).buyItem(traceItemPO.getOwner(), traceItemPO.getIndex());
+    public  void buy(int id, List<TraceItemPO> items) throws ContractException, SQLException, IOException {
+        for (TraceItemPO item : items) {
+            if (item.getId() == id) {
+                TraceTransactionDTO traceTransactionDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).buyItem(item.getOwner(), item.getIndex());
                 if (traceTransactionDTO != null && traceTransactionDTO.getReturnMessage() == null) {
                     String balance = traceTransactionDTO.getBalance();
                     ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = traceTransactionDTO.getItemSoldEventResponse();
                     String hash = Numeric.toHexString(itemSoldEventResponse.hash);
                     TraceTransactionVO traceTransactionVO = new TraceTransactionVO();
-                    traceTransactionVO.setName(traceItemPO.getName());
+                    traceTransactionVO.setName(item.getName());
                     traceTransactionVO.setHash(hash);
                     traceTransactionVO.setBalance(balance);
                     traceTransactionVO.setBuyer(itemSoldEventResponse.buyer);
@@ -70,8 +70,8 @@ public class TraceConsumeController {
     }
 
     public void showUserItem() throws SQLException, IOException, ContractException {
-        List<TraceItemPO> traceItemPOS = traceItemPersonalService.showItem().get("item");
-        TraceConsumeView.showMyItem(traceItemPOS);
+        List<TraceItemPO> items = traceItemPersonalService.showItem().get("item");
+        TraceConsumeView.showMyItem(items);
     }
 
     public  void feedback(int score,String seller, String comment, String itemHash) throws SQLException, IOException {

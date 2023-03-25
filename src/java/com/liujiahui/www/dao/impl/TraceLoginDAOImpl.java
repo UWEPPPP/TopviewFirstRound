@@ -8,7 +8,12 @@ import com.liujiahui.www.service.impl.TraceContractServiceImpl;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,6 +58,9 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
             } else {
                 return null;
             }
+        } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException |
+                 InvalidKeyException e) {
+            throw new RuntimeException(e);
         }
     }
 }

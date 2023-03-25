@@ -9,7 +9,12 @@ import com.liujiahui.www.entity.dto.TraceAccountOnJavaDTO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
@@ -19,15 +24,15 @@ import java.sql.SQLException;
  * @date 2023/03/24
  */
 public interface TraceRegisterAndLoginService {
-    static final TraceRegisterDAO TRACE_REGISTER_DAO = TraceFactoryDAO.getTraceRegisterDAO();
-    static final TraceLoginDAOImpl TRACE_LOGIN_DAO = TraceFactoryDAO.getTraceLoginDAO();
+    TraceRegisterDAO TRACE_REGISTER_DAO = TraceFactoryDAO.getTraceRegisterDAO();
+    TraceLoginDAOImpl TRACE_LOGIN_DAO = TraceFactoryDAO.getTraceLoginDAO();
 
     /**
      * @param traceRegisterBO 用户登记薄
      * @return {@link Boolean}
      * 用于用户注册
      */
-    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException;
+    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
 
     /**
      * @param traceLoginBO 用户登录博

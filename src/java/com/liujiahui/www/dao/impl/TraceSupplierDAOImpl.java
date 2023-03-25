@@ -43,18 +43,18 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         List<TraceItemPO> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPO = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
-            list.add(traceItemPO);
+            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
+            list.add(traceItemPo);
         }
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         DynamicArray<ContractTradeService.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
         List<TraceItemPO> list1=new ArrayList<>();
         int index=0;
         for (ContractTradeService.Item item : soldItem.getValue()) {
-            TraceItemPO traceItemPO1 = new TraceItemPO(item.name,item.price,item.description);
-            traceItemPO1.setIndex(new BigDecimal(index));
-            traceItemPO1.setSold(item.isSold);
-            list1.add(traceItemPO1);
+            TraceItemPO traceItemPoOne = new TraceItemPO(item.name,item.price,item.description);
+            traceItemPoOne.setIndex(new BigDecimal(index));
+            traceItemPoOne.setSold(item.isSold);
+            list1.add(traceItemPoOne);
 
             index++;
         }

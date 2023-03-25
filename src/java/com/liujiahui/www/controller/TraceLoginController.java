@@ -8,7 +8,11 @@ import com.liujiahui.www.view.TraceEntryView;
 import com.liujiahui.www.view.TraceLoginView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -21,7 +25,7 @@ import java.sql.SQLException;
 public class TraceLoginController {
       private static String identity;
 
-    public  void login(String account, String password, Boolean choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public  void login(String account, String password, Boolean choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(!choice) {
             TraceLoginBO traceLoginBO = new TraceLoginBO(account,password,"consumer");
             identity = "consumer";
@@ -36,7 +40,7 @@ public class TraceLoginController {
     }
 
 
-    public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
+    public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(userInformationDTO == null){
             TraceLoginView.loginReturnInterface();
         }
@@ -54,7 +58,7 @@ public class TraceLoginController {
     /**
      * 登录
      +*/
-    public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(choice1 == 1){
             new TraceLoginView().loginBySupplier();
         }else {

@@ -3,7 +3,11 @@ package com.liujiahui.www.view;
 import com.liujiahui.www.controller.TraceLoginController;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -16,7 +20,7 @@ import java.util.Scanner;
  */
 public class TraceLoginView {
    static Scanner in = new Scanner(System.in);
-    public void loginByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public void loginByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("进入消费者登录界面");
         System.out.println("请输入您的账号：");
         String account = in.next();
@@ -26,7 +30,7 @@ public class TraceLoginView {
         traceLoginController.login(account,password,false);
     }
 
-    public void loginBySupplier() throws ContractException, SQLException, IOException, NoSuchAlgorithmException {
+    public void loginBySupplier() throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("进入供应商登录界面");
         System.out.println("请输入您的账号：");
         String account = in.next();
@@ -35,7 +39,7 @@ public class TraceLoginView {
         TraceLoginController traceLoginController = new TraceLoginController();
         traceLoginController.login(account,password,true);
     }
-    public static void loginReturnInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException {
+    public static void loginReturnInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("登录失败,用户名或密码错误");
         System.out.println("即将返回主界面");
         TraceInitView.start();
