@@ -1,12 +1,14 @@
 package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceEntryController;
+import com.liujiahui.www.controller.TraceQueryController;
 import com.liujiahui.www.controller.TraceSupplyController;
 import com.liujiahui.www.entity.po.TraceItemPO;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -22,9 +24,11 @@ public class TraceSupplyView {
     public static void registerItem() throws SQLException, IOException {
         Scanner in = new Scanner(System.in);
         System.out.println("请输入产品种类");
-        String type = in.next();
+        System.out.println("食品：0  服装：1  电子产品：2   家具：3  其他：4 ");
+        int type = in.nextInt();
+        in.nextLine();
         System.out.println("请输入产品名称");
-        String name = in.next();
+        String name = in.nextLine();
         System.out.println("请输入产品价格");
         BigInteger price = in.nextBigInteger();
         in.nextLine();
@@ -45,15 +49,72 @@ public class TraceSupplyView {
     public static void showAndBuyItemBySupplier (List<TraceItemPO> pos) throws SQLException, IOException {
         showItem(pos);
         System.out.println("1:查看卖家的历史");
-        System.out.println("2:返回列表");
+        System.out.println("2:按照条件筛选商品");
+        System.out.println("3:返回列表");
         Scanner in = new Scanner(System.in);
         int choice = in.nextInt();
-        if (choice == 1) {
-            System.out.println("请输入卖家的名字");
-            String name = in.next();
-            USER_ENTRY_CONTROLLER.showHistory(name);
+        switch (choice) {
+            case 1:
+                System.out.println("请输入卖家的名字");
+                String name = in.next();
+                USER_ENTRY_CONTROLLER.showHistory(name);
+                break;
+            case 2:
+                System.out.println("1:按照价格筛选");
+                System.out.println("2:按照关键词筛选");
+                System.out.println("3:按照商品种类筛选");
+                System.out.println("4:按照商家筛选");
+                int choice1 = in.nextInt();
+                TraceQueryController traceQueryController = new TraceQueryController();
+                List<TraceItemPO> traceItem = new ArrayList<>();
+                traceItem = getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
+                showItem(traceItem);
+            default:
+
         }
     }
+
+    static List<TraceItemPO> getTraceItemSameWay(Scanner in, int choice1, TraceQueryController traceQueryController, List<TraceItemPO> traceItem) {
+        switch (choice1){
+            case 1:
+                System.out.println("请输入你希望的最高价位");
+                int price = in.nextInt();
+                System.out.println("请输入你希望的最低价位");
+                int price1 = in.nextInt();
+                System.out.println("1:按照价格从低到高筛选");
+                System.out.println("2:按照价格从高到低筛选");
+                int choice2 = in.nextInt();
+
+                switch (choice2){
+                    case 1:
+                        traceItem = traceQueryController.queryByPrice(price1, price, 1);
+                        break;
+                    case 2:
+                        traceItem = traceQueryController.queryByPrice(price1, price, 2);
+                        break;
+                    default:
+                }
+                break;
+            case 2:
+                System.out.println("请输入关键词");
+                String keyword = in.next();
+                traceItem=traceQueryController.queryByKeyword(keyword);
+                break;
+            case 3:
+                System.out.println("请输入商品种类");
+                String type = in.next();
+                traceItem=traceQueryController.queryByType(type);
+                break;
+            case 4:
+                System.out.println("请输入商家名字");
+                String seller = in.next();
+                traceItem=traceQueryController.queryBySeller(seller);
+                break;
+            default:
+        }
+        return traceItem;
+    }
+
     public static void showSupplierItem (Map<String, List<TraceItemPO>> items) throws SQLException, IOException {
         System.out.println("对外公布商品列表");
         showItem(items.get("Outside"));

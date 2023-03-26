@@ -14,6 +14,7 @@ public class TraceAddItemBO {
     private String description;
     private String realDescription;
     private String realName;
+    private Integer type;
 
     public String getName() {
         return name;
@@ -62,5 +63,13 @@ public class TraceAddItemBO {
 
     public String getRealName() {
         return realName;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

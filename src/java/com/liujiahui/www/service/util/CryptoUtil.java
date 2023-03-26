@@ -25,10 +25,7 @@ public class CryptoUtil {
         byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
         MessageDigest instance = MessageDigest.getInstance("SHA-256");
         byte[] digest = instance.digest(passwordBytes);
-        SecretKeySpec aes = new SecretKeySpec(digest, "AES");
-        KeyGenerator generator = KeyGenerator.getInstance("AES");
-        generator.init(256);
-        key=generator.generateKey();
+        key = new SecretKeySpec(digest, "AES");
         return key;
     }
 

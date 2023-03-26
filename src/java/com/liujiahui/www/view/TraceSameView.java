@@ -25,9 +25,9 @@ public class TraceSameView {
         System.out.println("商品列表");
         for (TraceItemPO traceItemPo : traceItemPos) {
             if(traceItemPo.getSold()){
-                System.out.println(traceItemPo.getId()+" "+"商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription()+" 已售出 ");
+                System.out.println("商品种类"+traceItemPo.getType()+"序号"+traceItemPo.getId()+" "+"商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription()+" 已售出 ");
             }else {
-                System.out.println(traceItemPo.getId()+" "+"商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription()+" 未售出 卖家："+ traceItemPo.getOwnerName());
+                System.out.println("商品种类"+traceItemPo.getType()+"序号"+traceItemPo.getId()+" "+"商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription()+" 未售出 卖家："+ traceItemPo.getOwnerName());
             }
         }
     }

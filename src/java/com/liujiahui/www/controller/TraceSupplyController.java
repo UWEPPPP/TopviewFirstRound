@@ -22,13 +22,14 @@ import java.util.List;
  */
 public class TraceSupplyController {
     private final TraceItemPersonalService traceItemPersonalService = TraceFactoryImplService.getTraceItemPersonalService(true);
-    public  void registerItem(String name, BigInteger price, String description, String realName, String realDescription, String type) throws SQLException, IOException {
+    public  void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type) throws SQLException, IOException {
         TraceAddItemBO traceAddItemBO = new TraceAddItemBO();
         traceAddItemBO.setName(name);
         traceAddItemBO.setPrice(price);
         traceAddItemBO.setDescription(description);
         traceAddItemBO.setRealName(realName);
         traceAddItemBO.setRealDescription(realDescription);
+        traceAddItemBO.setType(type);
         ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).addItem(traceAddItemBO);
     }
 

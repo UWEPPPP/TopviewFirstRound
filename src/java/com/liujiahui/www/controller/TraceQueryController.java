@@ -1,5 +1,11 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.service.TraceQueryService;
+import com.liujiahui.www.service.impl.TraceFactoryImplService;
+
+import java.util.List;
+
 /**
  * 跟踪查询控制器
  *
@@ -7,19 +13,22 @@ package com.liujiahui.www.controller;
  * @date 2023/03/26
  */
 public class TraceQueryController {
+    private static final TraceQueryService TRACE_QUERY_SERVICE = TraceFactoryImplService.getTraceQueryService();
 
-    public void queryByPrice(int max,int min,int choice) {
+    public List<TraceItemPO> queryByPrice(int max, int min, int choice) {
+         return TRACE_QUERY_SERVICE.queryByPrice(max,min,choice);
     }
 
-    public void queryByKeyword(String keyword) {
+    public List<TraceItemPO> queryByKeyword(String keyword) {
+        return TRACE_QUERY_SERVICE.queryByKeyword(keyword);
     }
 
-    public void queryByTime(int i) {
+
+    public List<TraceItemPO> queryByType(String type) {
+        return TRACE_QUERY_SERVICE.queryByType(type);
     }
 
-    public void queryByType(String type) {
-    }
-
-    public void queryBySeller(String seller) {
+    public List<TraceItemPO> queryBySeller(String seller) {
+        return TRACE_QUERY_SERVICE.queryBySeller(seller);
     }
 }

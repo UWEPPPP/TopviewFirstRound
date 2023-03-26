@@ -1,6 +1,7 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.service.TraceItemPersonalService;
+import com.liujiahui.www.service.TraceQueryService;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
 
 /**
@@ -10,6 +11,9 @@ import com.liujiahui.www.service.TraceRegisterAndLoginService;
  * @date 2023/03/25
  */
 public class TraceFactoryImplService {
+    static public TraceQueryService getTraceQueryService() {
+        return TraceQueryServiceImpl.getInstance();
+    }
 
    static public TraceRegisterAndLoginService getTraceRegisterAndLoginService(Boolean choice) {
         if (choice) {

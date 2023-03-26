@@ -37,9 +37,9 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
       public  void addItem(TraceAddItemBO traceAddItemBO) throws SQLException, IOException {
           TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
           ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
-          TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceAddItemBO.getRealName(), traceAddItemBO.getPrice(), traceAddItemBO.getRealDescription());
+          TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceAddItemBO.getRealName(), traceAddItemBO.getPrice(), traceAddItemBO.getRealDescription(), BigInteger.valueOf(traceAddItemBO.getType()));
           Tuple1<BigInteger> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
-          ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceAddItemBO.getName(), traceAddItemBO.getPrice(), traceAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName());
+          ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceAddItemBO.getName(), traceAddItemBO.getPrice(), traceAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName(),traceAddItemBO.getType());
       }
 
 

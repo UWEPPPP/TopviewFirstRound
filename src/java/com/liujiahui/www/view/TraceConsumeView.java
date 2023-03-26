@@ -10,6 +10,7 @@ import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -128,42 +129,9 @@ public class TraceConsumeView {
                 System.out.println("4:按照商家筛选");
                 int choice1 = in.nextInt();
                 TraceQueryController traceQueryController = new TraceQueryController();
-                switch (choice1){
-                    case 1:
-                        System.out.println("请输入你希望的最高价位");
-                        int price = in.nextInt();
-                        System.out.println("请输入你希望的最低价位");
-                        int price1 = in.nextInt();
-                        System.out.println("1:按照价格从低到高筛选");
-                        System.out.println("2:按照价格从高到低筛选");
-                        int choice2 = in.nextInt();
-                        switch (choice2){
-                            case 1:
-                                traceQueryController.queryByPrice(price1,price,1);
-                                break;
-                            case 2:
-                                traceQueryController.queryByPrice(price1,price,2);
-                                break;
-                            default:
-                        }
-                        break;
-                    case 2:
-                        System.out.println("请输入关键词");
-                        String keyword = in.next();
-                        traceQueryController.queryByKeyword(keyword);
-                        break;
-                    case 3:
-                        System.out.println("请输入商品种类");
-                        String type = in.next();
-                        traceQueryController.queryByType(type);
-                        break;
-                    case 4:
-                        System.out.println("请输入商家名字");
-                        String seller = in.next();
-                        traceQueryController.queryBySeller(seller);
-                        break;
-                    default:
-                }
+                List<TraceItemPO> traceItem = new ArrayList<>();
+                traceItem = TraceSupplyView.getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
+                showItem(traceItem);
             default:
 
         }

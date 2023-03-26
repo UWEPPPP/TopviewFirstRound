@@ -44,6 +44,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
             TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"));
+            traceItemPo.setType(set.getString("type"));
             list.add(traceItemPo);
         }
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
@@ -55,7 +56,6 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
             traceItemPoOne.setIndex(new BigDecimal(index));
             traceItemPoOne.setSold(item.isSold);
             list1.add(traceItemPoOne);
-
             index++;
         }
         Map<String,List<TraceItemPO>> map = new HashMap<>(2);
@@ -64,7 +64,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         UtilDAO.close(connection,null,preparedStatement);
         return map;
     }
-    public  void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index,String userName,String type) throws SQLException, IOException {
+    public  void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index,String userName,int type) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String sql = "insert into user.item (name, price, description, owner, `index`,isSold,seller,owner_name,type) values (?,?,?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -78,7 +78,26 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         preparedStatement.setBoolean(6,false);
         preparedStatement.setString(7,accountAddress);
         preparedStatement.setString(8,userName);
-        preparedStatement.setString(9,type);
+        String itemType = null;
+        switch (type){
+            case 0:
+                itemType="Food";
+                break;
+            case 1:
+                itemType="Clothes";
+                break;
+            case 2:
+                itemType="Electronic";
+                break;
+            case 3:
+                itemType="Furniture";
+                break;
+            case 4:
+                itemType="Other";
+                break;
+            default:
+        }
+        preparedStatement.setString(9,itemType);
         preparedStatement.executeUpdate();
     }
 

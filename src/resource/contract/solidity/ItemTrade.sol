@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 import  "Asset.sol";
@@ -8,6 +7,7 @@ contract ItemTrade {
     struct Item {
         uint256 id;
         string name;
+        Type itemType;
         uint256 price;
         string description;
         bool isSold;
@@ -19,6 +19,14 @@ contract ItemTrade {
         uint256 date;
         string place;
         Status status;
+    }
+
+    enum Type{
+        Food,
+        Apparel,
+        Electronic,
+        Furniture,
+        Others
     }
 
     enum Status{
@@ -47,15 +55,15 @@ contract ItemTrade {
     }
 
     modifier NoReentrant(){
-        require(!isProcess,"Renntrant Call");
+        require(!isProcess,"Reentrant Call");
         isProcess=true;
         _;
         isProcess=false;
     }
-    function addItem(string memory name, uint256 price, string memory description) external OnlySupplier returns(uint256){
+    function addItem(string memory name, uint256 price, string memory description,uint256 typeSet) external OnlySupplier returns(uint256){
         uint256 id=items[msg.sender].length;
         bytes32 hash= keccak256(abi.encodePacked(id,name,price,description,msg.sender));
-        Item memory item = Item(id, name, price, description, false,msg.sender,hash);
+        Item memory item = Item(id, name,Type(typeSet), price, description, false,msg.sender,hash);
         items[msg.sender].push(item);
         itemFollow[hash]=item;
         emit NewItemAdd(msg.sender, name, price);

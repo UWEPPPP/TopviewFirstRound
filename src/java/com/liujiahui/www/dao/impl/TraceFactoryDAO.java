@@ -1,6 +1,8 @@
 package com.liujiahui.www.dao.impl;
 
+import com.liujiahui.www.dao.TraceQueryDAO;
 import com.liujiahui.www.dao.TraceUserDAO;
+import com.liujiahui.www.service.TraceQueryService;
 
 /**
  * dao工厂
@@ -15,6 +17,9 @@ public class TraceFactoryDAO {
         } else {
             return TraceConsumerDAOImpl.getInstance();
         }
+    }
+    public static TraceQueryDAO getTraceQueryDAO() {
+        return TraceQueryDAOImpl.getInstance();
     }
 
     public static TraceRegisterDAOImpl getTraceRegisterDAO() {

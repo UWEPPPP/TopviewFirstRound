@@ -19,13 +19,25 @@ import java.util.List;
  * @date 2023/03/26
  */
 public class TraceQueryDAOImpl implements TraceQueryDAO {
+    private static final TraceQueryDAOImpl TRACE_QUERY_DAO = new TraceQueryDAOImpl();
+    private TraceQueryDAOImpl() {}
+    public static TraceQueryDAOImpl getInstance() {
+        return TRACE_QUERY_DAO;
+    }
     @Override
-    public List<TraceItemPO> queryByPrice(int min,int max) {
+    public List<TraceItemPO> queryByPrice(int min,int max,int choice) {
+        String order;
+        if(choice==1) {
+            order = "asc";
+        }else {
+            order = "desc";
+        }
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item where price between ? and ?";
+            String sql="select * from user.item where price between ? and ? order by price  "+order;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,min);
             preparedStatement.setInt(2,max);
+            preparedStatement.setString(3,order);
             return querySame(preparedStatement);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
