@@ -4,6 +4,7 @@ import com.liujiahui.www.dao.TraceUserDAO;
 import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.service.wrapper.ContractTradeService;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
@@ -31,7 +32,8 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
     @Override
     public Map<String, List<TraceItemPO>> showItem(String accountAddress) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.item where owner = ?";
+        String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash " +
+                " where owner_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,accountAddress);
         ResultSet set = preparedStatement.executeQuery();
@@ -46,10 +48,29 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         listHashMap.put("item",list);
         return listHashMap;
     }
+
+    public void returnItem(String hash) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "update user.item_behind set isSold = ?,owner_address=seller_address where hash = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        String sql1 = "select `index` from user.item_behind where hash = ?";
+        PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+        preparedStatement.setBoolean(1,false);
+        preparedStatement.setString(2,hash);
+        preparedStatement.executeUpdate();
+        preparedStatement1.setString(1,hash);
+        ResultSet set = preparedStatement1.executeQuery();
+        if(set.next()){
+            ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+            itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash),set.getBigDecimal("index").toBigInteger());
+        }
+        UtilDAO.close(connection,null,preparedStatement);
+    }
+
     public  void buyItem(String accountAddress, BigInteger id, byte[] hash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String account = TraceInformationSaveDTO.getInstance().getContractAccount();
-        String sql = "update user.item set isSold = ?,owner = ?,hash=? where owner = ? and `index` = ?";
+        String sql = "update user.item_behind set isSold = ?,owner_address = ?,hash=? where seller_address = ? and `index` = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1,true);
         preparedStatement.setString(2,account);

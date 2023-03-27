@@ -83,7 +83,7 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
 
      public TraceItemStatusDTO checkStatus(String hash1) throws ContractException {
          byte[] bytes = Numeric.hexStringToByteArray(hash1);
-         Tuple3<BigInteger, String, BigInteger> status = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().checkStatus(bytes);
+         Tuple3<BigInteger, String, BigInteger> status = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getStatus(bytes);
          TraceItemStatusDTO traceItemStatusDTO = new TraceItemStatusDTO();
          long longValue = status.getValue1().longValue();
          Date date = new Date(longValue * 1000);
@@ -108,5 +108,9 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         String comment = traceFeedbackBO.getComment();
         int choice = traceFeedbackBO.getChoice();
         ((TraceConsumerDAOImpl)USER_ITEM).writeDown(seller,buyer,comment,choice,itemHash);
+    }
+
+    public void returnItem(String hash2) throws SQLException, IOException {
+        ((TraceConsumerDAOImpl)USER_ITEM).returnItem(hash2);
     }
 }

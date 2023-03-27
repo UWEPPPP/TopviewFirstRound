@@ -63,7 +63,7 @@ public interface TraceUserDAO {
      */
     static List<TraceItemPO> showAllItem() throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.item";
+        String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash where isRemoved = false";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet set = preparedStatement.executeQuery();
         List<TraceItemPO> list = new ArrayList<>();
@@ -95,7 +95,7 @@ public interface TraceUserDAO {
         if(set.next()){
             accountAddress = set.getString("account_address");
         }
-        String sql1 = "SELECT t1.*, t2.name FROM user.consumer_feedback t1 INNER JOIN user.item t2 ON t1.item = t2.hash where seller_account=?;";
+        String sql1 = "SELECT t1.*, t2.name FROM user.consumer_feedback t1 INNER JOIN user.item_show t2 ON t1.item = t2.hash where seller_account=?;";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1,accountAddress);
         ResultSet set1 = preparedStatement1.executeQuery();

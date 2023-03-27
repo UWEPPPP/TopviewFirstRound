@@ -2,7 +2,6 @@ package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.TraceQueryDAO;
 import com.liujiahui.www.dao.TraceUserDAO;
-import com.liujiahui.www.service.TraceQueryService;
 
 /**
  * dao工厂

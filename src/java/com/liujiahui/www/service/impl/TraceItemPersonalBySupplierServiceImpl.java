@@ -9,9 +9,10 @@ import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.service.TraceItemPersonalService;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -38,8 +39,9 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
           TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
           ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
           TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceAddItemBO.getRealName(), traceAddItemBO.getPrice(), traceAddItemBO.getRealDescription(), BigInteger.valueOf(traceAddItemBO.getType()));
-          Tuple1<BigInteger> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
-          ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceAddItemBO.getName(), traceAddItemBO.getPrice(), traceAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName(),traceAddItemBO.getType());
+          Tuple2<BigInteger, byte[]> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
+          String hash = Numeric.toHexString(addItemOutput.getValue2());
+          ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceAddItemBO.getName(), traceAddItemBO.getPrice(), traceAddItemBO.getDescription(),instance.getContractAccount(),addItemOutput.getValue1(),instance.getUserName(),traceAddItemBO.getType(),hash);
       }
 
 
@@ -59,5 +61,9 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
       public Map<String, List<TraceItemPO>> showItem() throws ContractException, SQLException, IOException {
         return  TRACE_USER_DAO.showItem(TraceInformationSaveDTO.getInstance().getContractAccount());
     }
+
+    public void removeItem(int index,Boolean choice) throws SQLException, IOException {
+        ((TraceSupplierDAOImpl) TRACE_USER_DAO).removeOrRestoredItem(index,choice);
+     }
 
 }

@@ -31,6 +31,7 @@ public class TraceConsumeView {
         }
         System.out.println("1.通过产品购买时给予的hash值验伪");
         System.out.println("2.查看产品运送状态");
+        System.out.println("3.商品退货");
         Scanner in = new Scanner(System.in);
         TraceConsumeController traceConsumeController = new TraceConsumeController();
         int choice = in.nextInt();
@@ -85,6 +86,13 @@ public class TraceConsumeView {
                 System.out.println("时间:"+ traceItemStatusVO.getDate());
                 System.out.println("状态:"+ traceItemStatusVO.getStatus());
                 System.out.println("所在地:"+ traceItemStatusVO.getPlace());
+                break;
+            case 3:
+                System.out.println("退货最晚时间为购买的7天后");
+                System.out.println("请输入商品hash");
+                String hash2 = in.next();
+                traceConsumeController.returnItem(hash2);
+                System.out.println("退货成功");
                 break;
             default:
         }

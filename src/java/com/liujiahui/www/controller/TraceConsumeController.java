@@ -85,4 +85,7 @@ public class TraceConsumeController {
     }
 
 
+    public void returnItem(String hash2) throws SQLException, IOException {
+        ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).returnItem(hash2);
+    }
 }

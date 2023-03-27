@@ -122,7 +122,7 @@ public class TraceSupplyView {
         showRealItem(items.get("real"));
         System.out.println("1.更新未售出产品的信息");
         System.out.println("2.更新已售出产品的状态");
-        System.out.println("3.下架商品");
+        System.out.println("3.下架or恢复商品");
         System.out.println("4.返回列表");
         Scanner in = new Scanner(System.in);
         TraceSupplyController traceSupplyController = new TraceSupplyController();
@@ -152,10 +152,12 @@ public class TraceSupplyView {
                 System.out.println("更新成功");
                 break;
             case 3:
-                System.out.println("请输入商品序号");
-                int id1 = in.nextInt();
-                traceSupplyController.deleteItem(id1,items.get("Outside"));
-                System.out.println("下架成功");
+                System.out.println("请输入商品下标");
+                int index1 = in.nextInt();
+                System.out.println("上架还是下架(ture or false)");
+                boolean status = in.nextBoolean();
+                traceSupplyController.removeItem(index1,status);
+                System.out.println("操作成功");
                 break;
             default:
         }
@@ -165,7 +167,7 @@ public class TraceSupplyView {
             if(itemPo.getSold()){
                 System.out.println(itemPo.getId()+" "+"商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription()+" 已售出 ");
             }else {
-                System.out.println(itemPo.getId()+" "+"商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription()+" 未售出 ");
+                System.out.println(itemPo.getId()+" "+"商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription()+"index"+itemPo.getIndex()+" 未售出 ");
             }
         }
     }

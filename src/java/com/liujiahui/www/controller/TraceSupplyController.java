@@ -58,6 +58,9 @@ public class TraceSupplyController {
         TraceSupplyView.showSupplierItem(traceItemPersonalService.showItem());
     }
 
-    public void deleteItem(int id1, List<TraceItemPO> outside) {
+    public void removeItem (int index,Boolean choice) throws SQLException, IOException {
+        ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).removeItem(index,choice);
     }
+
+
 }

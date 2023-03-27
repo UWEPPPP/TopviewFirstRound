@@ -4,6 +4,7 @@ import com.liujiahui.www.dao.TraceUserDAO;
 import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.service.wrapper.ContractStorageService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -33,10 +34,21 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
     public static TraceSupplierDAOImpl getInstance() {
         return TRACE_SUPPLIER;
     }
+
+    /**
+     * 显示商家自己的产品
+     *
+     * @param accountAddress
+     * @return {@link Map}<{@link String}, {@link List}<{@link TraceItemPO}>>
+     * @throws ContractException 合同例外
+     * @throws SQLException      sqlexception异常
+     * @throws IOException       ioexception
+     */
     @Override
     public Map<String, List<TraceItemPO>> showItem(String accountAddress) throws ContractException, SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.item where seller = ?";
+        String sql = "SELECT * FROM user.item_show INNER JOIN user.item_behind" +
+                " ON item_show.hash = item_behind.hash WHERE item_behind.seller_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,accountAddress);
         ResultSet set = preparedStatement.executeQuery();
@@ -48,10 +60,10 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
             list.add(traceItemPo);
         }
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
-        DynamicArray<ContractTradeService.Item> soldItem = instance.getItemTradeSolidity().getSoldItem();
+        DynamicArray<ContractStorageService.Item> soldItem = instance.getItemTradeSolidity().getSoldItems();
         List<TraceItemPO> list1=new ArrayList<>();
         int index=0;
-        for (ContractTradeService.Item item : soldItem.getValue()) {
+        for (ContractStorageService.Item item : soldItem.getValue()) {
             TraceItemPO traceItemPoOne = new TraceItemPO(item.name,item.price,item.description);
             traceItemPoOne.setIndex(new BigDecimal(index));
             traceItemPoOne.setSold(item.isSold);
@@ -64,21 +76,18 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         UtilDAO.close(connection,null,preparedStatement);
         return map;
     }
-    public  void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index,String userName,int type) throws SQLException, IOException {
+
+
+    public  void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index, String userName, int type, String hash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "insert into user.item (name, price, description, owner, `index`,isSold,seller,owner_name,type) values (?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into user.item_show (name, price, description,owner_name,type,hash) values (?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,name);
         BigDecimal bigDecimal = new BigDecimal(price);
         preparedStatement.setBigDecimal(2,bigDecimal);
         preparedStatement.setString(3,description);
-        preparedStatement.setString(4,accountAddress);
-        long longValue = index.longValue();
-        preparedStatement.setLong(5,longValue);
-        preparedStatement.setBoolean(6,false);
-        preparedStatement.setString(7,accountAddress);
-        preparedStatement.setString(8,userName);
-        String itemType = null;
+        preparedStatement.setString(4,userName);
+       String itemType = null;
         switch (type){
             case 0:
                 itemType="Food";
@@ -97,14 +106,24 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
                 break;
             default:
         }
-        preparedStatement.setString(9,itemType);
+        preparedStatement.setString(5,itemType);
+        preparedStatement.setString(6,hash);
         preparedStatement.executeUpdate();
+        String sql1 = "insert into user.item_behind (owner_address,isSold,`index`,seller_address,hash,isRemoved ) values (?,?,?,?,?,?)";
+        PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+        preparedStatement1.setString(1,accountAddress);
+        preparedStatement1.setBoolean(2,false);
+        preparedStatement1.setBigDecimal(3,new BigDecimal(index));
+        preparedStatement1.setString(4,accountAddress);
+        preparedStatement1.setString(5,hash);
+        //是否下架了
+        preparedStatement1.setBoolean(6,false);
     }
 
 
     public  void updateItem(String oldName, String name, String description, String price) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "update user.item set name = ?,description = ?,price = ? where name = ?";
+        String sql = "update user.item_show set name = ?,description = ?,price = ? where name = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,name);
         preparedStatement.setString(2,description);
@@ -115,5 +134,15 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         UtilDAO.close(connection,null,preparedStatement);
     }
 
-
+    public void removeOrRestoredItem(int index,Boolean choice) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "update user.item_behind set isRemoved = ?  where `index`=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setBoolean(1,choice);
+        preparedStatement.setInt(2,index);
+        preparedStatement.executeUpdate();
+        UtilDAO.close(connection, null, preparedStatement);
+        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+        itemTradeSolidity.removeItem(BigInteger.valueOf(index),choice);
+    }
 }

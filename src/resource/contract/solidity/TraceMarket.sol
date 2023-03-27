@@ -33,12 +33,12 @@ contract TraceMarket {
         isProcessing = false;
     }
 
-    function addItem(string memory name, uint256 price, string memory description, uint256 typeSet) external onlySupplier returns (uint256) {
+    function addItem(string memory name, uint256 price, string memory description, uint256 typeSet) external onlySupplier returns (uint256,bytes32) {
         uint256 id = trace.getSellerItemsIndex(msg.sender);
         bytes32 hash = keccak256(abi.encodePacked(id, name, price, description, msg.sender));
         trace.addItem(id,name, price, description,typeSet,msg.sender,hash);
         emit NewItemAdd(msg.sender, name, price);
-        return id;
+        return (id,hash);
     }
 
     function buyItem(address seller, uint256 index) external noReentrant onlyConsumer {

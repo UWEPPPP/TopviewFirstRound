@@ -33,7 +33,7 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
             order = "desc";
         }
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item where price between ? and ? order by price  "+order;
+            String sql="select * from user.item_show where price between ? and ? order by price  "+order;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,min);
             preparedStatement.setInt(2,max);
@@ -47,7 +47,7 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
     @Override
     public List<TraceItemPO> queryByKeyword(String keyword) {
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item where name like ?";
+            String sql="select * from user.item_show where name like ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,"%"+keyword+"%");
             return querySame(preparedStatement);
@@ -59,7 +59,7 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
     @Override
     public List<TraceItemPO> queryByType(String type) {
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item where type=?";
+            String sql="select * from user.item_show where type=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,type);
             return querySame(preparedStatement);
@@ -71,7 +71,8 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
     @Override
     public List<TraceItemPO> queryBySeller(String seller) {
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item where seller=?";
+            String sql="select * from user.item_behind INNER JOIN item_show ON item_behind.hash " +
+                    "= item_show.hash where seller_address=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,seller);
             return querySame(preparedStatement);
