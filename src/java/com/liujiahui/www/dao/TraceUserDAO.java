@@ -69,7 +69,7 @@ public interface TraceUserDAO {
         List<TraceItemPO> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"),set.getString("owner_name"));
+            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner_address"),set.getBigDecimal("index"),set.getBoolean("isSold"),set.getString("owner_name"));
             traceItemPo.setType(set.getString("type"));
             list.add(traceItemPo);
         }

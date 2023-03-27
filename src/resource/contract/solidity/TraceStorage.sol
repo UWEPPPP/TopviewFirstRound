@@ -48,9 +48,9 @@ contract TraceStorage {
         return ItemsBySeller[owner].length;
     }
 
-    function addItem(uint256 id,string memory name, uint256 price, string memory description, uint256 typeSet,address seller,bytes32 hash)external{
+    function addItem(address owner,uint256 id,string memory name, uint256 price, string memory description, uint256 typeSet,address seller,bytes32 hash)external{
         Item memory item= Item(id,name,Type(typeSet),price, description, false, false,seller,hash);
-        ItemsBySeller[msg.sender].push(item);
+        ItemsBySeller[owner].push(item);
         ItemByHash[hash] = item;
     }
 
@@ -58,13 +58,13 @@ contract TraceStorage {
         return ItemByHash[hash];
     }
 
-    function updateItem(uint256 index, uint256 price) external  {
+    function updateItem(address owner,uint256 index, uint256 price) external  {
         ItemsBySeller[msg.sender][index].price = price;
-        ItemByHash[ItemsBySeller[msg.sender][index].hash].price=price;
+        ItemByHash[ItemsBySeller[owner][index].hash].price=price;
     }
 
-    function updateStatus(uint256 index, string memory place, uint256 deliver) external {
-        Item storage item = ItemsBySeller[msg.sender][index];
+    function updateStatus(address owner,uint256 index, string memory place, uint256 deliver) external {
+        Item storage item = ItemsBySeller[owner][index];
         require(item.isSold, "Item is not sold yet");
         ItemStatusByHash[item.hash] = ItemLife(now, place, Status(deliver));
     }

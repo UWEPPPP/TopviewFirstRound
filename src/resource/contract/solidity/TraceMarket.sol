@@ -36,7 +36,7 @@ contract TraceMarket {
     function addItem(string memory name, uint256 price, string memory description, uint256 typeSet) external onlySupplier returns (uint256,bytes32) {
         uint256 id = trace.getSellerItemsIndex(msg.sender);
         bytes32 hash = keccak256(abi.encodePacked(id, name, price, description, msg.sender));
-        trace.addItem(id,name, price, description,typeSet,msg.sender,hash);
+        trace.addItem(msg.sender,id,name, price, description,typeSet,msg.sender,hash);
         emit NewItemAdd(msg.sender, name, price);
         return (id,hash);
     }
@@ -73,7 +73,7 @@ contract TraceMarket {
     }
 
     function updateStatus(uint256 index, string memory place, uint256 deliver) external {
-        trace.updateStatus(index,place,deliver);
+        trace.updateStatus(msg.sender,index,place,deliver);
     }
 
     function getStatus(bytes32 hash) external view onlyConsumer returns (uint256, string memory, uint256) {

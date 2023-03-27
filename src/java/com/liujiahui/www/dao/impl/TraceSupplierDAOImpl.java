@@ -118,6 +118,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         preparedStatement1.setString(5,hash);
         //是否下架了
         preparedStatement1.setBoolean(6,false);
+        preparedStatement1.executeUpdate();
     }
 
 

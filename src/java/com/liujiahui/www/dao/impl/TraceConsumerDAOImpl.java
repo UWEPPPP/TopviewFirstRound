@@ -70,7 +70,8 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
     public  void buyItem(String accountAddress, BigInteger id, byte[] hash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String account = TraceInformationSaveDTO.getInstance().getContractAccount();
-        String sql = "update user.item_behind set isSold = ?,owner_address = ?,hash=? where seller_address = ? and `index` = ?";
+        System.out.println("thishtis");
+        String sql = "update user.item_behind  JOIN user.item_show i on item_behind.hash = i.hash   set isSold = ?,owner_address = ?,hash=? where seller_address = ? and i.id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1,true);
         preparedStatement.setString(2,account);

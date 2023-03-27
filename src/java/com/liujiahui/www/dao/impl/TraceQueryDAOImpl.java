@@ -33,11 +33,10 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
             order = "desc";
         }
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item_show where price between ? and ? order by price  "+order;
+            String sql="select * from user.item_show INNER join item_behind ib on item_show.hash = ib.hash where price between ? and ? order by price  "+order;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,min);
             preparedStatement.setInt(2,max);
-            preparedStatement.setString(3,order);
             return querySame(preparedStatement);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -59,7 +58,7 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
     @Override
     public List<TraceItemPO> queryByType(String type) {
         try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item_show where type=?";
+            String sql="select * from user.item_show INNER JOIN item_behind ib on item_show.hash = ib.hash where type=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,type);
             return querySame(preparedStatement);
@@ -91,7 +90,7 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
             po.setName(set.getString("name"));
             po.setPrice(BigInteger.valueOf(set.getInt("price")));
             po.setDescription(set.getString("description"));
-            po.setOwner(set.getString("owner"));
+            po.setOwner(set.getString("owner_address"));
             po.setOwnerName(set.getString("owner_name"));
             po.setIndex(set.getBigDecimal("index"));
             po.setSold(set.getBoolean("isSold"));
