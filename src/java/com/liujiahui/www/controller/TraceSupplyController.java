@@ -57,4 +57,7 @@ public class TraceSupplyController {
     public void showSupplierItem() throws ContractException, SQLException, IOException {
         TraceSupplyView.showSupplierItem(traceItemPersonalService.showItem());
     }
+
+    public void deleteItem(int id1, List<TraceItemPO> outside) {
+    }
 }

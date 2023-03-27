@@ -122,7 +122,8 @@ public class TraceSupplyView {
         showRealItem(items.get("real"));
         System.out.println("1.更新未售出产品的信息");
         System.out.println("2.更新已售出产品的状态");
-        System.out.println("3.返回列表");
+        System.out.println("3.下架商品");
+        System.out.println("4.返回列表");
         Scanner in = new Scanner(System.in);
         TraceSupplyController traceSupplyController = new TraceSupplyController();
         int choice = in.nextInt();
@@ -150,7 +151,12 @@ public class TraceSupplyView {
                 traceSupplyController.updateLogistics(id,location,logistics);
                 System.out.println("更新成功");
                 break;
-
+            case 3:
+                System.out.println("请输入商品序号");
+                int id1 = in.nextInt();
+                traceSupplyController.deleteItem(id1,items.get("Outside"));
+                System.out.println("下架成功");
+                break;
             default:
         }
     }
