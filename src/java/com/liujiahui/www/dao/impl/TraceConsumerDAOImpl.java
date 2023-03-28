@@ -40,7 +40,7 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         List<TraceItemPO> list = new ArrayList<>();
         while (set.next()){
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItem = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner"),set.getBigDecimal("index"),set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
+            TraceItemPO traceItem = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner_name"),set.getBigDecimal("index"),set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
             list.add(traceItem);
         }
         UtilDAO.close(connection,null,preparedStatement);
@@ -67,18 +67,15 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         UtilDAO.close(connection,null,preparedStatement);
     }
 
-    public  void buyItem(String accountAddress, BigInteger id, byte[] hash) throws SQLException, IOException {
+    public  void buyItem(String accountAddress, BigInteger index) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String account = TraceInformationSaveDTO.getInstance().getContractAccount();
-        System.out.println("thishtis");
-        String sql = "update user.item_behind  JOIN user.item_show i on item_behind.hash = i.hash   set isSold = ?,owner_address = ?,hash=? where seller_address = ? and i.id = ?";
+        String sql = "update user.item_behind  set isSold = ?,owner_address = ? where seller_address = ? and `index` = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1,true);
         preparedStatement.setString(2,account);
-        String hexString = Numeric.toHexString(hash);
-        preparedStatement.setString(3,hexString);
-        preparedStatement.setString(4,accountAddress);
-        preparedStatement.setBigDecimal(5,new java.math.BigDecimal(id));
+        preparedStatement.setString(3,accountAddress);
+        preparedStatement.setBigDecimal(4,new java.math.BigDecimal(index));
         preparedStatement.executeUpdate();
         UtilDAO.close(connection,null,preparedStatement);
     }

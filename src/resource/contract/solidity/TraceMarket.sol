@@ -1,6 +1,6 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
-import "/home/ljh/fisco/console/contracts/solidity/TraceStorage.sol";
+import "TraceStorage.sol";
 contract TraceMarket {
 
     TraceStorage private  trace;
@@ -48,8 +48,7 @@ contract TraceMarket {
         trace.itemIsSold(seller,index,true);
         trace.decreaseBalance(msg.sender, item.price);
         trace.increaseBalance(seller, item.price);
-        bytes32 hash = keccak256(abi.encodePacked(item.name, item.price, item.description, seller));
-        emit ItemSold(seller, msg.sender, hash);
+        emit ItemSold(seller, msg.sender, item.hash);
     }
 
     function getSoldItems() external view onlySupplier returns (TraceStorage.Item[] memory items) {
@@ -69,7 +68,7 @@ contract TraceMarket {
     }
 
     function updateItem(uint256 index, uint256 price) external onlySupplier {
-        trace.updateItem(index,price);
+        trace.updateItem(msg.sender,index,price);
     }
 
     function updateStatus(uint256 index, string memory place, uint256 deliver) external {
@@ -85,8 +84,9 @@ contract TraceMarket {
         TraceStorage.Item memory item = trace.getSingleItem(hash);
         (uint256 date,, )=trace.getStatus(hash);
         require(item.isSold, "Item is not sold yet");
-        require((date - now) < 7 days, "Out of date");
+        require(now < (date + 7 days), "Out of date");
         trace.increaseBalance(msg.sender, item.price);
+        trace.decreaseBalance(item.seller, item.price);
         trace.itemIsSold(msg.sender,index,false);
     }
 

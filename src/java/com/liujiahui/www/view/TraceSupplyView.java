@@ -154,7 +154,7 @@ public class TraceSupplyView {
             case 3:
                 System.out.println("请输入商品下标");
                 int index1 = in.nextInt();
-                System.out.println("上架还是下架(ture or false)");
+                System.out.println("下架还是恢复上架(输入true or false)");
                 boolean status = in.nextBoolean();
                 traceSupplyController.removeItem(index1,status);
                 System.out.println("操作成功");

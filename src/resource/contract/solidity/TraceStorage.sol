@@ -59,7 +59,7 @@ contract TraceStorage {
     }
 
     function updateItem(address owner,uint256 index, uint256 price) external  {
-        ItemsBySeller[msg.sender][index].price = price;
+        ItemsBySeller[owner][index].price = price;
         ItemByHash[ItemsBySeller[owner][index].hash].price=price;
     }
 

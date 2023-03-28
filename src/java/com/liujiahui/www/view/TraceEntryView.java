@@ -23,9 +23,9 @@ public class TraceEntryView {
     static Scanner in = new Scanner(System.in);
     public static void viewConsumer(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(traceAfterLoginVO !=null){
+            System.out.println("您好消费者" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
+            System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
             do {
-                System.out.println("您好消费者" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
-                System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
                 System.out.println("请选择您要进行的操作");
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
@@ -56,8 +56,8 @@ public class TraceEntryView {
     public static void viewSupplier(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         if(traceAfterLoginVO !=null){
             System.out.println("您好 供应商" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
+            System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
             do {
-                System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
                 System.out.println("请选择您要进行的操作");
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");

@@ -54,6 +54,7 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
        TraceTransactionDTO traceTransactionDTO = new TraceTransactionDTO();
        String checkError="Success";
        if(!Objects.equals(transactionResponse.getReturnMessage(), checkError)){
+           System.out.println("交易失败");
            traceTransactionDTO.setReturnMessage(transactionResponse.getReturnMessage());
            return null;
        }
@@ -61,7 +62,7 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
        ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
        System.out.println(itemSoldEventResponse);
        BigInteger bigInteger1 = index.toBigInteger();
-        ((TraceConsumerDAOImpl)USER_ITEM).buyItem(seller,bigInteger1,itemSoldEventResponse.hash);
+        ((TraceConsumerDAOImpl)USER_ITEM).buyItem(seller,bigInteger1);
        BigInteger balance = contractTradeServiceSolidity.getBalance();
        instance.setBalance(String.valueOf(balance));
        traceTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);

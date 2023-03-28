@@ -1,8 +1,6 @@
 package com.liujiahui.www;
-
 import com.liujiahui.www.view.TraceInitView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
