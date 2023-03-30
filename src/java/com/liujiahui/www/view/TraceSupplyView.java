@@ -195,9 +195,9 @@ public class TraceSupplyView {
     public static void showAllFeedback(List<TraceFeedbackPO> pos) {
         for (TraceFeedbackPO po : pos) {
             if (po.getRead()) {
-                System.out.println("反馈者：" + po.getBuyer() + " 类型：" + po.getLikeOrReport() + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName());
+                System.out.println("已读的反馈 "+"反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport()?"好评":"差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName());
             } else {
-                System.out.println("反馈者：" + po.getBuyer() + " 类型：" + po.getLikeOrReport() + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + "未读的新反馈");
+                System.out.println("未读的新反馈！"+"反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport()?"好评":"差评")+ " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() );
             }
         }
     }

@@ -17,6 +17,7 @@ public class Test {
         Client client = sdk.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String hexPrivateKey = cryptoKeyPair.getHexPrivateKey();
+        System.out.println(cryptoKeyPair.getAddress());
         ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair);
         ContractTradeService deploy1 = ContractTradeService.deploy(client, cryptoKeyPair, deploy.getContractAddress());
         System.out.println(deploy1.getContractAddress());
