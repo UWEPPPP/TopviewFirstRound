@@ -7,10 +7,10 @@ package com.liujiahui.www.entity.vo;
  * @date 2023/03/17
  */
 public class TraceAfterLoginVO {
-       private  String name;
-       private  String balance;
-       private  String identity;
-       private Integer informationSize;
+    private String name;
+    private String balance;
+    private String identity;
+    private Integer informationSize;
 
     public TraceAfterLoginVO(String name, String balance, String identity) {
         this.name = name;

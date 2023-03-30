@@ -9,9 +9,9 @@ import java.util.Date;
  * @date 2023/03/22
  */
 public class TraceItemStatusVO {
-         private Date    date;
-         private String      place;
-         private String      status;
+    private Date date;
+    private String place;
+    private String status;
 
     public Date getDate() {
         return date;

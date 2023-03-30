@@ -29,39 +29,39 @@ import java.security.NoSuchAlgorithmException;
 public class TraceContractServiceImpl implements TraceContractService {
     @Override
     public BigInteger getBalance(String privateKey) throws ContractException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-            BcosSDK sdk = BcosSDK.build("config-example.toml");
-            Client client = sdk.getClient(1);
-            CryptoSuite cryptoSuite = client.getCryptoSuite();
-            String hexPrivateKey = CryptoUtil.decryptHexPrivateKey(privateKey, "src/resource/password.txt");
-            CryptoKeyPair keyPair = cryptoSuite.createKeyPair(hexPrivateKey);
-            //解密
-            TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
-            ContractTradeService asset = ContractTradeService.load("0x9e1c3b0bfa72a8aed93fd31c879a5351bf605b42", client, keyPair);
-            TraceInformationSaveDTO userInformationSaveDTO = TraceInformationSaveDTO.getInstance();
-            userInformationSaveDTO.setDecoder(decoder);
-            userInformationSaveDTO.setItemTradeSolidity(asset);
-            return asset.getBalance();
-        }
+        BcosSDK sdk = BcosSDK.build("config-example.toml");
+        Client client = sdk.getClient(1);
+        CryptoSuite cryptoSuite = client.getCryptoSuite();
+        String hexPrivateKey = CryptoUtil.decryptHexPrivateKey(privateKey, "src/resource/password.txt");
+        CryptoKeyPair keyPair = cryptoSuite.createKeyPair(hexPrivateKey);
+        //解密
+        TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
+        ContractTradeService asset = ContractTradeService.load("0xf0e12e6437b3387a68f7789607998ea9c4f72d5b", client, keyPair);
+        TraceInformationSaveDTO userInformationSaveDTO = TraceInformationSaveDTO.getInstance();
+        userInformationSaveDTO.setDecoder(decoder);
+        userInformationSaveDTO.setItemTradeSolidity(asset);
+        return asset.getBalance();
+    }
 
     @Override
     public TraceAccountOnContractDTO initByContract(String table) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-            BcosSDK sdk = BcosSDK.build("config-example.toml");
-            Client client = sdk.getClient(1);
-            CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
-            String accountAddress = cryptoKeyPair.getAddress();
-            ContractTradeService asset = ContractTradeService.load("0x9e1c3b0bfa72a8aed93fd31c879a5351bf605b42", client, cryptoKeyPair);
-            String identity = "suppliers";
-            if (table.equals(identity)) {
-                asset.registerAsset(BigInteger.valueOf(1));
-            } else {
-                asset.registerAsset(BigInteger.valueOf(2));
-            }
-            String encryptHexPrivateKey = CryptoUtil.encryptHexPrivateKey(cryptoKeyPair.getHexPrivateKey(), "src/resource/password.txt");
-            //加密
-            TraceAccountOnContractDTO traceAccountOnContractDTO = new TraceAccountOnContractDTO();
-            traceAccountOnContractDTO.setAccountAddress(accountAddress);
-            traceAccountOnContractDTO.setPrivateKey(encryptHexPrivateKey);
-            return traceAccountOnContractDTO;
+        BcosSDK sdk = BcosSDK.build("config-example.toml");
+        Client client = sdk.getClient(1);
+        CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
+        String accountAddress = cryptoKeyPair.getAddress();
+        ContractTradeService asset = ContractTradeService.load("0xf0e12e6437b3387a68f7789607998ea9c4f72d5b", client, cryptoKeyPair);
+        String identity = "suppliers";
+        if (table.equals(identity)) {
+            asset.registerAsset(BigInteger.valueOf(1));
+        } else {
+            asset.registerAsset(BigInteger.valueOf(2));
+        }
+        String encryptHexPrivateKey = CryptoUtil.encryptHexPrivateKey(cryptoKeyPair.getHexPrivateKey(), "src/resource/password.txt");
+        //加密
+        TraceAccountOnContractDTO traceAccountOnContractDTO = new TraceAccountOnContractDTO();
+        traceAccountOnContractDTO.setAccountAddress(accountAddress);
+        traceAccountOnContractDTO.setPrivateKey(encryptHexPrivateKey);
+        return traceAccountOnContractDTO;
     }
 }
 

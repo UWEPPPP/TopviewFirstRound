@@ -28,18 +28,11 @@ public interface TraceRegisterAndLoginService {
     TraceLoginDAOImpl TRACE_LOGIN_DAO = TraceFactoryDAO.getTraceLoginDAO();
 
     /**
-     * @param traceRegisterBO 用户登记薄
-     * @return {@link Boolean}
-     * 用于用户注册
-     */
-    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
-
-    /**
      * @param traceLoginBO 用户登录博
      * @return {@link TraceInformationSaveDTO}
      * 用于用户登录
      */
-    static TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException, SQLException, IOException{
+    static TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException, SQLException, IOException {
         String account = traceLoginBO.getAccount();
         String password = traceLoginBO.getPassword();
         String identity = traceLoginBO.getIdentity();
@@ -49,4 +42,11 @@ public interface TraceRegisterAndLoginService {
         traceAccountOnJavaDTO.setIdentity(identity);
         return TRACE_LOGIN_DAO.login(traceAccountOnJavaDTO);
     }
+
+    /**
+     * @param traceRegisterBO 用户登记薄
+     * @return {@link Boolean}
+     * 用于用户注册
+     */
+    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
 }

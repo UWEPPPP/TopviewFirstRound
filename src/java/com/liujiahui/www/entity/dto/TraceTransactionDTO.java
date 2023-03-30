@@ -6,39 +6,39 @@ import com.liujiahui.www.service.wrapper.ContractTradeService;
  * @author LiuJiaHui
  */
 public class TraceTransactionDTO {
-  private ContractTradeService.ItemSoldEventResponse itemSoldEventResponse;
-  private String balance;
-  private String returnMessage;
+    private ContractTradeService.ItemSoldEventResponse itemSoldEventResponse;
+    private String balance;
+    private String returnMessage;
 
-  public ContractTradeService.ItemSoldEventResponse getItemSoldEventResponse() {
-    return itemSoldEventResponse;
-  }
+    public ContractTradeService.ItemSoldEventResponse getItemSoldEventResponse() {
+        return itemSoldEventResponse;
+    }
 
-  public void setItemSoldEventResponse(ContractTradeService.ItemSoldEventResponse itemSoldEventResponse) {
-    this.itemSoldEventResponse = itemSoldEventResponse;
-  }
+    public void setItemSoldEventResponse(ContractTradeService.ItemSoldEventResponse itemSoldEventResponse) {
+        this.itemSoldEventResponse = itemSoldEventResponse;
+    }
 
-  public String getBalance() {
-    return balance;
-  }
+    public String getBalance() {
+        return balance;
+    }
 
-  public void setBalance(String balance) {
-    this.balance = balance;
-  }
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
 
-  @Override
-  public String toString() {
-    return "UserTransactionDTO{" +
-            "itemSoldEventResponse=" + itemSoldEventResponse +
-            ", balance='" + balance + '\'' +
-            '}';
-  }
-
-    public void setReturnMessage(String returnMessage) {
-        this.returnMessage = returnMessage;
+    @Override
+    public String toString() {
+        return "UserTransactionDTO{" +
+                "itemSoldEventResponse=" + itemSoldEventResponse +
+                ", balance='" + balance + '\'' +
+                '}';
     }
 
     public String getReturnMessage() {
         return returnMessage;
+    }
+
+    public void setReturnMessage(String returnMessage) {
+        this.returnMessage = returnMessage;
     }
 }

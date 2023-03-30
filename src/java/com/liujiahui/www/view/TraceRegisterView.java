@@ -21,6 +21,19 @@ import java.util.Scanner;
  */
 public class TraceRegisterView {
     static Scanner in = new Scanner(System.in);
+
+    public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        if (bool) {
+            System.out.println("注册成功");
+            System.out.println("登录时账号即为您输入的名字" + " ,密码为你设置的密码 " + " ,账号初始余额为1000");
+            System.out.println("即将返回主界面");
+        } else {
+            System.out.println("注册失败,用户名已存在");
+            System.out.println("即将返回主界面");
+        }
+        TraceInitView.start();
+    }
+
     public void registerByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("进入消费者注册界面");
         System.out.println("请输入您的姓名：");
@@ -61,16 +74,5 @@ public class TraceRegisterView {
         traceRegisterDTO.setChoice(true);
         TraceRegisterController traceRegisterController = new TraceRegisterController();
         traceRegisterController.register(traceRegisterDTO);
-    }
-    public static void returnInterface(Boolean bool) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(bool){
-            System.out.println("注册成功");
-            System.out.println("登录时账号即为您输入的名字"+" ,密码为你设置的密码 "+" ,账号初始余额为1000");
-            System.out.println("即将返回主界面");
-        }else {
-            System.out.println("注册失败,用户名已存在");
-            System.out.println("即将返回主界面");
-        }
-        TraceInitView.start();
     }
 }

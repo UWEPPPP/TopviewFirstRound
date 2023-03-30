@@ -19,7 +19,14 @@ import java.util.Scanner;
  * @date 2023/03/16
  */
 public class TraceLoginView {
-   static Scanner in = new Scanner(System.in);
+    static Scanner in = new Scanner(System.in);
+
+    public static void loginReturnInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        System.out.println("登录失败,用户名或密码错误");
+        System.out.println("即将返回主界面");
+        TraceInitView.start();
+    }
+
     public void loginByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         System.out.println("进入消费者登录界面");
         System.out.println("请输入您的账号：");
@@ -27,7 +34,7 @@ public class TraceLoginView {
         System.out.println("请输入您的密码：");
         String password = in.next();
         TraceLoginController traceLoginController = new TraceLoginController();
-        traceLoginController.login(account,password,false);
+        traceLoginController.login(account, password, false);
     }
 
     public void loginBySupplier() throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
@@ -37,11 +44,6 @@ public class TraceLoginView {
         System.out.println("请输入您的密码：");
         String password = in.next();
         TraceLoginController traceLoginController = new TraceLoginController();
-        traceLoginController.login(account,password,true);
-    }
-    public static void loginReturnInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        System.out.println("登录失败,用户名或密码错误");
-        System.out.println("即将返回主界面");
-        TraceInitView.start();
+        traceLoginController.login(account, password, true);
     }
 }

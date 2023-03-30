@@ -8,13 +8,15 @@ import java.math.BigInteger;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class TraceAddItemBO {
+public class TraceItemBO {
     private String name;
     private BigInteger price;
     private String description;
     private String realDescription;
     private String realName;
     private Integer type;
+    private String location;
+    private String storage;
 
     public String getName() {
         return name;
@@ -49,20 +51,20 @@ public class TraceAddItemBO {
                 '}';
     }
 
-    public void setRealDescription(String realDescription) {
-        this.realDescription = realDescription;
-    }
-
     public String getRealDescription() {
         return realDescription;
     }
 
-    public void setRealName(String realName) {
-        this.realName = realName;
+    public void setRealDescription(String realDescription) {
+        this.realDescription = realDescription;
     }
 
     public String getRealName() {
         return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public Integer getType() {
@@ -71,5 +73,21 @@ public class TraceAddItemBO {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getStorage() {
+        return storage;
+    }
+
+    public void setStorage(String storage) {
+        this.storage = storage;
     }
 }

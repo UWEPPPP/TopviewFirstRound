@@ -2,8 +2,8 @@ package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceRegisterDTO;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
+import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import com.liujiahui.www.view.TraceRegisterView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
@@ -32,10 +32,11 @@ public class TraceRegisterController {
         TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryImplService.getTraceRegisterAndLoginService(traceRegisterDTO.getChoice());
         TraceRegisterView.returnInterface(traceRegisterAndLoginService.register(traceRegisterBO));
     }
+
     public void registerOrderByIdentity(int choice2) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(choice2 == 1){
+        if (choice2 == 1) {
             new TraceRegisterView().registerBySupplier();
-    }else {
+        } else {
             new TraceRegisterView().registerByConsumer();
         }
     }

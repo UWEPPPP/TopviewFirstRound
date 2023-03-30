@@ -13,22 +13,23 @@ import java.util.Properties;
  */
 public class UtilDAO {
     public static Connection getConnection() throws SQLException, IOException {
-        Properties properties=new Properties();
-        FileReader fre=new FileReader("src/resource/properties");
+        Properties properties = new Properties();
+        FileReader fre = new FileReader("src/resource/properties");
         properties.load(fre);
-        String url= properties.getProperty("URL");
-        String username=properties.getProperty("username");
-        String password=properties.getProperty("password");
-        return DriverManager.getConnection(url,username,password);
+        String url = properties.getProperty("URL");
+        String username = properties.getProperty("username");
+        String password = properties.getProperty("password");
+        return DriverManager.getConnection(url, username, password);
     }
+
     public static void close(Connection connection, ResultSet set, PreparedStatement preparedStatement) throws SQLException {
-        if (connection!=null) {
+        if (connection != null) {
             connection.close();
         }
-        if(set!=null) {
+        if (set != null) {
             set.close();
         }
-        if(preparedStatement!=null) {
+        if (preparedStatement != null) {
             preparedStatement.close();
         }
     }

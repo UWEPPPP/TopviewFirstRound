@@ -41,7 +41,7 @@ public class TraceInitView {
             case 2:
                 System.out.println("您打算注册供应商账号还是消费者账号？(1 or 2)");
                 int choice2 = in.nextInt();
-                if (choice2 == 1 || choice2 == 2    ) {
+                if (choice2 == 1 || choice2 == 2) {
                     new TraceRegisterController().registerOrderByIdentity(choice2);
                 } else {
                     System.out.println("输入错误，请重新输入！");

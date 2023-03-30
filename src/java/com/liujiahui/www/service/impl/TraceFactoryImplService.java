@@ -15,7 +15,7 @@ public class TraceFactoryImplService {
         return TraceQueryServiceImpl.getInstance();
     }
 
-   static public TraceRegisterAndLoginService getTraceRegisterAndLoginService(Boolean choice) {
+    static public TraceRegisterAndLoginService getTraceRegisterAndLoginService(Boolean choice) {
         if (choice) {
             return TraceRegisterAndLoginBySupplierServiceImpl.getInstance();
         } else {
@@ -24,7 +24,7 @@ public class TraceFactoryImplService {
     }
 
 
-   static public TraceItemPersonalService getTraceItemPersonalService(Boolean choice) {
+    static public TraceItemPersonalService getTraceItemPersonalService(Boolean choice) {
         if (choice) {
             return TraceItemPersonalBySupplierServiceImpl.getInstance();
         } else {
@@ -32,7 +32,7 @@ public class TraceFactoryImplService {
         }
     }
 
-   static public TraceContractServiceImpl getTraceContractService() {
+    static public TraceContractServiceImpl getTraceContractService() {
         return new TraceContractServiceImpl();
     }
 }

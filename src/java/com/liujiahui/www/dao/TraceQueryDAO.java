@@ -16,7 +16,7 @@ public interface TraceQueryDAO {
      *
      * @param max 最大值 min 最小值
      */
-    List<TraceItemPO> queryByPrice(int max,int min,int choice);
+    List<TraceItemPO> queryByPrice(int max, int min, int choice);
 
     /**
      * 关键字查询

@@ -7,9 +7,9 @@ package com.liujiahui.www.entity.bo;
  * @date 2023/03/18
  */
 public class TraceChangePersonalBO {
-     private  Integer choice;
-     private  String  change;
-     private  String identity;
+    private Integer choice;
+    private String change;
+    private String identity;
 
     public String getIdentity() {
         return identity;

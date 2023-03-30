@@ -49,29 +49,28 @@ public class TraceTransactionVO {
         this.hash = hash;
     }
 
-    public void setBalance(String balance) {
-        this.balance = balance;
-    }
-
     public String getBalance() {
         return balance;
     }
 
-
-    public void setPrice(BigInteger price) {
-        this.price = price;
+    public void setBalance(String balance) {
+        this.balance = balance;
     }
 
     public BigInteger getPrice() {
         return price;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPrice(BigInteger price) {
+        this.price = price;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

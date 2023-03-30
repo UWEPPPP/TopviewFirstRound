@@ -7,9 +7,9 @@ package com.liujiahui.www.entity.dto;
  * @date 2023/03/17
  */
 public class TraceAccountOnJavaDTO {
-     private String account;
-     private String password;
-     private String identity;
+    private String account;
+    private String password;
+    private String identity;
 
     public String getIdentity() {
         return identity;

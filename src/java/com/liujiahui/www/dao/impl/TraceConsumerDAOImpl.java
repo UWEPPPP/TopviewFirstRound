@@ -23,9 +23,12 @@ import java.util.Map;
  * @date 2023/03/25
  */
 public class TraceConsumerDAOImpl implements TraceUserDAO {
-    private static  final TraceConsumerDAOImpl TRACE_CONSUMER = new TraceConsumerDAOImpl();
-    private TraceConsumerDAOImpl(){}
-    public static TraceConsumerDAOImpl getInstance(){
+    private static final TraceConsumerDAOImpl TRACE_CONSUMER = new TraceConsumerDAOImpl();
+
+    private TraceConsumerDAOImpl() {
+    }
+
+    public static TraceConsumerDAOImpl getInstance() {
         return TRACE_CONSUMER;
     }
 
@@ -35,17 +38,17 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash " +
                 " where owner_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,accountAddress);
+        preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
         List<TraceItemPO> list = new ArrayList<>();
-        while (set.next()){
+        while (set.next()) {
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItem = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner_name"),set.getBigDecimal("index"),set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
+            TraceItemPO traceItem = new TraceItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_name"), set.getBigDecimal("index"), set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
             list.add(traceItem);
         }
-        UtilDAO.close(connection,null,preparedStatement);
-        HashMap<String,List<TraceItemPO>> listHashMap=new HashMap<>(1);
-        listHashMap.put("item",list);
+        UtilDAO.close(connection, null, preparedStatement);
+        HashMap<String, List<TraceItemPO>> listHashMap = new HashMap<>(1);
+        listHashMap.put("item", list);
         return listHashMap;
     }
 
@@ -55,53 +58,54 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         String sql1 = "select `index` from user.item_behind where hash = ?";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
-        preparedStatement.setBoolean(1,false);
-        preparedStatement.setString(2,hash);
+        preparedStatement.setBoolean(1, false);
+        preparedStatement.setString(2, hash);
         preparedStatement.executeUpdate();
-        preparedStatement1.setString(1,hash);
+        preparedStatement1.setString(1, hash);
         ResultSet set = preparedStatement1.executeQuery();
-        if(set.next()){
+        if (set.next()) {
             ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
-            itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash),set.getBigDecimal("index").toBigInteger());
+            itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash), set.getBigDecimal("index").toBigInteger());
         }
-        UtilDAO.close(connection,null,preparedStatement);
+        UtilDAO.close(connection, null, preparedStatement);
     }
 
-    public  void buyItem(String accountAddress, BigInteger index) throws SQLException, IOException {
+    public void buyItem(String accountAddress, BigInteger index) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String account = TraceInformationSaveDTO.getInstance().getContractAccount();
         String sql = "update user.item_behind  set isSold = ?,owner_address = ? where seller_address = ? and `index` = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setBoolean(1,true);
-        preparedStatement.setString(2,account);
-        preparedStatement.setString(3,accountAddress);
-        preparedStatement.setBigDecimal(4,new java.math.BigDecimal(index));
+        preparedStatement.setBoolean(1, true);
+        preparedStatement.setString(2, account);
+        preparedStatement.setString(3, accountAddress);
+        preparedStatement.setBigDecimal(4, new java.math.BigDecimal(index));
         preparedStatement.executeUpdate();
-        UtilDAO.close(connection,null,preparedStatement);
+        UtilDAO.close(connection, null, preparedStatement);
     }
 
-    public  void writeDown(String seller, String buyer, String comment, int choice, String itemHash) throws SQLException, IOException {
+    public void writeDown(String seller, String buyer, String comment, int choice, String itemHash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String type;
-        if(choice == 1){
-            type ="likes";
-        }else {
-            type ="reports";
+        if (choice == 1) {
+            type = "likes";
+        } else {
+            type = "reports";
         }
-        String sql = "update user.suppliers set "+type+" = "+type+" + 1 where account_address = ?";
+        String sql = "update user.suppliers set " + type + " = " + type + " + 1 where account_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,seller);
+        preparedStatement.setString(1, seller);
         preparedStatement.executeUpdate();
-        String sql1 = "insert into user.consumer_feedback (seller_account,buyer_account,comment,like_report,item) values (?,?,?,?,?)";
+        String sql1 = "insert into user.consumer_feedback (seller_account,buyer_account,comment,like_report,item,is_read) values (?,?,?,?,?,?)";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
-        preparedStatement1.setString(1,seller);
-        preparedStatement1.setString(2,buyer);
-        preparedStatement1.setString(3,comment);
-        preparedStatement1.setString(4,type);
-        preparedStatement1.setString(5,itemHash);
+        preparedStatement1.setString(1, seller);
+        preparedStatement1.setString(2, buyer);
+        preparedStatement1.setString(3, comment);
+        preparedStatement1.setString(4, type);
+        preparedStatement1.setString(5, itemHash);
+        preparedStatement1.setBoolean(6, false);
         preparedStatement1.executeUpdate();
-        UtilDAO.close(connection,null,preparedStatement);
-        UtilDAO.close(null,null,preparedStatement1);
+        UtilDAO.close(connection, null, preparedStatement);
+        UtilDAO.close(null, null, preparedStatement1);
     }
 
 

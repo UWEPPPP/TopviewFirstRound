@@ -18,8 +18,10 @@ import java.sql.SQLException;
  */
 public class TraceRegisterAndLoginBySupplierServiceImpl implements TraceRegisterAndLoginService {
     private static final TraceRegisterAndLoginBySupplierServiceImpl SERVICE = new TraceRegisterAndLoginBySupplierServiceImpl();
+
     private TraceRegisterAndLoginBySupplierServiceImpl() {
     }
+
     public static TraceRegisterAndLoginBySupplierServiceImpl getInstance() {
         return SERVICE;
     }

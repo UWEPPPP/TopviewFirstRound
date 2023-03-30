@@ -1,16 +1,18 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "TraceStorage.sol";
+
 contract TraceMarket {
 
     TraceStorage private  trace;
     bool private isProcessing = false;
 
     event NewItemAdd(address indexed seller, string name, uint256 price);
-    event ItemSold(address indexed seller, address buyer,bytes32 hash);
+    event ItemSold(address indexed seller, address buyer, bytes32 hash);
 
 
-    constructor (address storageAddress) public{
+    constructor (address storageAddress) public {
         trace = TraceStorage(storageAddress);
     }
 
@@ -33,21 +35,22 @@ contract TraceMarket {
         isProcessing = false;
     }
 
-    function addItem(string memory name, uint256 price, string memory description, uint256 typeSet) external onlySupplier returns (uint256,bytes32) {
+    function addItem(string memory name, uint256 price, string memory description, uint256 typeSet) external onlySupplier returns (uint256, bytes32) {
         uint256 id = trace.getSellerItemsIndex(msg.sender);
         bytes32 hash = keccak256(abi.encodePacked(id, name, price, description, msg.sender));
-        trace.addItem(msg.sender,id,name, price, description,typeSet,msg.sender,hash);
+        trace.addItem(msg.sender, id, name, price, description, typeSet, msg.sender, hash);
         emit NewItemAdd(msg.sender, name, price);
-        return (id,hash);
+        return (id, hash);
     }
 
     function buyItem(address seller, uint256 index) external noReentrant onlyConsumer {
-        TraceStorage.Item memory item = trace.getSellerItem(seller,index);
+        TraceStorage.Item memory item = trace.getSellerItem(seller, index);
         require(!item.isSold, "Item is sold");
         require(item.price <= getBalance(), "Not enough money");
-        trace.itemIsSold(seller,index,true);
+        trace.itemIsSold(seller, index, true);
         trace.decreaseBalance(msg.sender, item.price);
         trace.increaseBalance(seller, item.price);
+        trace.updateStatus(seller, index, "preparing", 0);
         emit ItemSold(seller, msg.sender, item.hash);
     }
 
@@ -60,7 +63,7 @@ contract TraceMarket {
     }
 
     function registerAsset(uint256 choice) external {
-        trace.registerAsset(msg.sender,choice);
+        trace.registerAsset(msg.sender, choice);
     }
 
     function getBalance() public view returns (uint256) {
@@ -68,11 +71,11 @@ contract TraceMarket {
     }
 
     function updateItem(uint256 index, uint256 price) external onlySupplier {
-        trace.updateItem(msg.sender,index,price);
+        trace.updateItem(msg.sender, index, price);
     }
 
     function updateStatus(uint256 index, string memory place, uint256 deliver) external {
-        trace.updateStatus(msg.sender,index,place,deliver);
+        trace.updateStatus(msg.sender, index, place, deliver);
     }
 
     function getStatus(bytes32 hash) external view onlyConsumer returns (uint256, string memory, uint256) {
@@ -80,30 +83,34 @@ contract TraceMarket {
         return (date, place, status);
     }
 
-    function refundItem(bytes32 hash,uint256 index) external onlyConsumer {
+    function showWholeLife(bytes32 hash) external view onlyConsumer returns (TraceStorage.ItemLife[] memory life){
+        return trace.getWholeLife(hash);
+    }
+
+    function refundItem(bytes32 hash, uint256 index) external onlyConsumer {
         TraceStorage.Item memory item = trace.getSingleItem(hash);
-        (uint256 date,, )=trace.getStatus(hash);
+        (uint256 date,,) = trace.getStatus(hash);
         require(item.isSold, "Item is not sold yet");
         require(now < (date + 7 days), "Out of date");
         trace.increaseBalance(msg.sender, item.price);
         trace.decreaseBalance(item.seller, item.price);
-        trace.itemIsSold(msg.sender,index,false);
+        trace.itemIsSold(item.seller, index, false);
     }
 
-    function removeItem(uint256 index,bool choice) external {
-        trace.removeOrRestoreItem(index,msg.sender,choice);
+    function removeItem(uint256 index, bool choice) external {
+        trace.removeOrRestoreItem(index, msg.sender, choice);
     }
 
-    function judgeIdentity(address user) private view returns(uint256){
-        uint256 identity=trace.getIdentity(user);
-        if(identity==1){
+    function judgeIdentity(address user) private view returns (uint256){
+        uint256 identity = trace.getIdentity(user);
+        if (identity == 1) {
             return 1;
             //是供应商
-        }else{
-            if(identity==2){
+        } else {
+            if (identity == 2) {
                 return 2;
                 //是消费者
-            }else{
+            } else {
                 return 0;
                 //未注册，为外部恶意调用
             }

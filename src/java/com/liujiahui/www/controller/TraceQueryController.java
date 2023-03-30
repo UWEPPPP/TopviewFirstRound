@@ -16,7 +16,7 @@ public class TraceQueryController {
     private static final TraceQueryService TRACE_QUERY_SERVICE = TraceFactoryImplService.getTraceQueryService();
 
     public List<TraceItemPO> queryByPrice(int max, int min, int choice) {
-         return TRACE_QUERY_SERVICE.queryByPrice(max,min,choice);
+        return TRACE_QUERY_SERVICE.queryByPrice(max, min, choice);
     }
 
     public List<TraceItemPO> queryByKeyword(String keyword) {

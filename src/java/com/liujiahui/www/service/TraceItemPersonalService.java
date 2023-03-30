@@ -17,14 +17,8 @@ import java.util.Map;
  */
 public interface TraceItemPersonalService {
     /**
-     * 显示项
-     *不同类型用户显示不同的产品
-     */
-    Map<String, List<TraceItemPO>> showItem() throws ContractException, SQLException, IOException;
-
-    /**
      * 显示所有项
-     *查看所有产品的功能
+     * 查看所有产品的功能
      */
     static List<TraceItemPO> showAllItem() throws SQLException, IOException {
         return TraceUserDAO.showAllItem();
@@ -32,7 +26,6 @@ public interface TraceItemPersonalService {
 
     /**
      * 更新个人信息
-
      */
     static void updatePersonalMessage(TraceChangePersonalBO userChangeServiceBO) throws SQLException, IOException {
         Integer choice = userChangeServiceBO.getChoice();
@@ -54,7 +47,6 @@ public interface TraceItemPersonalService {
         TraceUserDAO.updatePersonalInformation(type, change, identity);
     }
 
-
     /**
      * 输出商家的历史评价
      *
@@ -66,4 +58,10 @@ public interface TraceItemPersonalService {
     static List<TraceFeedbackPO> getHistory(String name) throws SQLException, IOException {
         return TraceUserDAO.getHistory(name);
     }
+
+    /**
+     * 显示项
+     * 不同类型用户显示不同的产品
+     */
+    Map<String, List<TraceItemPO>> showItem() throws ContractException, SQLException, IOException;
 }

@@ -35,14 +35,6 @@ public class TraceItemPO {
         this.ownerName = ownerName;
     }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
     public TraceItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, Boolean isSold) {
         this.id = id;
         this.name = name;
@@ -50,7 +42,7 @@ public class TraceItemPO {
         this.description = description;
         this.owner = owner;
         this.index = index;
-        this.isSold=isSold;
+        this.isSold = isSold;
     }
 
     public TraceItemPO(String name, BigInteger price, String description) {
@@ -71,6 +63,14 @@ public class TraceItemPO {
     }
 
     public TraceItemPO() {
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 
     public String getHashes() {
@@ -126,6 +126,7 @@ public class TraceItemPO {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }

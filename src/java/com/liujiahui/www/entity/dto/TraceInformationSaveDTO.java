@@ -6,7 +6,8 @@ import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
 
 /**
  * 用户信息保存dto
- *单例模式
+ * 单例模式
+ *
  * @author 刘家辉
  * @date 2023/03/18
  */
@@ -24,7 +25,8 @@ public class TraceInformationSaveDTO {
     private TransactionDecoderInterface decoder;
     private Integer informationSize;
 
-    private TraceInformationSaveDTO() {}
+    private TraceInformationSaveDTO() {
+    }
 
     public static TraceInformationSaveDTO getInstance() {
         return INSTANCE;
@@ -33,9 +35,11 @@ public class TraceInformationSaveDTO {
     public ContractTradeService getItemTradeSolidity() {
         return contractTradeServiceSolidity;
     }
+
     public void setItemTradeSolidity(ContractTradeService contractTradeServiceSolidity) {
         this.contractTradeServiceSolidity = contractTradeServiceSolidity;
     }
+
     public String getIdentity() {
         return identity;
     }
@@ -93,23 +97,23 @@ public class TraceInformationSaveDTO {
                 ", phone='" + phone + '\'' +
                 ", balance='" + balance + '\'' +
                 ", address='" + userAddress + '\'' +
-                ", identity='" + identity + '\'' ;
-    }
-
-    public void setContractAccount(String contractAccount) {
-        this.contractAccount = contractAccount;
+                ", identity='" + identity + '\'';
     }
 
     public String getContractAccount() {
         return contractAccount;
     }
 
-    public void setDecoder(TransactionDecoderInterface decoder) {
-        this.decoder = decoder;
+    public void setContractAccount(String contractAccount) {
+        this.contractAccount = contractAccount;
     }
 
     public TransactionDecoderInterface getDecoder() {
         return decoder;
+    }
+
+    public void setDecoder(TransactionDecoderInterface decoder) {
+        this.decoder = decoder;
     }
 
     public Integer getInformationSize() {

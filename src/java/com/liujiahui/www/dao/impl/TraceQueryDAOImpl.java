@@ -15,28 +15,33 @@ import java.util.List;
 
 /**
  * 条件查询实现类
+ *
  * @author 刘家辉
  * @date 2023/03/26
  */
 public class TraceQueryDAOImpl implements TraceQueryDAO {
     private static final TraceQueryDAOImpl TRACE_QUERY_DAO = new TraceQueryDAOImpl();
-    private TraceQueryDAOImpl() {}
+
+    private TraceQueryDAOImpl() {
+    }
+
     public static TraceQueryDAOImpl getInstance() {
         return TRACE_QUERY_DAO;
     }
+
     @Override
-    public List<TraceItemPO> queryByPrice(int min,int max,int choice) {
+    public List<TraceItemPO> queryByPrice(int min, int max, int choice) {
         String order;
-        if(choice==1) {
+        if (choice == 1) {
             order = "asc";
-        }else {
+        } else {
             order = "desc";
         }
-        try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item_show INNER join item_behind ib on item_show.hash = ib.hash where price between ? and ? order by price  "+order;
+        try (Connection connection = UtilDAO.getConnection()) {
+            String sql = "select * from user.item_show INNER join user.item_behind ib on item_show.hash = ib.hash where price between ? and ? order by price  " + order;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1,min);
-            preparedStatement.setInt(2,max);
+            preparedStatement.setInt(1, min);
+            preparedStatement.setInt(2, max);
             return querySame(preparedStatement);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -45,10 +50,10 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
 
     @Override
     public List<TraceItemPO> queryByKeyword(String keyword) {
-        try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item_show where name like ?";
+        try (Connection connection = UtilDAO.getConnection()) {
+            String sql = "select * from user.item_show where name like ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,"%"+keyword+"%");
+            preparedStatement.setString(1, "%" + keyword + "%");
             return querySame(preparedStatement);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -57,10 +62,10 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
 
     @Override
     public List<TraceItemPO> queryByType(String type) {
-        try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item_show INNER JOIN item_behind ib on item_show.hash = ib.hash where type=?";
+        try (Connection connection = UtilDAO.getConnection()) {
+            String sql = "select * from user.item_show INNER JOIN user.item_behind ib on item_show.hash = ib.hash where type=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,type);
+            preparedStatement.setString(1, type);
             return querySame(preparedStatement);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -69,11 +74,11 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
 
     @Override
     public List<TraceItemPO> queryBySeller(String seller) {
-        try(Connection connection=UtilDAO.getConnection()) {
-            String sql="select * from user.item_behind INNER JOIN item_show ON item_behind.hash " +
+        try (Connection connection = UtilDAO.getConnection()) {
+            String sql = "select * from user.item_behind INNER JOIN user.item_show ON item_behind.hash " +
                     "= item_show.hash where seller_address=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,seller);
+            preparedStatement.setString(1, seller);
             return querySame(preparedStatement);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -83,9 +88,9 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
 
     private List<TraceItemPO> querySame(PreparedStatement preparedStatement) throws SQLException {
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceItemPO> list= new ArrayList<>();
+        List<TraceItemPO> list = new ArrayList<>();
         while (set.next()) {
-            TraceItemPO po=new TraceItemPO();
+            TraceItemPO po = new TraceItemPO();
             po.setId(set.getInt("id"));
             po.setName(set.getString("name"));
             po.setPrice(BigInteger.valueOf(set.getInt("price")));

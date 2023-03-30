@@ -161,9 +161,15 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
             traceFeedbackPo.setLikeOrReport(Objects.equals(set.getString("like_report"), "likes"));
             traceFeedbackPo.setComment(set.getString("comment"));
             traceFeedbackPo.setItemName(set.getString("name"));
+            traceFeedbackPo.setRead(set.getBoolean("is_read"));
             list.add(traceFeedbackPo);
         }
-        UtilDAO.close(connection, null, preparedStatement);
+        String sql1 = "update user.consumer_feedback set is_read = true where seller_account = ?";
+        PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+        preparedStatement1.setString(1, accountAddress);
+        preparedStatement1.executeUpdate();
+        UtilDAO.close(connection, set, preparedStatement);
+        UtilDAO.close(null, null, preparedStatement1);
         return list;
     }
 }

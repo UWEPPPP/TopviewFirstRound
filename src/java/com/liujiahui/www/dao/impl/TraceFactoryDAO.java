@@ -17,12 +17,13 @@ public class TraceFactoryDAO {
             return TraceConsumerDAOImpl.getInstance();
         }
     }
+
     public static TraceQueryDAO getTraceQueryDAO() {
         return TraceQueryDAOImpl.getInstance();
     }
 
     public static TraceRegisterDAOImpl getTraceRegisterDAO() {
-            return TraceRegisterDAOImpl.getInstance();
+        return TraceRegisterDAOImpl.getInstance();
     }
 
     public static TraceLoginDAOImpl getTraceLoginDAO() {

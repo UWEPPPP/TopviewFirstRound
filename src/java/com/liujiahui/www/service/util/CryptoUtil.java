@@ -17,9 +17,10 @@ import java.security.NoSuchAlgorithmException;
  * @date 2023/03/25
  */
 public class CryptoUtil {
-    private static  SecretKey key;
+    private static SecretKey key;
+
     public static SecretKey generateSecretKey(String password) throws NoSuchAlgorithmException {
-        if(key!=null){
+        if (key != null) {
             return key;
         }
         byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
@@ -31,7 +32,8 @@ public class CryptoUtil {
 
     /**
      * 十六进制私钥加密
-     *使用了AES加密算法
+     * 使用了AES加密算法
+     *
      * @param privateKey 私钥
      * @return {@link String}
      * @throws NoSuchAlgorithmException  没有这样算法异常
@@ -40,7 +42,7 @@ public class CryptoUtil {
      * @throws IllegalBlockSizeException 非法块大小异常
      * @throws BadPaddingException       坏填充例外
      */
-    public static String encryptHexPrivateKey(String privateKey,String path) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static String encryptHexPrivateKey(String privateKey, String path) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         SecretKey aes = generateSecretKey(readPassword(path));
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, aes);
@@ -48,7 +50,7 @@ public class CryptoUtil {
         return bytesToHex(encryptedBytes);
     }
 
-    public static String decryptHexPrivateKey(String privateKey,String path) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static String decryptHexPrivateKey(String privateKey, String path) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         SecretKey aes = generateSecretKey(readPassword(path));
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, aes);
@@ -90,13 +92,13 @@ public class CryptoUtil {
         return bytes;
     }
 
-    public static String readPassword(String filePath){
+    public static String readPassword(String filePath) {
         File file = new File(filePath);
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] buffer = new byte[(int) file.length()];
-            if(fis.read(buffer)>0) {
+            if (fis.read(buffer) > 0) {
                 return new String(buffer);
-            }else {
+            } else {
                 return null;
             }
         } catch (IOException e) {

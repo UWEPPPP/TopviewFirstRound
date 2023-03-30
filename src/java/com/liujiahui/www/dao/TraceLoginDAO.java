@@ -17,6 +17,7 @@ public interface TraceLoginDAO {
     /**
      * 登录功能
      * * @param account 账户
+     *
      * @return {@link TraceInformationSaveDTO}
      * @throws SQLException      sqlexception异常
      * @throws IOException       ioexception

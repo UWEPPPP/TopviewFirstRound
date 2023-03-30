@@ -21,8 +21,9 @@ import java.util.Scanner;
  */
 public class TraceEntryView {
     static Scanner in = new Scanner(System.in);
+
     public static void viewConsumer(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(traceAfterLoginVO !=null){
+        if (traceAfterLoginVO != null) {
             System.out.println("您好消费者" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
             do {
@@ -32,7 +33,7 @@ public class TraceEntryView {
                 System.out.println("3.查看我购买的产品");
             } while (mainInterface(false));
             TraceInitView.start();
-    }else {
+        } else {
             System.out.println("用户名或者密码错误");
             System.out.println("即将返回登录界面");
             TraceInitView.start();
@@ -42,10 +43,10 @@ public class TraceEntryView {
     private static boolean mainInterface(Boolean bool) throws SQLException, IOException, ContractException {
         System.out.println("0.退出登录");
         int choice = in.nextInt();
-        if(choice!=0){
+        if (choice != 0) {
             TraceEntryController traceEntryController = new TraceEntryController();
             traceEntryController.entry(choice);
-        }else {
+        } else {
             System.out.println("退出登录成功");
             System.out.println("即将返回登录界面");
             return false;
@@ -54,7 +55,7 @@ public class TraceEntryView {
     }
 
     public static void viewSupplier(TraceAfterLoginVO traceAfterLoginVO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(traceAfterLoginVO !=null){
+        if (traceAfterLoginVO != null) {
             System.out.println("您好 供应商" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
             if (traceAfterLoginVO.getInformationSize() > 0) {
@@ -69,10 +70,9 @@ public class TraceEntryView {
                 System.out.println("3.产品上新");
                 System.out.println("4.进入我的产品主页");
                 System.out.println("5.用户对我的评价");
-                System.out.println("6.查看我收到的通知");
             } while (mainInterface(true));
             TraceInitView.start();
-        }else {
+        } else {
             System.out.println("用户名或者密码错误");
             System.out.println("即将返回登录界面");
             TraceInitView.start();

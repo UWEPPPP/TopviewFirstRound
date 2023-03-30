@@ -20,12 +20,15 @@ import java.sql.SQLException;
  */
 public class TraceRegisterAndLoginByConsumerServiceImpl implements TraceRegisterAndLoginService {
     private static final TraceRegisterAndLoginByConsumerServiceImpl SERVICE = new TraceRegisterAndLoginByConsumerServiceImpl();
+
     private TraceRegisterAndLoginByConsumerServiceImpl() {
     }
+
     public static TraceRegisterAndLoginByConsumerServiceImpl getInstance() {
         return SERVICE;
     }
-     @Override
+
+    @Override
     public Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         TraceConsumerPO traceConsumer = new TraceConsumerPO();
         traceConsumer.setName(traceRegisterBO.getName());

@@ -25,19 +25,20 @@ public class TraceEntryController {
 
     /**
      * 条目
-     *进入选择页面
+     * 进入选择页面
      */
-    public  void entry(int choice) throws SQLException, IOException, ContractException {
-        String identity="consumer";
-        if(identity.equals(TraceInformationSaveDTO.getInstance().getIdentity())){
+    public void entry(int choice) throws SQLException, IOException, ContractException {
+        String identity = "consumer";
+        if (identity.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
             consumerEntry(choice);
-     }else {
+        } else {
             supplierEntry(choice);
         }
     }
-    public  void consumerEntry(int choice) throws SQLException, IOException, ContractException {
+
+    public void consumerEntry(int choice) throws SQLException, IOException, ContractException {
         TraceConsumeController traceConsumeController = new TraceConsumeController();
-        switch (choice){
+        switch (choice) {
             case 1:
                 showItemList();
                 break;
@@ -52,9 +53,9 @@ public class TraceEntryController {
     }
 
 
-    public  void supplierEntry(int choice) throws SQLException, IOException, ContractException {
+    public void supplierEntry(int choice) throws SQLException, IOException, ContractException {
         TraceSupplyController traceSupplyController = new TraceSupplyController();
-        switch (choice){
+        switch (choice) {
             case 1:
                 showItemList();
                 break;
@@ -68,7 +69,7 @@ public class TraceEntryController {
                 traceSupplyController.showSupplierItem();
                 break;
             case 5:
-               TraceSupplyView.showAllFeedback(traceSupplyController.showSupplierFeedback());
+                TraceSupplyView.showAllFeedback(traceSupplyController.showSupplierFeedback());
                 break;
             default:
         }
@@ -76,21 +77,20 @@ public class TraceEntryController {
 
     /**
      * 显示项目列表
-     *以下均为公共方法
+     * 以下均为公共方法
      */
-    private  void showItemList() throws SQLException, IOException, ContractException {
+    private void showItemList() throws SQLException, IOException, ContractException {
         List<TraceItemPO> traceItems = TraceItemPersonalService.showAllItem();
-        String check="consumer";
-        if(check.equals(TraceInformationSaveDTO.getInstance().getIdentity())){
+        String check = "consumer";
+        if (check.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
             TraceConsumeView.showAndBuyItemByConsumer(traceItems);
-        }else {
+        } else {
             TraceSupplyView.showAndBuyItemBySupplier(traceItems);
         }
     }
 
 
-
-    public  void showUser() throws SQLException, IOException {
+    public void showUser() throws SQLException, IOException {
         TraceInformationSaveDTO information = TraceInformationSaveDTO.getInstance();
         TraceDetailedVO vo = new TraceDetailedVO();
         vo.setUserName(information.getUserName());
@@ -102,13 +102,13 @@ public class TraceEntryController {
     }
 
 
-    public  void changeUser(int choice,String change) throws SQLException, IOException {
+    public void changeUser(int choice, String change) throws SQLException, IOException {
         TraceChangePersonalBO userChangeServiceBO = new TraceChangePersonalBO();
         userChangeServiceBO.setChange(change);
         userChangeServiceBO.setChoice(choice);
         userChangeServiceBO.setIdentity(TraceInformationSaveDTO.getInstance().getIdentity());
         TraceItemPersonalService.updatePersonalMessage(userChangeServiceBO);
-        switch (choice){
+        switch (choice) {
             case 1:
                 TraceInformationSaveDTO.getInstance().setUserName(change);
                 break;
@@ -123,7 +123,7 @@ public class TraceEntryController {
     }
 
 
-    public  void showHistory(String name) throws SQLException, IOException {
+    public void showHistory(String name) throws SQLException, IOException {
         List<TraceFeedbackPO> history = TraceItemPersonalService.getHistory(name);
         TraceSameView.showHistory(history);
     }

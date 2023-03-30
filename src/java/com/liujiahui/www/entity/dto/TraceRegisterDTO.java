@@ -5,12 +5,12 @@ package com.liujiahui.www.entity.dto;
  * @date 2023/03/24
  */
 public class TraceRegisterDTO {
-    private   String  name;
-    private   String  gender;
-    private   String  phone;
-    private   String  address;
-    private   String  password;
-    private   Boolean choice;
+    private String name;
+    private String gender;
+    private String phone;
+    private String address;
+    private String password;
+    private Boolean choice;
 
     public Boolean getChoice() {
         return choice;

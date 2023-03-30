@@ -25,18 +25,8 @@ import java.util.Map;
 public interface TraceUserDAO {
 
     /**
-     * 显示商品
-     *
-     * @param accountAddress 账户地址
-     * @return {@link Map}<{@link String}, {@link List}<{@link TraceItemPO}>>
-     * @throws ContractException 合同例外
-     * @throws SQLException      sqlexception异常
-     * @throws IOException       ioexception
-     */
-    Map<String, List<TraceItemPO>> showItem(String accountAddress) throws ContractException, SQLException, IOException;
-
-    /**
      * 更新个人信息
+     *
      * @param type     类型
      * @param change   改变
      * @param identity 身份
@@ -46,12 +36,12 @@ public interface TraceUserDAO {
     static void updatePersonalInformation(String type, String change, String identity) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String name = TraceInformationSaveDTO.getInstance().getUserName();
-        String sql = "update user."+identity+" set "+type + " = ? where user_name = ?";
+        String sql = "update user." + identity + " set " + type + " = ? where user_name = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,change);
-        preparedStatement.setString(2,name);
+        preparedStatement.setString(1, change);
+        preparedStatement.setString(2, name);
         preparedStatement.executeUpdate();
-        UtilDAO.close(connection,null,preparedStatement);
+        UtilDAO.close(connection, null, preparedStatement);
     }
 
     /**
@@ -67,13 +57,13 @@ public interface TraceUserDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet set = preparedStatement.executeQuery();
         List<TraceItemPO> list = new ArrayList<>();
-        while (set.next()){
+        while (set.next()) {
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"),set.getString("name"),price,set.getString("description"),set.getString("owner_address"),set.getBigDecimal("index"),set.getBoolean("isSold"),set.getString("owner_name"));
+            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_address"), set.getBigDecimal("index"), set.getBoolean("isSold"), set.getString("owner_name"));
             traceItemPo.setType(set.getString("type"));
             list.add(traceItemPo);
         }
-        UtilDAO.close(connection,null,preparedStatement);
+        UtilDAO.close(connection, null, preparedStatement);
         return list;
     }
 
@@ -89,18 +79,18 @@ public interface TraceUserDAO {
         Connection connection = UtilDAO.getConnection();
         String sql = "select * from user.suppliers where user_name = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,name);
+        preparedStatement.setString(1, name);
         ResultSet set = preparedStatement.executeQuery();
         String accountAddress = null;
-        if(set.next()){
+        if (set.next()) {
             accountAddress = set.getString("account_address");
         }
         String sql1 = "SELECT t1.*, t2.name FROM user.consumer_feedback t1 INNER JOIN user.item_show t2 ON t1.item = t2.hash where seller_account=?;";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
-        preparedStatement1.setString(1,accountAddress);
+        preparedStatement1.setString(1, accountAddress);
         ResultSet set1 = preparedStatement1.executeQuery();
-        List<TraceFeedbackPO> list= new ArrayList<>();
-        while(set1.next()) {
+        List<TraceFeedbackPO> list = new ArrayList<>();
+        while (set1.next()) {
             TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
             traceFeedbackPo.setBuyer(set1.getString("buyer_account"));
             traceFeedbackPo.setSeller(set1.getString("seller_account"));
@@ -110,9 +100,20 @@ public interface TraceUserDAO {
             traceFeedbackPo.setItemName(set1.getString("Name"));
             list.add(traceFeedbackPo);
         }
-        UtilDAO.close(connection,set,preparedStatement);
-        UtilDAO.close(null,set,preparedStatement1);
+        UtilDAO.close(connection, set, preparedStatement);
+        UtilDAO.close(null, set, preparedStatement1);
         return list;
     }
+
+    /**
+     * 显示商品
+     *
+     * @param accountAddress 账户地址
+     * @return {@link Map}<{@link String}, {@link List}<{@link TraceItemPO}>>
+     * @throws ContractException 合同例外
+     * @throws SQLException      sqlexception异常
+     * @throws IOException       ioexception
+     */
+    Map<String, List<TraceItemPO>> showItem(String accountAddress) throws ContractException, SQLException, IOException;
 
 }

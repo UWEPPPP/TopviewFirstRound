@@ -27,8 +27,10 @@ import java.sql.SQLException;
  */
 public class TraceLoginDAOImpl implements TraceLoginDAO {
     private static final TraceLoginDAOImpl INSTANCE = new TraceLoginDAOImpl();
+
     private TraceLoginDAOImpl() {
     }
+
     public static TraceLoginDAOImpl getInstance() {
         return INSTANCE;
     }
@@ -40,7 +42,7 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
         String identity = account.getIdentity();
         try (Connection connection = UtilDAO.getConnection()) {
             PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement("select * from user."+ identity + "  where user_name=? and password=?");
+            preparedStatement = connection.prepareStatement("select * from user." + identity + "  where user_name=? and password=?");
             preparedStatement.setString(1, userAccount);
             preparedStatement.setString(2, userPassword);
             ResultSet set = preparedStatement.executeQuery();
@@ -54,8 +56,8 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
                 user.setPhone(set.getString("phone_number"));
                 user.setIdentity(identity);
                 user.setContractAccount(set.getString("account_address"));
-                String inform="suppliers";
-                if(identity.equals(inform)){
+                String inform = "suppliers";
+                if (identity.equals(inform)) {
                     String sql1 = "select count(*) from user.consumer_feedback where seller_account=? and is_read=false";
                     PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
                     preparedStatement1.setString(1, user.getContractAccount());

@@ -24,13 +24,14 @@ public class TraceSameView {
     public static void showItem(List<TraceItemPO> traceItemPos) {
         System.out.println("商品列表");
         for (TraceItemPO traceItemPo : traceItemPos) {
-            if(traceItemPo.getSold()){
-                System.out.println("商品种类"+traceItemPo.getType()+"序号"+traceItemPo.getId()+" "+"商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription()+" 已售出 ");
-            }else {
-                System.out.println("商品种类"+traceItemPo.getType()+"序号"+traceItemPo.getId()+" "+"商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription()+" 未售出 卖家："+ traceItemPo.getOwnerName());
+            if (traceItemPo.getSold()) {
+                System.out.println("商品种类" + traceItemPo.getType() + "序号" + traceItemPo.getId() + " " + "商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription() + " 已售出 ");
+            } else {
+                System.out.println("商品种类" + traceItemPo.getType() + "序号" + traceItemPo.getId() + " " + "商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription() + " 未售出 卖家：" + traceItemPo.getOwnerName());
             }
         }
     }
+
     public static void showPersonalInterface(TraceDetailedVO traceDetailedVO) throws SQLException, IOException {
         System.out.println("用户名：" + traceDetailedVO.getUserName());
         System.out.println("身份：" + traceDetailedVO.getIdentify());
@@ -42,8 +43,8 @@ public class TraceSameView {
         System.out.println("2.修改性别");
         System.out.println("3.修改电话");
         System.out.println("4.否");
-        int choice=in.nextInt();
-        switch (choice){
+        int choice = in.nextInt();
+        switch (choice) {
             case 1:
                 System.out.println("请输入新的用户名");
 
@@ -58,16 +59,16 @@ public class TraceSameView {
                 break;
             default:
         }
-        if(choice!=4){
+        if (choice != 4) {
             String change = in.next();
             TraceEntryController traceEntryController = new TraceEntryController();
-            traceEntryController.changeUser(choice,change);
+            traceEntryController.changeUser(choice, change);
         }
         System.out.println("修改结束,是否继续修改？");
         System.out.println("1.是");
         System.out.println("2.否");
-        int choice2=in.nextInt();
-        switch (choice2){
+        int choice2 = in.nextInt();
+        switch (choice2) {
             case 1:
                 showPersonalInterface(traceDetailedVO);
                 break;
@@ -83,7 +84,7 @@ public class TraceSameView {
             System.out.println("买家：" + traceFeedbackPo.getBuyer());
             System.out.println("是否推荐：" + traceFeedbackPo.getLikeOrReport());
             System.out.println("评价：" + traceFeedbackPo.getComment());
-            System.out.println("商品名字： "+ traceFeedbackPo.getItemName());
+            System.out.println("商品名字： " + traceFeedbackPo.getItemName());
             System.out.println("商品哈希：" + traceFeedbackPo.getItemHash());
             System.out.println("------------------------------------------------");
         }

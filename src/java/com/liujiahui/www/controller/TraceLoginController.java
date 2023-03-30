@@ -23,47 +23,48 @@ import java.sql.SQLException;
  * @date 2023/03/16
  */
 public class TraceLoginController {
-      private static String identity;
-
-    public  void login(String account, String password, Boolean choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(!choice) {
-            TraceLoginBO traceLoginBO = new TraceLoginBO(account,password,"consumer");
-            identity = "consumer";
-            TraceInformationSaveDTO login = TraceRegisterAndLoginService.login(traceLoginBO);
-            loginBackView(login);
-         }else {
-            TraceLoginBO traceLoginBO = new TraceLoginBO(account,password,"suppliers");
-            identity="suppliers";
-            TraceInformationSaveDTO login = TraceRegisterAndLoginService.login(traceLoginBO);
-            loginBackView(login);
-        }
-    }
-
+    private static String identity;
 
     public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(userInformationDTO == null){
+        if (userInformationDTO == null) {
             TraceLoginView.loginReturnInterface();
         }
         TraceAfterLoginVO traceAfterLoginVO = null;
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         if (userInformationDTO != null) {
-            traceAfterLoginVO = new TraceAfterLoginVO(userInformationDTO.getUserName(),userInformationDTO.getBalance(),identity);
+            traceAfterLoginVO = new TraceAfterLoginVO(userInformationDTO.getUserName(), userInformationDTO.getBalance(), identity);
             traceAfterLoginVO.setInformationSize(instance.getInformationSize());
         }
-        String identityCheck ="consumer";
-        if(identity.equals(identityCheck)) {
+        String identityCheck = "consumer";
+        if (identity.equals(identityCheck)) {
             TraceEntryView.viewConsumer(traceAfterLoginVO);
-        }else {
+        } else {
             TraceEntryView.viewSupplier(traceAfterLoginVO);
         }
     }
+
+    public void login(String account, String password, Boolean choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        if (!choice) {
+            TraceLoginBO traceLoginBO = new TraceLoginBO(account, password, "consumer");
+            identity = "consumer";
+            TraceInformationSaveDTO login = TraceRegisterAndLoginService.login(traceLoginBO);
+            loginBackView(login);
+        } else {
+            TraceLoginBO traceLoginBO = new TraceLoginBO(account, password, "suppliers");
+            identity = "suppliers";
+            TraceInformationSaveDTO login = TraceRegisterAndLoginService.login(traceLoginBO);
+            loginBackView(login);
+        }
+    }
+
     /**
      * 登录
-     +*/
+     * +
+     */
     public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        if(choice1 == 1){
+        if (choice1 == 1) {
             new TraceLoginView().loginBySupplier();
-        }else {
+        } else {
             new TraceLoginView().loginByConsumer();
         }
     }

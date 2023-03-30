@@ -7,11 +7,11 @@ package com.liujiahui.www.entity.bo;
  * @date 2023/03/22
  */
 public class TraceFeedbackBO {
-  private String  seller;
-  private String  buyer;
-  private String  comment;
-  private Integer choice;
-  private String  itemHash;
+    private String seller;
+    private String buyer;
+    private String comment;
+    private Integer choice;
+    private String itemHash;
 
     public String getSeller() {
         return seller;
@@ -52,6 +52,7 @@ public class TraceFeedbackBO {
     public void setItemHash(String itemHash) {
         this.itemHash = itemHash;
     }
+
     @Override
     public String toString() {
         return "UserFeedbackBO{" +

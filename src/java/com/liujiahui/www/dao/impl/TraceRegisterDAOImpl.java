@@ -28,28 +28,32 @@ import static com.liujiahui.www.dao.util.UtilDAO.close;
  */
 public class TraceRegisterDAOImpl implements TraceRegisterDAO {
     private static final TraceRegisterDAOImpl INSTANCE = new TraceRegisterDAOImpl();
-    private TraceRegisterDAOImpl(){}
-    public static TraceRegisterDAOImpl getInstance(){
+
+    private TraceRegisterDAOImpl() {
+    }
+
+    public static TraceRegisterDAOImpl getInstance() {
         return INSTANCE;
     }
+
     @Override
     public Boolean register(TraceUserPO traceUserPo) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         Connection connection = UtilDAO.getConnection();
         PreparedStatement preparedStatement;
         String table;
         String tableAndLimit;
-        if(traceUserPo instanceof TraceSupplierPO){
+        if (traceUserPo instanceof TraceSupplierPO) {
             table = "suppliers";
             tableAndLimit = "suppliers(user_name, gender, phone_number, password,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?,?,?)";
-        }else{
+        } else {
             table = "consumer";
             tableAndLimit = "consumer(user_name, gender, phone_number, password,private_key,account_address) values(?,?,?,?,?,?)";
         }
-        if(checkUserExist(table, traceUserPo.getName(),connection)){
+        if (checkUserExist(table, traceUserPo.getName(), connection)) {
             return false;
         }
         TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryImplService.getTraceContractService().initByContract(table);
-        String sql="insert into user."+tableAndLimit;
+        String sql = "insert into user." + tableAndLimit;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, traceUserPo.getName());
         preparedStatement.setString(2, traceUserPo.getGender());
@@ -57,7 +61,7 @@ public class TraceRegisterDAOImpl implements TraceRegisterDAO {
         preparedStatement.setString(4, traceUserPo.getPassword());
         preparedStatement.setString(5, traceAccountOnContractDTO.getPrivateKey());
         preparedStatement.setString(6, traceAccountOnContractDTO.getAccountAddress());
-        if(traceUserPo instanceof TraceSupplierPO){
+        if (traceUserPo instanceof TraceSupplierPO) {
             preparedStatement.setString(7, ((TraceSupplierPO) traceUserPo).getAddress());
             preparedStatement.setLong(8, 0);
             preparedStatement.setLong(9, 0);
@@ -67,17 +71,18 @@ public class TraceRegisterDAOImpl implements TraceRegisterDAO {
         return true;
 
     }
+
     @Override
     public Boolean checkUserExist(String table, String name, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement=null;
-        ResultSet set=null;
+        PreparedStatement preparedStatement = null;
+        ResultSet set = null;
         try {
             preparedStatement = connection.prepareStatement("select * from user." + table + " where user_name=?");
             preparedStatement.setString(1, name);
             set = preparedStatement.executeQuery();
             return set.next();
         } finally {
-            close(null,set , preparedStatement);
+            close(null, set, preparedStatement);
         }
     }
 }

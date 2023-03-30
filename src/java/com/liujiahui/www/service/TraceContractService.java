@@ -21,12 +21,13 @@ public interface TraceContractService {
      * @param privateKey 私钥
      * @return {@link BigInteger}
      * @throws ContractException 合同例外
-     * {@code @description} 在使用用户密钥载入合约时顺便获取余额
+     *                           {@code @description} 在使用用户密钥载入合约时顺便获取余额
      */
     BigInteger getBalance(String privateKey) throws ContractException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
 
     /**
      * 载入合约
+     *
      * @param table
      * @return {@link TraceAccountOnContractDTO}
      */

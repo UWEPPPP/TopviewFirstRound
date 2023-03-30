@@ -8,10 +8,10 @@ import com.liujiahui.www.entity.dto.TraceTransactionDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
-import com.liujiahui.www.service.wrapper.ContractTradeService;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import com.liujiahui.www.service.TraceItemPersonalService;
+import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import com.liujiahui.www.service.impl.TraceItemPersonalByConsumerServiceImpl;
+import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.view.TraceConsumeView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
@@ -31,10 +31,10 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
 public class TraceConsumeController {
     private final TraceItemPersonalService traceItemPersonalService = TraceFactoryImplService.getTraceItemPersonalService(false);
 
-    public  void buy(int id, List<TraceItemPO> items) throws ContractException, SQLException, IOException {
+    public void buy(int id, List<TraceItemPO> items) throws ContractException, SQLException, IOException {
         for (TraceItemPO item : items) {
             if (item.getId() == id) {
-                TraceTransactionDTO traceTransactionDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).buyItem(item.getOwner(), item.getIndex());
+                TraceTransactionDTO traceTransactionDTO = ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).buyItem(item.getOwner(), item.getIndex());
                 if (traceTransactionDTO != null && traceTransactionDTO.getReturnMessage() == null) {
                     String balance = traceTransactionDTO.getBalance();
                     ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = traceTransactionDTO.getItemSoldEventResponse();
@@ -50,8 +50,9 @@ public class TraceConsumeController {
             }
         }
     }
+
     public TraceTransactionVO checkByHash(String hash) throws ContractException {
-        TraceRealItemDTO traceRealItemDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).checkByHash(hash);
+        TraceRealItemDTO traceRealItemDTO = ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).checkByHash(hash);
         TraceTransactionVO traceTransactionVO = new TraceTransactionVO();
         traceTransactionVO.setName(traceRealItemDTO.getName());
         traceTransactionVO.setHash(hash);
@@ -61,7 +62,7 @@ public class TraceConsumeController {
     }
 
     public TraceItemStatusVO checkStatus(String hash1) throws ContractException {
-        TraceItemStatusDTO traceItemStatusDTO = ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).checkStatus(hash1);
+        TraceItemStatusDTO traceItemStatusDTO = ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).checkStatus(hash1);
         TraceItemStatusVO traceItemStatusVO = new TraceItemStatusVO();
         traceItemStatusVO.setDate(traceItemStatusDTO.getDate());
         traceItemStatusVO.setPlace(traceItemStatusDTO.getPlace());
@@ -74,18 +75,22 @@ public class TraceConsumeController {
         TraceConsumeView.showMyItem(items);
     }
 
-    public  void feedback(int score,String seller, String comment, String itemHash) throws SQLException, IOException {
+    public void feedback(int score, String seller, String comment, String itemHash) throws SQLException, IOException {
         TraceFeedbackBO traceFeedbackBO = new TraceFeedbackBO();
         traceFeedbackBO.setSeller(seller);
         traceFeedbackBO.setComment(comment);
         traceFeedbackBO.setItemHash(itemHash);
         traceFeedbackBO.setChoice(score);
         traceFeedbackBO.setBuyer(TraceInformationSaveDTO.getInstance().getContractAccount());
-        ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).supplierWriteDownService(traceFeedbackBO);
+        ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).supplierWriteDownService(traceFeedbackBO);
     }
 
 
     public void returnItem(String hash2) throws SQLException, IOException {
-        ((TraceItemPersonalByConsumerServiceImpl)traceItemPersonalService).returnItem(hash2);
+        ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).returnItem(hash2);
+    }
+
+    public List<TraceItemStatusDTO> checkLife(String hash3) throws ContractException {
+        return ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).checkLife(hash3);
     }
 }

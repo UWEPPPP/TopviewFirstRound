@@ -7,11 +7,11 @@ package com.liujiahui.www.entity.bo;
  * @date 2023/03/16
  */
 public class TraceRegisterBO {
-   private   String  name;
-   private   String  gender;
-   private   String  phone;
-   private   String  address;
-   private   String  password;
+    private String name;
+    private String gender;
+    private String phone;
+    private String address;
+    private String password;
 
     public String getName() {
         return name;

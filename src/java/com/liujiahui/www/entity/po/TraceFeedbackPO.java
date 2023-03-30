@@ -7,12 +7,13 @@ package com.liujiahui.www.entity.po;
  * @date 2023/03/23
  */
 public class TraceFeedbackPO {
-   private String buyer;
-   private String comment;
-   private String itemHash;
-   private Boolean likeOrReport;
-   private String seller;
-   private String itemName;
+    private String buyer;
+    private String comment;
+    private String itemHash;
+    private Boolean likeOrReport;
+    private String seller;
+    private String itemName;
+    private Boolean isRead;
 
     public String getItemName() {
         return itemName;
@@ -71,5 +72,13 @@ public class TraceFeedbackPO {
                 ", likeOrReport=" + likeOrReport +
                 ", seller='" + seller + '\'' +
                 '}';
+    }
+
+    public Boolean getRead() {
+        return isRead;
+    }
+
+    public void setRead(Boolean read) {
+        isRead = read;
     }
 }

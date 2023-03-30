@@ -11,17 +11,20 @@ import java.util.List;
  * @author 刘家辉
  * @date 2023/03/26
  */
-public class TraceQueryServiceImpl  implements TraceQueryService {
+public class TraceQueryServiceImpl implements TraceQueryService {
     private static final TraceQueryServiceImpl INSTANCE = new TraceQueryServiceImpl();
+    private static final TraceQueryDAO TRACE_QUERY_DAO = TraceFactoryDAO.getTraceQueryDAO();
+
     private TraceQueryServiceImpl() {
     }
+
     public static TraceQueryServiceImpl getInstance() {
         return INSTANCE;
     }
-    private static final TraceQueryDAO TRACE_QUERY_DAO = TraceFactoryDAO.getTraceQueryDAO();
+
     @Override
     public List<TraceItemPO> queryByPrice(int max, int min, int choice) {
-       return TRACE_QUERY_DAO.queryByPrice(max,min,choice);
+        return TRACE_QUERY_DAO.queryByPrice(max, min, choice);
     }
 
     @Override
