@@ -6,6 +6,7 @@ import com.liujiahui.www.dao.TraceUserDAO;
 import com.liujiahui.www.entity.bo.TraceAddItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
+import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.service.TraceItemPersonalService;
@@ -65,5 +66,10 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
     public void removeItem(int index,Boolean choice) throws SQLException, IOException {
         ((TraceSupplierDAOImpl) TRACE_USER_DAO).removeOrRestoredItem(index,choice);
      }
+
+    public List<TraceFeedbackPO> showFeedback() throws SQLException, IOException {
+        String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
+        return  ((TraceSupplierDAOImpl) TRACE_USER_DAO).showFeedback(contractAccount);
+    }
 
 }

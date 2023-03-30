@@ -2,6 +2,7 @@ package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.TraceAddItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
+import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import com.liujiahui.www.service.TraceItemPersonalService;
@@ -62,5 +63,7 @@ public class TraceSupplyController {
         ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).removeItem(index,choice);
     }
 
-
+    public List<TraceFeedbackPO> showSupplierFeedback() throws SQLException, IOException {
+        return ((TraceItemPersonalBySupplierServiceImpl)traceItemPersonalService).showFeedback();
+    }
 }

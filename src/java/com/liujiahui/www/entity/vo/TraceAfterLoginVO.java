@@ -10,6 +10,7 @@ public class TraceAfterLoginVO {
        private  String name;
        private  String balance;
        private  String identity;
+       private Integer informationSize;
 
     public TraceAfterLoginVO(String name, String balance, String identity) {
         this.name = name;
@@ -47,5 +48,13 @@ public class TraceAfterLoginVO {
 
     public void setIdentity(String identity) {
         this.identity = identity;
+    }
+
+    public Integer getInformationSize() {
+        return informationSize;
+    }
+
+    public void setInformationSize(Integer informationSize) {
+        this.informationSize = informationSize;
     }
 }

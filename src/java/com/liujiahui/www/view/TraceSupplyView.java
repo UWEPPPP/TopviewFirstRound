@@ -3,6 +3,7 @@ package com.liujiahui.www.view;
 import com.liujiahui.www.controller.TraceEntryController;
 import com.liujiahui.www.controller.TraceQueryController;
 import com.liujiahui.www.controller.TraceSupplyController;
+import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 
 import java.io.IOException;
@@ -178,4 +179,9 @@ public class TraceSupplyView {
         }
     }
 
+    public static void showAllFeedback(List<TraceFeedbackPO> pos) {
+        for (TraceFeedbackPO po : pos) {
+            System.out.println("反馈者："+ po.getBuyer() +" 类型："+po.getLikeOrReport()+ " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName());
+        }
+    }
 }

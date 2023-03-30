@@ -22,6 +22,7 @@ public class TraceInformationSaveDTO {
     private ContractTradeService contractTradeServiceSolidity;
     private String contractAccount;
     private TransactionDecoderInterface decoder;
+    private Integer informationSize;
 
     private TraceInformationSaveDTO() {}
 
@@ -109,6 +110,14 @@ public class TraceInformationSaveDTO {
 
     public TransactionDecoderInterface getDecoder() {
         return decoder;
+    }
+
+    public Integer getInformationSize() {
+        return informationSize;
+    }
+
+    public void setInformationSize(Integer informationSize) {
+        this.informationSize = informationSize;
     }
 }
 

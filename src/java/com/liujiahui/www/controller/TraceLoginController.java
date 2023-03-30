@@ -45,8 +45,10 @@ public class TraceLoginController {
             TraceLoginView.loginReturnInterface();
         }
         TraceAfterLoginVO traceAfterLoginVO = null;
+        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         if (userInformationDTO != null) {
             traceAfterLoginVO = new TraceAfterLoginVO(userInformationDTO.getUserName(),userInformationDTO.getBalance(),identity);
+            traceAfterLoginVO.setInformationSize(instance.getInformationSize());
         }
         String identityCheck ="consumer";
         if(identity.equals(identityCheck)) {
