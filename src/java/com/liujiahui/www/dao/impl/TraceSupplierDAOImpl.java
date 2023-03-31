@@ -172,4 +172,13 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         UtilDAO.close(null, null, preparedStatement1);
         return list;
     }
+
+    public void appealFeedback(String hash, String comment) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "update user.consumer_feedback set comment = ?,is_appeal=true where item = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, comment);
+        preparedStatement.setString(2, hash);
+        preparedStatement.executeUpdate();
+    }
 }

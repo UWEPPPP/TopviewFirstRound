@@ -71,6 +71,8 @@ public class TraceEntryController {
             case 5:
                 TraceSupplyView.showAllFeedback(traceSupplyController.showSupplierFeedback());
                 break;
+            case 6:
+                traceSupplyController.showToken();
             default:
         }
     }

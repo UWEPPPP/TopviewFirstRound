@@ -25,7 +25,7 @@ import java.sql.SQLException;
 public class TraceLoginController {
     private static String identity;
 
-    public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws Exception {
         if (userInformationDTO == null) {
             TraceLoginView.loginReturnInterface();
         }
@@ -43,7 +43,7 @@ public class TraceLoginController {
         }
     }
 
-    public void login(String account, String password, Boolean choice) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public void login(String account, String password, Boolean choice) throws Exception {
         if (!choice) {
             TraceLoginBO traceLoginBO = new TraceLoginBO(account, password, "consumer");
             identity = "consumer";

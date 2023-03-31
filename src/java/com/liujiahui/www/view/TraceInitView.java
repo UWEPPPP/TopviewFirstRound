@@ -1,16 +1,9 @@
 package com.liujiahui.www.view;
 
+import com.liujiahui.www.controller.TraceAdminController;
 import com.liujiahui.www.controller.TraceLoginController;
 import com.liujiahui.www.controller.TraceRegisterController;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -20,7 +13,7 @@ import java.util.Scanner;
  * @date 2023/03/16
  */
 public class TraceInitView {
-    public static void start() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public static void start() throws Exception {
         Scanner in = new Scanner(System.in);
         System.out.println("欢迎来到Topview集团旗下的产品溯源系统");
         System.out.println("1.登录");
@@ -34,8 +27,16 @@ public class TraceInitView {
                 int choice1 = in.nextInt();
                 if (choice1 == 1 || choice1 == 2) {
                     new TraceLoginController().loginOrderByIdentity(choice1);
-                } else {
-                    System.out.println("输入错误，请重新输入！");
+                } else if (choice1 == 369) {
+                    System.out.println("请输入管理员密码：");
+                    String password = in.next();
+                    if (TraceAdminController.adminLogin(password)) {
+                        System.out.println("登录成功");
+                        TraceAdminView.start();
+                    } else {
+
+                        System.out.println("输入错误，请重新输入！");
+                    }
                 }
                 break;
             case 2:

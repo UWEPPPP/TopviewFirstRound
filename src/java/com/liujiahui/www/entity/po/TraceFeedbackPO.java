@@ -14,6 +14,8 @@ public class TraceFeedbackPO {
     private String seller;
     private String itemName;
     private Boolean isRead;
+    private String supplierComplaint;
+    private Boolean isAppeal;
 
     public String getItemName() {
         return itemName;
@@ -65,13 +67,15 @@ public class TraceFeedbackPO {
 
     @Override
     public String toString() {
-        return "Feedback{" +
-                "buyer='" + buyer + '\'' +
-                ", comment='" + comment + '\'' +
-                ", itemHash='" + itemHash + '\'' +
-                ", likeOrReport=" + likeOrReport +
-                ", seller='" + seller + '\'' +
-                '}';
+        return
+                "买家='" + buyer + '\'' +
+                        ", 评论='" + comment + '\'' +
+                        ", 商品名字='" + itemName + '\'' +
+                        "商品hash=" + itemHash +
+                        ", 评价类型=" + (likeOrReport ? "好评" : "差评") +
+                        (isAppeal ?
+                                ", 卖家='" + seller + '\'' +
+                                        "/n" + "商家申请申诉：" + supplierComplaint : "");
     }
 
     public Boolean getRead() {
@@ -80,5 +84,21 @@ public class TraceFeedbackPO {
 
     public void setRead(Boolean read) {
         isRead = read;
+    }
+
+    public String getSupplierComplaint() {
+        return supplierComplaint;
+    }
+
+    public void setSupplierComplaint(String supplierComplaint) {
+        this.supplierComplaint = supplierComplaint;
+    }
+
+    public Boolean getAppeal() {
+        return isAppeal;
+    }
+
+    public void setAppeal(Boolean appeal) {
+        isAppeal = appeal;
     }
 }

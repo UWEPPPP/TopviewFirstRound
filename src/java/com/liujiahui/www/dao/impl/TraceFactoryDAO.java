@@ -29,4 +29,8 @@ public class TraceFactoryDAO {
     public static TraceLoginDAOImpl getTraceLoginDAO() {
         return TraceLoginDAOImpl.getInstance();
     }
+
+    public static TraceAdminDAOImpl getTraceAdminDAO() {
+        return TraceAdminDAOImpl.getInstance();
+    }
 }

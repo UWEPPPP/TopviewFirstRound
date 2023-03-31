@@ -1,5 +1,6 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
@@ -24,7 +25,7 @@ import java.util.List;
 public class TraceSupplyController {
     private final TraceItemPersonalService traceItemPersonalService = TraceFactoryImplService.getTraceItemPersonalService(true);
 
-    public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage) throws SQLException, IOException {
+    public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) throws SQLException, IOException {
         TraceItemBO traceItemBO = new TraceItemBO();
         traceItemBO.setName(name);
         traceItemBO.setPrice(price);
@@ -34,6 +35,7 @@ public class TraceSupplyController {
         traceItemBO.setType(type);
         traceItemBO.setLocation(location);
         traceItemBO.setStorage(storage);
+        traceItemBO.setToken(token);
         ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).addItem(traceItemBO);
     }
 
@@ -70,4 +72,14 @@ public class TraceSupplyController {
         return ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).showFeedback();
     }
 
+    public void showToken() throws ContractException {
+        TraceSupplyView.showToken(((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).showToken());
+    }
+
+    public void appealFeedback(String hash, String comment) throws SQLException, IOException {
+        TraceFeedbackBO traceFeedbackBO = new TraceFeedbackBO();
+        traceFeedbackBO.setItemHash(hash);
+        traceFeedbackBO.setComment(comment);
+        ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).appealFeedback(traceFeedbackBO);
+    }
 }

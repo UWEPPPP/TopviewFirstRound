@@ -1,5 +1,6 @@
 package com.liujiahui.www.service.impl;
 
+import com.liujiahui.www.service.TraceAdminService;
 import com.liujiahui.www.service.TraceItemPersonalService;
 import com.liujiahui.www.service.TraceQueryService;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
@@ -21,6 +22,10 @@ public class TraceFactoryImplService {
         } else {
             return TraceRegisterAndLoginByConsumerServiceImpl.getInstance();
         }
+    }
+
+    public static TraceAdminService getTraceAdminService() {
+        return TraceAdminServiceImpl.getInstance();
     }
 
 

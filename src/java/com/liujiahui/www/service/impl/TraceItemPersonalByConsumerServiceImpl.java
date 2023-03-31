@@ -97,6 +97,11 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         traceItemStatusDTO.setPlace(status.getValue2());
         BigInteger value3 = status.getValue3();
         int intValue = value3.intValue();
+        stuffingStatus(traceItemStatusDTO, intValue);
+        return traceItemStatusDTO;
+    }
+
+    private void stuffingStatus(TraceItemStatusDTO traceItemStatusDTO, int intValue) {
         if (intValue == 0) {
             traceItemStatusDTO.setStatus("未出库，正在准备中");
         } else if (intValue == 1) {
@@ -108,7 +113,6 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         } else {
             traceItemStatusDTO.setStatus("已完成,存储于仓库中");
         }
-        return traceItemStatusDTO;
     }
 
     public void supplierWriteDownService(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
@@ -117,6 +121,8 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         String itemHash = traceFeedbackBO.getItemHash();
         String comment = traceFeedbackBO.getComment();
         int choice = traceFeedbackBO.getChoice();
+        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+        itemTradeSolidity.handing_feedback(choice == 1, Numeric.hexStringToByteArray(itemHash));
         ((TraceConsumerDAOImpl) USER_ITEM).writeDown(seller, buyer, comment, choice, itemHash);
     }
 
@@ -130,7 +136,7 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         byte[] bytes = Numeric.hexStringToByteArray(hash3);
         DynamicArray<ContractStorageService.ItemLife> itemLifeDynamicArray = contractTradeServiceSolidity.showWholeLife(bytes);
         List<ContractStorageService.ItemLife> itemLifeList = itemLifeDynamicArray.getValue();
-        List<TraceItemStatusDTO> traceItemStatusDTOS = new ArrayList<>();
+        List<TraceItemStatusDTO> itemStauts = new ArrayList<>();
         for (ContractStorageService.ItemLife itemLife : itemLifeList) {
             TraceItemStatusDTO traceItemStatusDTO = new TraceItemStatusDTO();
             long time = itemLife.date.longValue();
@@ -138,19 +144,9 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
             traceItemStatusDTO.setDate(date);
             traceItemStatusDTO.setPlace(itemLife.place);
             int status = itemLife.status.intValue();
-            if (status == 0) {
-                traceItemStatusDTO.setStatus("未出库，正在准备中");
-            } else if (status == 1) {
-                traceItemStatusDTO.setStatus("已出库，正在运送中");
-            } else if (status == 2) {
-                traceItemStatusDTO.setStatus("已送达");
-            } else if (status == 3) {
-                traceItemStatusDTO.setStatus("生产中");
-            } else {
-                traceItemStatusDTO.setStatus("已完成,存储于仓库中");
-            }
-            traceItemStatusDTOS.add(traceItemStatusDTO);
+            stuffingStatus(traceItemStatusDTO, status);
+            itemStauts.add(traceItemStatusDTO);
         }
-        return traceItemStatusDTOS;
+        return itemStauts;
     }
 }

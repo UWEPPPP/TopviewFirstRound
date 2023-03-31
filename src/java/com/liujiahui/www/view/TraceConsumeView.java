@@ -78,7 +78,6 @@ public class TraceConsumeView {
                         break;
                     default:
                 }
-
                 break;
             case 2:
                 System.out.println("请输入商品hash");

@@ -3,6 +3,7 @@ package com.liujiahui.www.service.impl;
 import com.liujiahui.www.dao.TraceUserDAO;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.dao.impl.TraceSupplierDAOImpl;
+import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
@@ -41,7 +42,7 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
     public void addItem(TraceItemBO traceItemBO) throws SQLException, IOException {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
-        TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()));
+        TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()), traceItemBO.getToken());
         Tuple2<BigInteger, byte[]> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3));
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4));
@@ -75,5 +76,15 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
     public List<TraceFeedbackPO> showFeedback() throws SQLException, IOException {
         String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
         return ((TraceSupplierDAOImpl) TRACE_USER_DAO).showFeedback(contractAccount);
+    }
+
+    public Integer showToken() throws ContractException {
+        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
+        String contractAccount = instance.getContractAccount();
+        return instance.getItemTradeSolidity().showSupplierToken(contractAccount).intValue();
+    }
+
+    public void appealFeedback(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
+        ((TraceSupplierDAOImpl) TRACE_USER_DAO).appealFeedback(traceFeedbackBO.getItemHash(), traceFeedbackBO.getComment());
     }
 }

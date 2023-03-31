@@ -40,6 +40,9 @@ public class TraceSupplyView {
         //读取换行符
         System.out.println("请输入商品描述");
         String description = in.nextLine();
+        System.out.println("请输入投入的token");
+        BigInteger token = in.nextBigInteger();
+        in.nextLine();
         System.out.println("--模拟商品真实属性--");
         System.out.println("如果商品为正品，请保证以上信息与商品真实信息一致");
         System.out.println("请输入商品真实名称");
@@ -56,7 +59,7 @@ public class TraceSupplyView {
         System.out.println("请输入生产完后存储地点");
         String storage = in.nextLine();
         TraceSupplyController traceSupplyController = new TraceSupplyController();
-        traceSupplyController.registerItem(name, price, description, realName, realDescription, type, location, storage);
+        traceSupplyController.registerItem(name, price, description, realName, realDescription, type, location, storage, token);
         System.out.println("商品上架成功");
     }
 
@@ -192,13 +195,28 @@ public class TraceSupplyView {
         }
     }
 
-    public static void showAllFeedback(List<TraceFeedbackPO> pos) {
+    public static void showAllFeedback(List<TraceFeedbackPO> pos) throws SQLException, IOException {
         for (TraceFeedbackPO po : pos) {
             if (po.getRead()) {
-                System.out.println("已读的反馈 "+"反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport()?"好评":"差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName());
+                System.out.println("已读的反馈 " + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash" + po.getItemHash());
             } else {
-                System.out.println("未读的新反馈！"+"反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport()?"好评":"差评")+ " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() );
+                System.out.println("未读的新反馈！" + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash" + po.getItemHash());
             }
         }
+        System.out.println("1.对不实的反馈进行申诉");
+        System.out.println("2.退出");
+        int choice = in.nextInt();
+        if (choice == 1) {
+            System.out.println("请输入对应物品hash");
+            String hash = in.next();
+            System.out.println("请输入申诉内容");
+            String comment = in.next();
+            traceSupplyController.appealFeedback(hash, comment);
+            System.out.println("已经申诉，等待管理员处理");
+        }
+    }
+
+    public static void showToken(Integer integer) {
+        System.out.println("您的token为：" + integer);
     }
 }

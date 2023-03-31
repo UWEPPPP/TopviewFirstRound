@@ -17,6 +17,7 @@ public class TraceItemBO {
     private Integer type;
     private String location;
     private String storage;
+    private BigInteger token;
 
     public String getName() {
         return name;
@@ -89,5 +90,13 @@ public class TraceItemBO {
 
     public void setStorage(String storage) {
         this.storage = storage;
+    }
+
+    public BigInteger getToken() {
+        return token;
+    }
+
+    public void setToken(BigInteger token) {
+        this.token = token;
     }
 }
