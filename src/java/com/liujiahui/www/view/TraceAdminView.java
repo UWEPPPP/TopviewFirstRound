@@ -2,7 +2,6 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceAdminController;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
 
 import java.util.List;
 import java.util.Scanner;

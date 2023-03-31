@@ -34,6 +34,6 @@ public class TraceAdminServiceImpl implements TraceAdminService {
     @Override
     public void checkAppeal(String hash1) {
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
-      //  itemTradeSolidity.get
+        //  itemTradeSolidity.get
     }
 }

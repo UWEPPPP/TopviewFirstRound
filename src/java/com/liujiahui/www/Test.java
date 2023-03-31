@@ -10,7 +10,6 @@ import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 public class Test {
@@ -21,7 +20,7 @@ public class Test {
         String hexPrivateKey = cryptoKeyPair.getHexPrivateKey();
         ContractTokenService deploy2 = ContractTokenService.deploy(client, cryptoKeyPair, BigInteger.valueOf(100000000), "TopView", BigInteger.valueOf(0), "tv");
         System.out.println(cryptoKeyPair.getAddress());
-        ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair,deploy2.getContractAddress());
+        ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair, deploy2.getContractAddress());
         ContractTradeService deploy1 = ContractTradeService.deploy(client, cryptoKeyPair, deploy.getContractAddress());
         System.out.println(deploy1.getContractAddress());
     }

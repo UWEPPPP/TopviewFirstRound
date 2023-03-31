@@ -1,7 +1,6 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.TraceAdminService;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
 
