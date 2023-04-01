@@ -6,7 +6,7 @@ import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
-import com.liujiahui.www.entity.dto.TraceRealItemDTO;
+import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.TraceItemPersonalService;
@@ -75,15 +75,15 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         return traceTransactionDTO;
     }
 
-    public TraceRealItemDTO checkByHash(String hash) throws ContractException {
+    public TraceRealAndOutItemDTO checkByHash(String hash) throws ContractException {
         byte[] bytes = Numeric.hexStringToByteArray(hash);
         Tuple3<String, String, String> realItem = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
 
-        TraceRealItemDTO traceRealItemDTO = new TraceRealItemDTO();
-        traceRealItemDTO.setName(realItem.getValue1());
-        traceRealItemDTO.setDescription(realItem.getValue2());
-        traceRealItemDTO.setSeller(realItem.getValue3());
-        return traceRealItemDTO;
+        TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
+        traceRealAndOutItemDTO.setRealName(realItem.getValue1());
+        traceRealAndOutItemDTO.setRealDescription(realItem.getValue2());
+        traceRealAndOutItemDTO.setSeller(realItem.getValue3());
+        return traceRealAndOutItemDTO;
     }
 
 

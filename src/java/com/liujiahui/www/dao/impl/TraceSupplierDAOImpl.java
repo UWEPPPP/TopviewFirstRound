@@ -78,7 +78,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
     }
 
 
-    public void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index, String userName, int type, String hash) throws SQLException, IOException {
+    public void addItem(String name, BigInteger price, String description, String accountAddress, BigInteger index, String userName, int type, String hash, BigInteger token) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String sql = "insert into user.item_show (name, price, description,owner_name,type,hash) values (?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -109,7 +109,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         preparedStatement.setString(5, itemType);
         preparedStatement.setString(6, hash);
         preparedStatement.executeUpdate();
-        String sql1 = "insert into user.item_behind (owner_address,isSold,`index`,seller_address,hash,isRemoved ) values (?,?,?,?,?,?)";
+        String sql1 = "insert into user.item_behind (owner_address,isSold,`index`,seller_address,hash,isRemoved,token) values (?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1, accountAddress);
         preparedStatement1.setBoolean(2, false);
@@ -118,6 +118,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         preparedStatement1.setString(5, hash);
         //是否下架了
         preparedStatement1.setBoolean(6, false);
+        preparedStatement1.setBigDecimal(7, BigDecimal.valueOf(token.longValue()));
         preparedStatement1.executeUpdate();
     }
 

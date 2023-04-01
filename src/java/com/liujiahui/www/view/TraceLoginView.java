@@ -21,13 +21,13 @@ import java.util.Scanner;
 public class TraceLoginView {
     static Scanner in = new Scanner(System.in);
 
-    public static void loginReturnInterface() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public static void loginReturnInterface() throws Exception {
         System.out.println("登录失败,用户名或密码错误");
         System.out.println("即将返回主界面");
         TraceInitView.start();
     }
 
-    public void loginByConsumer() throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public void loginByConsumer() throws Exception {
         System.out.println("进入消费者登录界面");
         System.out.println("请输入您的账号：");
         String account = in.next();
@@ -37,7 +37,7 @@ public class TraceLoginView {
         traceLoginController.login(account, password, false);
     }
 
-    public void loginBySupplier() throws ContractException, SQLException, IOException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public void loginBySupplier() throws Exception {
         System.out.println("进入供应商登录界面");
         System.out.println("请输入您的账号：");
         String account = in.next();

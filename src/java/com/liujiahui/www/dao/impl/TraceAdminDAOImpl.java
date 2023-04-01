@@ -3,6 +3,7 @@ package com.liujiahui.www.dao.impl;
 import com.liujiahui.www.dao.TraceAdminDAO;
 import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.po.TraceItemPO;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -49,5 +50,21 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
             list.add(feedbacks);
         }
         return list;
+    }
+
+    @Override
+    public TraceItemPO getSingleItem(String hash) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "select * from user.item_show  where hash = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, hash);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        TraceItemPO traceItemPo = new TraceItemPO();
+        while (resultSet.next()) {
+            traceItemPo.setId(resultSet.getInt("id"));
+            traceItemPo.setName(resultSet.getString("name"));
+            traceItemPo.setDescription(resultSet.getString("description"));
+        }
+        return traceItemPo;
     }
 }

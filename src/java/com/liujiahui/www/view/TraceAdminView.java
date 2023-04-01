@@ -1,6 +1,7 @@
 package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceAdminController;
+import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 
 import java.util.List;
@@ -45,7 +46,22 @@ public class TraceAdminView {
                 case 2:
                     System.out.println("请输入对应产品hash：");
                     String hash1 = input.next();
-                    TraceAdminController.checkAppeal(hash1);
+                    TraceRealAndOutItemDTO traceRealAndOutItemDTO = TraceAdminController.checkAppeal(hash1);
+                    System.out.println("该产品的真实信息为：");
+                    System.out.println(traceRealAndOutItemDTO.getRealName()+" 属性"+traceRealAndOutItemDTO.getRealDescription());
+                    System.out.println("该产品的公布信息为：");
+                    System.out.println(traceRealAndOutItemDTO.getOutName()+" 属性"+traceRealAndOutItemDTO.getOutDescription());
+                    System.out.println("你的判断结果是？");
+                    System.out.println("1.商家的申诉是正确的");
+                    System.out.println("2.商家的申诉是错误的");
+                    int choice1 = input.nextInt();
+                    if (choice1 == 1) {
+                        TraceAdminController.resolveAppeal(hash1);
+                    } else if (choice1 == 2) {
+                        System.out.println("还得写一个申诉驳回的提示功能");
+                    } else {
+                        System.out.println("输入错误，请重新输入！");
+                    }
                     break;
                 case 3:
                     System.out.println("感谢您的使用，再见！");

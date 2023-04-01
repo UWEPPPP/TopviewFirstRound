@@ -1,6 +1,7 @@
 package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.po.TraceItemPO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,4 +20,15 @@ public interface TraceAdminDAO {
      * @return {@link List}<{@link TraceFeedbackPO}>
      */
     List<TraceFeedbackPO> getAllFeedbackAndComplaint() throws SQLException, IOException;
+
+    /**
+     * 得到单项
+     *
+     * @param hash 哈希
+     * @return {@link TraceItemPO}
+     * @throws SQLException sqlexception异常
+     * @throws IOException  ioexception
+     */
+    TraceItemPO getSingleItem(String hash) throws SQLException, IOException;
+
 }

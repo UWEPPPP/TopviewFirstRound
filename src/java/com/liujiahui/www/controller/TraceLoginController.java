@@ -61,7 +61,7 @@ public class TraceLoginController {
      * 登录
      * +
      */
-    public void loginOrderByIdentity(int choice1) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public void loginOrderByIdentity(int choice1) throws Exception {
         if (choice1 == 1) {
             new TraceLoginView().loginBySupplier();
         } else {

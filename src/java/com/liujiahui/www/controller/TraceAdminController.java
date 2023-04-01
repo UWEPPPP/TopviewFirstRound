@@ -1,12 +1,15 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.service.TraceAdminService;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -37,8 +40,12 @@ public class TraceAdminController {
     public static void checkWilfulLikes(String hash) {
     }
 
-    public static void checkAppeal(String hash1) {
-        traceAdminService.checkAppeal(hash1);
+    public static TraceRealAndOutItemDTO checkAppeal(String hash1) throws ContractException, SQLException, IOException {
+        return traceAdminService.checkAppeal(hash1);
+    }
+
+    public static void resolveAppeal(String hash1) {
+        traceAdminService.resolveAppeal(hash1);
     }
 }
 

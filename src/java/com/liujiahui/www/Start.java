@@ -18,7 +18,7 @@ import java.sql.SQLException;
  * @date 2023/03/17
  */
 public class Start {
-    public static void main(String[] args) throws SQLException, IOException, ContractException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    public static void main(String[] args) throws Exception {
         TraceInitView.start();
     }
 }

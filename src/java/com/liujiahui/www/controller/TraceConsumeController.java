@@ -3,7 +3,7 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
-import com.liujiahui.www.entity.dto.TraceRealItemDTO;
+import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
@@ -52,12 +52,12 @@ public class TraceConsumeController {
     }
 
     public TraceTransactionVO checkByHash(String hash) throws ContractException {
-        TraceRealItemDTO traceRealItemDTO = ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).checkByHash(hash);
+        TraceRealAndOutItemDTO traceRealAndOutItemDTO = ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).checkByHash(hash);
         TraceTransactionVO traceTransactionVO = new TraceTransactionVO();
-        traceTransactionVO.setName(traceRealItemDTO.getName());
+        traceTransactionVO.setName(traceRealAndOutItemDTO.getRealName());
         traceTransactionVO.setHash(hash);
-        traceTransactionVO.setDescription(traceRealItemDTO.getDescription());
-        traceTransactionVO.setSeller(traceRealItemDTO.getSeller());
+        traceTransactionVO.setDescription(traceRealAndOutItemDTO.getRealDescription());
+        traceTransactionVO.setSeller(traceRealAndOutItemDTO.getSeller());
         return traceTransactionVO;
     }
 
