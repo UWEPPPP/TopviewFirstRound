@@ -122,7 +122,7 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         String comment = traceFeedbackBO.getComment();
         int choice = traceFeedbackBO.getChoice();
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
-        itemTradeSolidity.handing_feedback(choice == 1, Numeric.hexStringToByteArray(itemHash));
+        itemTradeSolidity.handing_feedback(seller,choice == 1, Numeric.hexStringToByteArray(itemHash));
         ((TraceConsumerDAOImpl) USER_ITEM).writeDown(seller, buyer, comment, choice, itemHash);
     }
 

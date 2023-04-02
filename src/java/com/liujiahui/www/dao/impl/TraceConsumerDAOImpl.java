@@ -95,7 +95,7 @@ public class TraceConsumerDAOImpl implements TraceUserDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, seller);
         preparedStatement.executeUpdate();
-        String sql1 = "insert into user.consumer_feedback (seller_account,buyer_account,comment,like_report,item,is_read) values (?,?,?,?,?,?)";
+        String sql1 = "insert into user.consumer_feedback (seller_account,buyer_account,comment,like_report,item_hash,is_read) values (?,?,?,?,?,?)";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1, seller);
         preparedStatement1.setString(2, buyer);

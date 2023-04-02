@@ -33,7 +33,7 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
     @Override
     public List<TraceFeedbackPO> getAllFeedbackAndComplaint() throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.consumer_feedback Inner JOIN user.item_show ON item = item_show.hash";
+        String sql = "select * from user.consumer_feedback Inner JOIN user.item_show ON item_hash = item_show.hash";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<TraceFeedbackPO> list = new ArrayList<>();
@@ -55,7 +55,7 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
     @Override
     public TraceItemPO getSingleItem(String hash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.item_show INNER JOIN user.consumer_feedback ON item_show.hash=consumer_feedback.item  where hash = ?";
+        String sql = "select * from user.item_show INNER JOIN user.consumer_feedback ON item_show.hash=consumer_feedback.item_hash  where hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, hash);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -74,7 +74,7 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
     @Override
     public void resolveBadLikeOrAppeal(String hash, Boolean result) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "update user.consumer_feedback set appeal_result = ? where item = ?";
+        String sql = "update user.supplier_appeal set appeal_result = ? where item_hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1, result);
         preparedStatement.setString(2, hash);

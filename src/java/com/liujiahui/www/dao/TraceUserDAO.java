@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 跟踪用户刀
@@ -85,7 +86,7 @@ public interface TraceUserDAO {
         if (set.next()) {
             accountAddress = set.getString("account_address");
         }
-        String sql1 = "SELECT t1.*, t2.name FROM user.consumer_feedback t1 INNER JOIN user.item_show t2 ON t1.item = t2.hash where seller_account=?;";
+        String sql1 = "SELECT t1.*, t2.name FROM user.consumer_feedback t1 INNER JOIN user.item_show t2 ON t1.item_hash = t2.hash where seller_account=?;";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1, accountAddress);
         ResultSet set1 = preparedStatement1.executeQuery();
@@ -105,9 +106,16 @@ public interface TraceUserDAO {
         return list;
     }
 
+    /**
+     * @param accountAddress 账户地址
+     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @throws SQLException sqlexception异常
+     * @throws IOException  ioexception
+     */
     static List<TraceFeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.item_show on item = item_show.hash  WHERE (seller_account = ? or buyer_account=?) and is_appeal IS NOT NULL";
+        String identity = Objects.equals(TraceInformationSaveDTO.getInstance().getIdentity(), "consumer") ? "buyer_account" : "seller_account";
+        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.supplier_appeal on consumer_feedback.item_hash = supplier_appeal.item_hash  WHERE "+identity+"=? and is_appeal IS NOT NULL";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         preparedStatement.setString(2, accountAddress);
@@ -116,11 +124,16 @@ public interface TraceUserDAO {
         while (set.next()) {
             TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
             traceFeedbackPo.setBuyer(set.getString("buyer_account"));
+            traceFeedbackPo.setItemHash(set.getString("item"));
             traceFeedbackPo.setAppealResult(set.getBoolean("appeal_result"));
-            traceFeedbackPo.setItemName(set.getString("name"));
             traceFeedbackPo.setSeller(set.getString("seller_account"));
             list.add(traceFeedbackPo);
         }
+        String judge = "buyer_account".equals(identity) ? "consumer_is_read" : "supplier_is_read";
+        String sql1 ="update user.supplier_appeal INNER JOIN user.consumer_feedback ON consumer_feedback.item_hash=item_hash  set "+judge+" = true where "+identity+"=?";
+        PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+        preparedStatement1.setString(1, accountAddress);
+        preparedStatement1.executeUpdate();
         UtilDAO.close(connection, set, preparedStatement);
         return list;
     }

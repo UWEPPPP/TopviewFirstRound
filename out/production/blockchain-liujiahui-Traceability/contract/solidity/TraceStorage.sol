@@ -56,7 +56,7 @@ contract TraceStorage {
     mapping(bytes32 => Item) private ItemByHash;
     mapping(bytes32 => ItemLife[]) private ItemLifeByHash;
     // 分别是通过hash获取物品数据和生命周期
-    mapping(address => uint256) public user_counter;
+    mapping(address => mapping(bytes32 => uint256)) public user_counter;
 
     // user_counter 记录每个地址的token质押数量
 
@@ -75,7 +75,7 @@ contract TraceStorage {
     function addItem(Item memory items, uint256 counter) external {
         ItemsBySeller[items.seller].push(items);
         erc20.pledge(items.seller, counter);
-        user_counter[items.seller] += counter;
+        user_counter[items.seller][items.hash] += counter;
         ItemByHash[items.hash] = items;
     }
 
@@ -202,17 +202,28 @@ contract TraceStorage {
         Balances[user] += amount;
     }
 
-    function like_or_report(address supplier, bool choice) external {
-        uint256 calculate = user_counter[supplier] / 10;
+    function like_or_report(address supplier, bool choice, bytes32 hash) external {
+        uint256 calculate = user_counter[supplier][hash] / 10;
         if (choice) {
             erc20.reward(supplier, calculate);
         } else {
-            user_counter[supplier] -= calculate;
+            user_counter[supplier][hash] -= calculate;
         }
+    }
+
+    function getToken(address supplier) external view returns (uint256){
+        return erc20.balanceOf(supplier);
     }
 
     function getIdentity(address user) external view returns (uint256) {
         uint256 identity = UserList[user].identity;
         return identity;
     }
+
+    function appeal(address feedbacker, address supplier, uint256 calculate) external {
+        erc20.reward(supplier, calculate);
+        Balances[feedbacker] -= calculate;
+    }
+
+
 }

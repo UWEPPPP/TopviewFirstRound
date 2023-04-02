@@ -150,7 +150,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
 
     public List<TraceFeedbackPO> showFeedback(String accountAddress) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.item_show on item = item_show.hash  WHERE seller_account = ?";
+        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.item_show on item_hash = item_show.hash  WHERE seller_account = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
@@ -176,11 +176,17 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
 
     public void appealFeedback(String hash, String comment) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "update user.consumer_feedback set comment = ?,is_appeal=true where item = ?";
+        String sql = "insert into user.supplier_appeal  ( supplier_is_read, consumer_is_read, item_hash, supplier_comment) values(false,false,?,?)  ";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, comment);
-        preparedStatement.setString(2, hash);
+        preparedStatement.setString(1, hash);
+        preparedStatement.setString(2, comment);
         preparedStatement.executeUpdate();
+        String sql1 = "update user.consumer_feedback set is_appeal = true where item_hash = ?";
+        PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+        preparedStatement1.setString(1, hash);
+        preparedStatement1.executeUpdate();
+        UtilDAO.close(connection, null, preparedStatement);
+        UtilDAO.close(null, null, preparedStatement1);
     }
 
 

@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "TraceStorage.sol";
 
+
 contract TraceMarket {
     TraceStorage private trace;
 
@@ -164,8 +165,21 @@ contract TraceMarket {
         trace.removeOrRestoreItem(index, msg.sender, choice);
     }
 
-    function handing_feedback(bool chioce) external {
-        trace.like_or_report(msg.sender, chioce);
+    function handing_feedback(bool chioce, bytes32 hash) external {
+        trace.like_or_report(msg.sender, chioce, hash);
+    }
+
+    function showSupplierToken(address supplier) external view returns (uint256){
+        return trace.getToken(supplier);
+    }
+
+    function getSingleItem(bytes32 hash) external view returns (TraceStorage.Item memory item){
+        return trace.getSingleItem(hash);
+    }
+
+    function resolveAppeal(address feedbacker, address supplier, uint256 token) external {
+        uint256 count = token / 10;
+        trace.appeal(feedbacker, supplier, count);
     }
 
     function judgeIdentity(address user) private view returns (uint256) {

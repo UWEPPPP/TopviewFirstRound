@@ -13,6 +13,13 @@ import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
  */
 public class TraceInformationSaveDTO {
     private static final TraceInformationSaveDTO INSTANCE = new TraceInformationSaveDTO();
+    private TraceInformationSaveDTO() {
+    }
+
+
+    public void setItemTradeSolidity(ContractTradeService contractTradeServiceSolidity) {
+        this.contractTradeServiceSolidity = contractTradeServiceSolidity;
+    }
 
     private String userName;
     private String gender;
@@ -25,10 +32,6 @@ public class TraceInformationSaveDTO {
     private TransactionDecoderInterface decoder;
     private Integer informationSize;
     private Integer appealResultSize;
-
-    private TraceInformationSaveDTO() {
-    }
-
     public static TraceInformationSaveDTO getInstance() {
         return INSTANCE;
     }
@@ -37,9 +40,6 @@ public class TraceInformationSaveDTO {
         return contractTradeServiceSolidity;
     }
 
-    public void setItemTradeSolidity(ContractTradeService contractTradeServiceSolidity) {
-        this.contractTradeServiceSolidity = contractTradeServiceSolidity;
-    }
 
     public String getIdentity() {
         return identity;
