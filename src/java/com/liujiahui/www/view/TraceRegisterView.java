@@ -2,15 +2,7 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceRegisterController;
 import com.liujiahui.www.entity.dto.TraceRegisterDTO;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 /**

@@ -105,6 +105,26 @@ public interface TraceUserDAO {
         return list;
     }
 
+    static List<TraceFeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.item_show on item = item_show.hash  WHERE (seller_account = ? or buyer_account=?) and is_appeal IS NOT NULL";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, accountAddress);
+        preparedStatement.setString(2, accountAddress);
+        ResultSet set = preparedStatement.executeQuery();
+        List<TraceFeedbackPO> list = new ArrayList<>();
+        while (set.next()) {
+            TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
+            traceFeedbackPo.setBuyer(set.getString("buyer_account"));
+            traceFeedbackPo.setAppealResult(set.getBoolean("appeal_result"));
+            traceFeedbackPo.setItemName(set.getString("name"));
+            traceFeedbackPo.setSeller(set.getString("seller_account"));
+            list.add(traceFeedbackPo);
+        }
+        UtilDAO.close(connection, set, preparedStatement);
+        return list;
+    }
+
     /**
      * 显示商品
      *
@@ -115,5 +135,4 @@ public interface TraceUserDAO {
      * @throws IOException       ioexception
      */
     Map<String, List<TraceItemPO>> showItem(String accountAddress) throws ContractException, SQLException, IOException;
-
 }

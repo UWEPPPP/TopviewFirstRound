@@ -6,9 +6,7 @@ import com.liujiahui.www.service.TraceAdminService;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,30 +20,20 @@ public class TraceAdminController {
     private static final TraceAdminService traceAdminService = TraceFactoryImplService.getTraceAdminService();
 
     public static Boolean adminLogin(String password) {
-        try {
-            File file = new File("src/resource/password.txt8");
-            String content = new String(Files.readAllBytes(file.toPath()));
-            return content.equals(password);
-        } catch (IOException e) {
-            System.out.println("读取文件失败");
-            e.printStackTrace();
-        }
-        return false;
+        return traceAdminService.login(password);
     }
 
     public static List<TraceFeedbackPO> showAllFeedbackAndComplaint() throws Exception {
         return traceAdminService.getAllFeedbackAndComplaint();
     }
 
-    public static void checkWilfulLikes(String hash) {
+
+    public static TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException, SQLException, IOException {
+        return traceAdminService.checkItem(hash1);
     }
 
-    public static TraceRealAndOutItemDTO checkAppeal(String hash1) throws ContractException, SQLException, IOException {
-        return traceAdminService.checkAppeal(hash1);
-    }
-
-    public static void resolveAppeal(String hash1) {
-        traceAdminService.resolveAppeal(hash1);
+    public static void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) throws SQLException, IOException {
+        traceAdminService.resolveBadLikeOrAppeal(hash1, result, choice);
     }
 }
 

@@ -16,6 +16,7 @@ public class TraceFeedbackPO {
     private Boolean isRead;
     private String supplierComplaint;
     private Boolean isAppeal;
+    private Boolean appealResult;
 
     public String getItemName() {
         return itemName;
@@ -100,5 +101,13 @@ public class TraceFeedbackPO {
 
     public void setAppeal(Boolean appeal) {
         isAppeal = appeal;
+    }
+
+    public boolean isAppealResult() {
+        return appealResult;
+    }
+
+    public void setAppealResult(boolean appealResult) {
+        this.appealResult = appealResult;
     }
 }

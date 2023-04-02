@@ -31,4 +31,8 @@ public interface TraceAdminDAO {
      */
     TraceItemPO getSingleItem(String hash) throws SQLException, IOException;
 
+    /**
+     * 解决上诉
+     */
+    void resolveBadLikeOrAppeal(String hash, Boolean result) throws SQLException, IOException;
 }

@@ -27,12 +27,20 @@ public interface TraceAdminService {
      * @param hash1 hash1
      * @return
      */
-    TraceRealAndOutItemDTO checkAppeal(String hash1) throws ContractException, SQLException, IOException;
+    TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException, SQLException, IOException;
 
     /**
      * 解决上诉
      *
-     * @param hash1 hash1
+     * @param hash1  hash1
+     * @param result
+     * @param choice
      */
-    void resolveAppeal(String hash1);
+    void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) throws SQLException, IOException;
+
+    /**
+     * @param password
+     * @return {@link Boolean}
+     */
+    Boolean login(String password);
 }

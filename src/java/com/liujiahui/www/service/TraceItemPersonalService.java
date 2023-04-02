@@ -2,6 +2,7 @@ package com.liujiahui.www.service;
 
 import com.liujiahui.www.dao.TraceUserDAO;
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
+import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -57,6 +58,11 @@ public interface TraceItemPersonalService {
      */
     static List<TraceFeedbackPO> getHistory(String name) throws SQLException, IOException {
         return TraceUserDAO.getHistory(name);
+    }
+
+    static List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
+        String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
+        return TraceUserDAO.showReportAndAppealResult(contractAccount);
     }
 
     /**

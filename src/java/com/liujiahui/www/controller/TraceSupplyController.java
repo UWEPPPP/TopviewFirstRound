@@ -82,4 +82,8 @@ public class TraceSupplyController {
         traceFeedbackBO.setComment(comment);
         ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).appealFeedback(traceFeedbackBO);
     }
+
+    public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
+        return TraceItemPersonalService.showAppealResult();
+    }
 }

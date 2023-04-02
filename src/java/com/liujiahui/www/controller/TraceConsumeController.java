@@ -5,6 +5,7 @@ import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
+import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
@@ -92,5 +93,9 @@ public class TraceConsumeController {
 
     public List<TraceItemStatusDTO> checkLife(String hash3) throws ContractException {
         return ((TraceItemPersonalByConsumerServiceImpl) traceItemPersonalService).checkLife(hash3);
+    }
+
+    public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
+        return TraceItemPersonalService.showAppealResult();
     }
 }

@@ -48,6 +48,9 @@ public class TraceEntryController {
             case 3:
                 traceConsumeController.showUserItem();
                 break;
+            case 4:
+                TraceConsumeView.showAppealResult(traceConsumeController.showAppealResult());
+                break;
             default:
         }
     }
@@ -73,6 +76,10 @@ public class TraceEntryController {
                 break;
             case 6:
                 traceSupplyController.showToken();
+                break;
+            case 7:
+                TraceSupplyView.showAppealResult(traceSupplyController.showAppealResult());
+                break;
             default:
         }
     }

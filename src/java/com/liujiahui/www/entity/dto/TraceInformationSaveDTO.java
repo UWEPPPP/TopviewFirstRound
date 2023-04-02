@@ -24,6 +24,7 @@ public class TraceInformationSaveDTO {
     private String contractAccount;
     private TransactionDecoderInterface decoder;
     private Integer informationSize;
+    private Integer appealResultSize;
 
     private TraceInformationSaveDTO() {
     }
@@ -122,6 +123,14 @@ public class TraceInformationSaveDTO {
 
     public void setInformationSize(Integer informationSize) {
         this.informationSize = informationSize;
+    }
+
+    public Integer getAppealResultSize() {
+        return appealResultSize;
+    }
+
+    public void setAppealResultSize(Integer appealResultSize) {
+        this.appealResultSize = appealResultSize;
     }
 }
 

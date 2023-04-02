@@ -45,7 +45,7 @@ public class TraceSupplyView {
             System.out.println("请输入投入的token");
             System.out.println("注：必须10以上及为10的倍数");
             token = in.nextBigInteger();
-        }while (token.intValue()%10==0&&token.intValue()>10);
+        } while (token.intValue() % 10 == 0 && token.intValue() > 10);
         in.nextLine();
         System.out.println("--模拟商品真实属性--");
         System.out.println("如果商品为正品，请保证以上信息与商品真实信息一致");
@@ -222,5 +222,15 @@ public class TraceSupplyView {
 
     public static void showToken(Integer integer) {
         System.out.println("您的token为：" + integer);
+    }
+
+    public static void showAppealResult(List<TraceFeedbackPO> traceFeedbacks) {
+        for (TraceFeedbackPO po : traceFeedbacks) {
+            if (po.isAppealResult()) {
+                System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemName() + "申诉结果：" + "申诉成功，举报已驳回");
+            } else {
+                System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemName() + "申诉结果：" + "申诉失败，举报已通过");
+            }
+        }
     }
 }

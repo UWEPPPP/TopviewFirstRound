@@ -4,6 +4,7 @@ import com.liujiahui.www.controller.TraceConsumeController;
 import com.liujiahui.www.controller.TraceEntryController;
 import com.liujiahui.www.controller.TraceQueryController;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
+import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
@@ -158,4 +159,13 @@ public class TraceConsumeView {
         }
     }
 
+    public static void showAppealResult(List<TraceFeedbackPO> list) {
+        for (TraceFeedbackPO feedbacks : list) {
+            if (feedbacks.isAppealResult()) {
+                System.out.println("被举报人：" + feedbacks.getSeller() + " 举报物品" + feedbacks.getItemName() + " 举报结果：被鉴定为恶意举报 将进行一定资产的没收");
+            } else {
+                System.out.println("被举报人：" + feedbacks.getSeller() + " 举报物品" + feedbacks.getItemName() + " 举报结果：被鉴定为真实举报 将对商家进行处罚");
+            }
+        }
+    }
 }

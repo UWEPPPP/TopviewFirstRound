@@ -6,15 +6,6 @@ import com.liujiahui.www.entity.vo.TraceAfterLoginVO;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
 import com.liujiahui.www.view.TraceEntryView;
 import com.liujiahui.www.view.TraceLoginView;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 
 /**
  * 用户登录控制器
@@ -34,6 +25,7 @@ public class TraceLoginController {
         if (userInformationDTO != null) {
             traceAfterLoginVO = new TraceAfterLoginVO(userInformationDTO.getUserName(), userInformationDTO.getBalance(), identity);
             traceAfterLoginVO.setInformationSize(instance.getInformationSize());
+            traceAfterLoginVO.setAppealReusltSize(instance.getAppealResultSize());
         }
         String identityCheck = "consumer";
         if (identity.equals(identityCheck)) {

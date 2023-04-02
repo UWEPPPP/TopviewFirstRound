@@ -23,6 +23,8 @@ public class TraceItemPO {
     private byte[] hashes;
     private String ownerName;
     private String type;
+    private String seller;
+    private int token;
 
     public TraceItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, String ownerName) {
         this.id = id;
@@ -155,5 +157,21 @@ public class TraceItemPO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(String seller) {
+        this.seller = seller;
+    }
+
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
     }
 }

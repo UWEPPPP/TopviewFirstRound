@@ -47,7 +47,7 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3));
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4));
         String hash = Numeric.toHexString(addItemOutput.getValue2());
-        ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceItemBO.getName(), traceItemBO.getPrice(), traceItemBO.getDescription(), instance.getContractAccount(), addItemOutput.getValue1(), instance.getUserName(), traceItemBO.getType(), hash,traceItemBO.getToken());
+        ((TraceSupplierDAOImpl) TRACE_USER_DAO).addItem(traceItemBO.getName(), traceItemBO.getPrice(), traceItemBO.getDescription(), instance.getContractAccount(), addItemOutput.getValue1(), instance.getUserName(), traceItemBO.getType(), hash, traceItemBO.getToken());
     }
 
 
@@ -87,4 +87,6 @@ public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonal
     public void appealFeedback(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
         ((TraceSupplierDAOImpl) TRACE_USER_DAO).appealFeedback(traceFeedbackBO.getItemHash(), traceFeedbackBO.getComment());
     }
+
+
 }

@@ -26,6 +26,7 @@ public class TraceEntryView {
                 System.out.println("1.查看产品信息");
                 System.out.println("2.查看个人信息");
                 System.out.println("3.查看我购买的产品");
+                System.out.println("4.查看我的举报结果");
             } while (mainInterface(false));
             TraceInitView.start();
         } else {
@@ -53,6 +54,7 @@ public class TraceEntryView {
         if (traceAfterLoginVO != null) {
             System.out.println("您好 供应商" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             System.out.println("您的余额为" + traceAfterLoginVO.getBalance());
+
             System.out.println("您的初始Token为100,每次上架产品你需要投入一定量的token");
             System.out.println("在产品卖出后受到用户的点赞将会获得以投入token为依据的定量token");
             System.out.println("同理，受到用户举报将会损失以投入token为依据的定量token");
@@ -60,8 +62,9 @@ public class TraceEntryView {
             System.out.println("--------------------------------------------");
             if (traceAfterLoginVO.getInformationSize() > 0) {
                 System.out.println("您收到了" + traceAfterLoginVO.getInformationSize() + "则来自顾客的反馈，请前往查看");
-            } else {
-                System.out.println("没有最新评价");
+            }
+            if (traceAfterLoginVO.getAppealReusltSize() > 0) {
+                System.out.println("您的" + traceAfterLoginVO.getAppealReusltSize() + "则申诉已经处理，请前往查看");
             }
             do {
                 System.out.println("请选择您要进行的操作");
@@ -71,6 +74,7 @@ public class TraceEntryView {
                 System.out.println("4.进入我的产品主页");
                 System.out.println("5.用户对我的评价");
                 System.out.println("6.查看我的token");
+                System.out.println("7.查看我的申诉结果");
             } while (mainInterface(true));
             TraceInitView.start();
         } else {

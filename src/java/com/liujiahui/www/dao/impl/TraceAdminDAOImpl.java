@@ -55,7 +55,7 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
     @Override
     public TraceItemPO getSingleItem(String hash) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.item_show  where hash = ?";
+        String sql = "select * from user.item_show INNER JOIN user.consumer_feedback ON item_show.hash=consumer_feedback.item  where hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, hash);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -64,7 +64,20 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
             traceItemPo.setId(resultSet.getInt("id"));
             traceItemPo.setName(resultSet.getString("name"));
             traceItemPo.setDescription(resultSet.getString("description"));
+            traceItemPo.setOwner(resultSet.getString("buyer_account"));
+            traceItemPo.setSeller(resultSet.getString("seller_account"));
+            traceItemPo.setToken(resultSet.getInt("price"));
         }
         return traceItemPo;
+    }
+
+    @Override
+    public void resolveBadLikeOrAppeal(String hash, Boolean result) throws SQLException, IOException {
+        Connection connection = UtilDAO.getConnection();
+        String sql = "update user.consumer_feedback set appeal_result = ? where item = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setBoolean(1, result);
+        preparedStatement.setString(2, hash);
+        preparedStatement.executeUpdate();
     }
 }

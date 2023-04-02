@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "TraceStorage.sol";
 
 
@@ -152,7 +153,7 @@ contract TraceMarket {
 
     function refundItem(bytes32 hash, uint256 index) external onlyConsumer {
         TraceStorage.Item memory item = trace.getSingleItem(hash);
-        (uint256 date, , ) = trace.getStatus(hash);
+        (uint256 date, ,) = trace.getStatus(hash);
         require(item.isSold, "Item is not sold yet");
         require(now < (date + 7 days), "Out of date");
         trace.increaseBalance(msg.sender, item.price);
@@ -164,21 +165,21 @@ contract TraceMarket {
         trace.removeOrRestoreItem(index, msg.sender, choice);
     }
 
-    function handing_feedback(bool chioce,bytes32 hash) external{
-        trace.like_or_report(msg.sender,chioce,hash);
+    function handing_feedback(bool chioce, bytes32 hash) external {
+        trace.like_or_report(msg.sender, chioce, hash);
     }
 
-    function showSupplierToken(address supplier) external view returns(uint256){
+    function showSupplierToken(address supplier) external view returns (uint256){
         return trace.getToken(supplier);
     }
 
-    function getSingleItem(bytes32 hash) external view returns(TraceStorage.Item memory item){
+    function getSingleItem(bytes32 hash) external view returns (TraceStorage.Item memory item){
         return trace.getSingleItem(hash);
     }
 
-    function resolveAppeal(address feedbacker,address supplier,uint256 token) external {
-        uint256 count = token/10;
-        trace.appeal(feedbacker,supplier,count);
+    function resolveAppeal(address feedbacker, address supplier, uint256 token) external {
+        uint256 count = token / 10;
+        trace.appeal(feedbacker, supplier, count);
     }
 
     function judgeIdentity(address user) private view returns (uint256) {

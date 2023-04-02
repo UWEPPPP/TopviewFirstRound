@@ -182,4 +182,6 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
         preparedStatement.setString(2, hash);
         preparedStatement.executeUpdate();
     }
+
+
 }

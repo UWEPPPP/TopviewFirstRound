@@ -5,15 +5,6 @@ import com.liujiahui.www.entity.dto.TraceRegisterDTO;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
 import com.liujiahui.www.service.impl.TraceFactoryImplService;
 import com.liujiahui.www.view.TraceRegisterView;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 
 /**
  * 用户注册控制器

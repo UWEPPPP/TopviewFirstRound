@@ -66,6 +66,14 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
                         user.setInformationSize(set1.getInt(1));
                     }
                 }
+                String sql2 = "select count(*) from user.consumer_feedback where (seller_account=? or buyer_account=?) and appeal_result IS NOT NULL";
+                PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+                preparedStatement2.setString(1, user.getContractAccount());
+                preparedStatement2.setString(2, user.getContractAccount());
+                ResultSet set2 = preparedStatement2.executeQuery();
+                if (set2.next()) {
+                    user.setAppealResultSize(set2.getInt(1));
+                }
                 return user;
             } else {
                 return null;

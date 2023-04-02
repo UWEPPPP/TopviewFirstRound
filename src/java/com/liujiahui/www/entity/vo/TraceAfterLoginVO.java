@@ -11,6 +11,7 @@ public class TraceAfterLoginVO {
     private String balance;
     private String identity;
     private Integer informationSize;
+    private Integer appealReusltSize;
 
     public TraceAfterLoginVO(String name, String balance, String identity) {
         this.name = name;
@@ -56,5 +57,13 @@ public class TraceAfterLoginVO {
 
     public void setInformationSize(Integer informationSize) {
         this.informationSize = informationSize;
+    }
+
+    public Integer getAppealReusltSize() {
+        return appealReusltSize;
+    }
+
+    public void setAppealReusltSize(Integer appealReusltSize) {
+        this.appealReusltSize = appealReusltSize;
     }
 }
