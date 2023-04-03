@@ -94,7 +94,7 @@ public class TraceAdminServiceImpl implements TraceAdminService {
         Client client = sdk.getClient(1);
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(adminKey);
-        ContractTradeService contractTradeService = ContractTradeService.load("0x59a2382be64ef6abedeb47ef8d26597b39b4b032", client, keyPair);
+        ContractTradeService contractTradeService = ContractTradeService.load("0x2a8e6f2d815a4e44de6d5377763228256a3e64d9", client, keyPair);
         TraceInformationSaveDTO.getInstance().setItemTradeSolidity(contractTradeService);
         return Objects.equals(password, content);
     }

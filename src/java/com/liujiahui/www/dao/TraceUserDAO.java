@@ -96,7 +96,7 @@ public interface TraceUserDAO {
             traceFeedbackPo.setBuyer(set1.getString("buyer_account"));
             traceFeedbackPo.setSeller(set1.getString("seller_account"));
             traceFeedbackPo.setLikeOrReport("like".equals(set1.getString("like_report")));
-            traceFeedbackPo.setItemHash(set1.getString("item"));
+            traceFeedbackPo.setItemHash(set1.getString("item_hash"));
             traceFeedbackPo.setComment(set1.getString("comment"));
             traceFeedbackPo.setItemName(set1.getString("Name"));
             list.add(traceFeedbackPo);
@@ -116,7 +116,7 @@ public interface TraceUserDAO {
         Connection connection = UtilDAO.getConnection();
         String identity = Objects.equals(TraceInformationSaveDTO.getInstance().getIdentity(), "consumer") ? "buyer_account" : "seller_account";
         String judge = "buyer_account".equals(identity) ? "consumer_is_read" : "supplier_is_read";
-        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.supplier_appeal on consumer_feedback.item_hash = supplier_appeal.item_hash  WHERE " + identity + "=? and is_appeal IS NOT NULL and "+judge+"!= true";
+        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.supplier_appeal on consumer_feedback.item_hash = supplier_appeal.item_hash  WHERE " + identity + "=? and is_appeal IS NOT NULL ";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
@@ -129,7 +129,6 @@ public interface TraceUserDAO {
             traceFeedbackPo.setSeller(set.getString("seller_account"));
             list.add(traceFeedbackPo);
         }
-
         String sql1 = "update user.supplier_appeal INNER JOIN user.consumer_feedback ON consumer_feedback.item_hash=supplier_appeal.item_hash  set " + judge + " = true where " + identity + "=?";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1, accountAddress);

@@ -33,10 +33,10 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
     @Override
     public List<TraceFeedbackPO> getAllFeedbackAndComplaint() throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
-        String sql = "select * from user.consumer_feedback Inner JOIN user.supplier_appeal ON consumer_feedback.item_hash = supplier_appeal.item_hash INNER JOIN user.item_show ON item_show.hash = supplier_appeal.item_hash where admin_is_read != TRUE  ";
+        String sql = "select * from user.consumer_feedback Inner JOIN user.supplier_appeal ON consumer_feedback.item_hash = supplier_appeal.item_hash INNER JOIN user.item_show ON item_show.hash = supplier_appeal.item_hash where admin_is_read IS NULL  ";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
-        String sql1 = "select * from user.consumer_feedback INNER JOIN user.item_show ON item_hash=hash     where consumer_feedback.is_appeal  IS NULL ";
+        String sql1 = "select * from user.consumer_feedback INNER JOIN user.item_show ON item_hash=hash  where is_appeal IS NULL";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         ResultSet resultSet1 = preparedStatement1.executeQuery();
         List<TraceFeedbackPO> list = new ArrayList<>();
@@ -53,7 +53,6 @@ public class TraceAdminDAOImpl implements TraceAdminDAO {
             feedbacks.setItemName(resultSet1.getString("name"));
             list.add(feedbacks);
         }
-        System.out.println(list);
         return list;
     }
 

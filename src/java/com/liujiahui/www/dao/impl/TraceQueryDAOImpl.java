@@ -51,7 +51,7 @@ public class TraceQueryDAOImpl implements TraceQueryDAO {
     @Override
     public List<TraceItemPO> queryByKeyword(String keyword) {
         try (Connection connection = UtilDAO.getConnection()) {
-            String sql = "select * from user.item_show where name like ?";
+            String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash        where name like ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, "%" + keyword + "%");
             return querySame(preparedStatement);

@@ -27,6 +27,9 @@ public class TraceAdminView {
                 System.out.println(feedback.getBuyer() + "用户的反馈信息为：");
                 System.out.println(feedback);
                 System.out.println("------------------------------------");
+            }else {
+                System.out.println(feedback.getBuyer() + "用户的反馈信息为：");
+                System.out.println(feedback);
             }
         }
         System.out.println("对于用户点赞的信息你需要辨别是否恶意点赞");

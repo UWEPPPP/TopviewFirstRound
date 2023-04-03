@@ -227,9 +227,9 @@ public class TraceSupplyView {
     public static void showAppealResult(List<TraceFeedbackPO> traceFeedbacks) {
         for (TraceFeedbackPO po : traceFeedbacks) {
             if (po.isAppealResult()) {
-                System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemName() + "申诉结果：" + "申诉成功，举报已驳回");
+                System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemHash() + "申诉结果：" + "申诉成功，举报已驳回");
             } else {
-                System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemName() + "申诉结果：" + "申诉失败，举报已通过");
+                System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemHash() + "申诉结果：" + "申诉失败，举报已通过");
             }
         }
     }

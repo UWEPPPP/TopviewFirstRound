@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * 用户登录持久层
@@ -40,6 +41,8 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
         String userAccount = account.getAccount();
         String userPassword = account.getPassword();
         String identity = account.getIdentity();
+        String identityCheck = Objects.equals(identity, "consumer") ? "buyer_account" : "seller_account";
+        String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
         try (Connection connection = UtilDAO.getConnection()) {
             PreparedStatement preparedStatement;
             preparedStatement = connection.prepareStatement("select * from user." + identity + "  where user_name=? and password=?");
@@ -66,10 +69,9 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
                         user.setInformationSize(set1.getInt(1));
                     }
                 }
-                String sql2 = "select count(*) from user.consumer_feedback INNER  JOIN user.supplier_appeal on supplier_appeal.item_hash=consumer_feedback.item_hash  where (seller_account=? or buyer_account=?) and appeal_result IS NOT NULL";
+                String sql2 = "select count(*) from user.consumer_feedback INNER  JOIN user.supplier_appeal on supplier_appeal.item_hash=consumer_feedback.item_hash  where "+identityCheck+"=? and appeal_result IS NOT NULL and "+judge+"!= true";
                 PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
                 preparedStatement2.setString(1, user.getContractAccount());
-                preparedStatement2.setString(2, user.getContractAccount());
                 ResultSet set2 = preparedStatement2.executeQuery();
                 if (set2.next()) {
                     user.setAppealResultSize(set2.getInt(1));
