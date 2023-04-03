@@ -35,7 +35,6 @@ public class TraceAdminView {
         System.out.println("对于用户点赞的信息你需要辨别是否恶意点赞");
         System.out.println("对于商家的申诉你需要进行处理");
         System.out.println("---------------------------------");
-        do {
             System.out.println("1.辨别是否恶意点赞");
             System.out.println("2.处理商家申诉");
             System.out.println("3.退出");
@@ -93,6 +92,6 @@ public class TraceAdminView {
                     System.out.println("输入错误，请重新输入！");
                     break;
             }
-        } while (true);
+
     }
 }
