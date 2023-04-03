@@ -84,7 +84,7 @@ public class TraceAdminView {
                     break;
                 case 3:
                     System.out.println("感谢您的使用，再见！");
-                    System.exit(0);
+                    TraceInitView.start();
                     break;
                 default:
                     System.out.println("输入错误，请重新输入！");

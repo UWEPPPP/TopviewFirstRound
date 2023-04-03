@@ -115,22 +115,22 @@ public interface TraceUserDAO {
     static List<TraceFeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String identity = Objects.equals(TraceInformationSaveDTO.getInstance().getIdentity(), "consumer") ? "buyer_account" : "seller_account";
-        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.supplier_appeal on consumer_feedback.item_hash = supplier_appeal.item_hash  WHERE "+identity+"=? and is_appeal IS NOT NULL";
+        String judge = "buyer_account".equals(identity) ? "consumer_is_read" : "supplier_is_read";
+        String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.supplier_appeal on consumer_feedback.item_hash = supplier_appeal.item_hash  WHERE " + identity + "=? and is_appeal IS NOT NULL and "+judge+"!= true";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
-        preparedStatement.setString(2, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
         List<TraceFeedbackPO> list = new ArrayList<>();
         while (set.next()) {
             TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
             traceFeedbackPo.setBuyer(set.getString("buyer_account"));
-            traceFeedbackPo.setItemHash(set.getString("item"));
+            traceFeedbackPo.setItemHash(set.getString("item_hash"));
             traceFeedbackPo.setAppealResult(set.getBoolean("appeal_result"));
             traceFeedbackPo.setSeller(set.getString("seller_account"));
             list.add(traceFeedbackPo);
         }
-        String judge = "buyer_account".equals(identity) ? "consumer_is_read" : "supplier_is_read";
-        String sql1 ="update user.supplier_appeal INNER JOIN user.consumer_feedback ON consumer_feedback.item_hash=item_hash  set "+judge+" = true where "+identity+"=?";
+
+        String sql1 = "update user.supplier_appeal INNER JOIN user.consumer_feedback ON consumer_feedback.item_hash=supplier_appeal.item_hash  set " + judge + " = true where " + identity + "=?";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1, accountAddress);
         preparedStatement1.executeUpdate();

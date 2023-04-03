@@ -1,19 +1,9 @@
 package com.liujiahui.www.service.wrapper;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.fisco.bcos.sdk.abi.FunctionEncoder;
 import org.fisco.bcos.sdk.abi.FunctionReturnDecoder;
 import org.fisco.bcos.sdk.abi.TypeReference;
-import org.fisco.bcos.sdk.abi.datatypes.Address;
-import org.fisco.bcos.sdk.abi.datatypes.Bool;
-import org.fisco.bcos.sdk.abi.datatypes.Event;
-import org.fisco.bcos.sdk.abi.datatypes.Function;
-import org.fisco.bcos.sdk.abi.datatypes.Type;
-import org.fisco.bcos.sdk.abi.datatypes.Utf8String;
+import org.fisco.bcos.sdk.abi.datatypes.*;
 import org.fisco.bcos.sdk.abi.datatypes.generated.Uint256;
 import org.fisco.bcos.sdk.abi.datatypes.generated.Uint8;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
@@ -28,6 +18,12 @@ import org.fisco.bcos.sdk.model.CryptoType;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.model.callback.TransactionCallback;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ContractTokenService extends Contract {
@@ -72,11 +68,17 @@ public class ContractTokenService extends Contract {
     public static final String FUNC_TRANSFERFROM = "transferFrom";
 
     public static final Event APPROVAL_EVENT = new Event("Approval",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            }, new TypeReference<Address>(true) {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
     public static final Event TRANSFER_EVENT = new Event("Transfer",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            }, new TypeReference<Address>(true) {
+            }, new TypeReference<Uint256>() {
+            }));
     ;
 
     protected ContractTokenService(String contractAddress, Client client, CryptoKeyPair credential) {
@@ -85,6 +87,18 @@ public class ContractTokenService extends Contract {
 
     public static String getBinary(CryptoSuite cryptoSuite) {
         return (cryptoSuite.getCryptoTypeConfig() == CryptoType.ECDSA_TYPE ? BINARY : SM_BINARY);
+    }
+
+    public static ContractTokenService load(String contractAddress, Client client, CryptoKeyPair credential) {
+        return new ContractTokenService(contractAddress, client, credential);
+    }
+
+    public static ContractTokenService deploy(Client client, CryptoKeyPair credential, int _initialAmount, String _tokenName, int _decimalUnits, String _tokenSymbol) throws ContractException {
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(_initialAmount),
+                new org.fisco.bcos.sdk.abi.datatypes.Utf8String(_tokenName),
+                new org.fisco.bcos.sdk.abi.datatypes.generated.Uint8(_decimalUnits),
+                new org.fisco.bcos.sdk.abi.datatypes.Utf8String(_tokenSymbol)));
+        return deploy(ContractTokenService.class, client, credential, getBinary(client.getCryptoSuite()), encodedConstructor);
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
@@ -103,12 +117,12 @@ public class ContractTokenService extends Contract {
 
     public void subscribeApprovalEvent(String fromBlock, String toBlock, List<String> otherTopics, EventCallback callback) {
         String topic0 = eventEncoder.encode(APPROVAL_EVENT);
-        subscribeEvent(ABI,BINARY,topic0,fromBlock,toBlock,otherTopics,callback);
+        subscribeEvent(ABI, BINARY, topic0, fromBlock, toBlock, otherTopics, callback);
     }
 
     public void subscribeApprovalEvent(EventCallback callback) {
         String topic0 = eventEncoder.encode(APPROVAL_EVENT);
-        subscribeEvent(ABI,BINARY,topic0,callback);
+        subscribeEvent(ABI, BINARY, topic0, callback);
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
@@ -127,19 +141,20 @@ public class ContractTokenService extends Contract {
 
     public void subscribeTransferEvent(String fromBlock, String toBlock, List<String> otherTopics, EventCallback callback) {
         String topic0 = eventEncoder.encode(TRANSFER_EVENT);
-        subscribeEvent(ABI,BINARY,topic0,fromBlock,toBlock,otherTopics,callback);
+        subscribeEvent(ABI, BINARY, topic0, fromBlock, toBlock, otherTopics, callback);
     }
 
     public void subscribeTransferEvent(EventCallback callback) {
         String topic0 = eventEncoder.encode(TRANSFER_EVENT);
-        subscribeEvent(ABI,BINARY,topic0,callback);
+        subscribeEvent(ABI, BINARY, topic0, callback);
     }
 
     public BigInteger allowance(String _owner, String _spender) throws ContractException {
         final Function function = new Function(FUNC_ALLOWANCE,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(_owner),
                         new org.fisco.bcos.sdk.abi.datatypes.Address(_spender)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
@@ -147,7 +162,8 @@ public class ContractTokenService extends Contract {
         final Function function = new Function(FUNC_ALLOWED,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(param0),
                         new org.fisco.bcos.sdk.abi.datatypes.Address(param1)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
@@ -182,7 +198,9 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_APPROVE,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Uint256>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, BigInteger>(
 
@@ -195,7 +213,8 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getOutput();
         final Function function = new Function(FUNC_APPROVE,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple1<Boolean>(
 
@@ -206,28 +225,32 @@ public class ContractTokenService extends Contract {
     public BigInteger balanceOf(String _owner) throws ContractException {
         final Function function = new Function(FUNC_BALANCEOF,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(_owner)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
     public BigInteger balances(String param0) throws ContractException {
         final Function function = new Function(FUNC_BALANCES,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(param0)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
     public BigInteger decimals() throws ContractException {
         final Function function = new Function(FUNC_DECIMALS,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
     public String name() throws ContractException {
         final Function function = new Function(FUNC_NAME,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeCallWithSingleValueReturn(function, String.class);
     }
 
@@ -262,7 +285,9 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_PLEDGE,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Uint256>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, BigInteger>(
 
@@ -299,7 +324,8 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_REGISTER,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple1<String>(
 
@@ -338,7 +364,9 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_REWARD,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Uint256>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, BigInteger>(
 
@@ -350,14 +378,16 @@ public class ContractTokenService extends Contract {
     public String symbol() throws ContractException {
         final Function function = new Function(FUNC_SYMBOL,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeCallWithSingleValueReturn(function, String.class);
     }
 
     public BigInteger totalSupply() throws ContractException {
         final Function function = new Function(FUNC_TOTALSUPPLY,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
@@ -392,7 +422,9 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_TRANSFER,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Uint256>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, BigInteger>(
 
@@ -405,7 +437,8 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getOutput();
         final Function function = new Function(FUNC_TRANSFER,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple1<Boolean>(
 
@@ -447,7 +480,10 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_TRANSFERFROM,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Address>() {
+                }, new TypeReference<Uint256>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple3<String, String, BigInteger>(
 
@@ -461,24 +497,13 @@ public class ContractTokenService extends Contract {
         String data = transactionReceipt.getOutput();
         final Function function = new Function(FUNC_TRANSFERFROM,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple1<Boolean>(
 
                 (Boolean) results.get(0).getValue()
         );
-    }
-
-    public static ContractTokenService load(String contractAddress, Client client, CryptoKeyPair credential) {
-        return new ContractTokenService(contractAddress, client, credential);
-    }
-
-    public static ContractTokenService deploy(Client client, CryptoKeyPair credential, int _initialAmount, String _tokenName, int _decimalUnits, String _tokenSymbol) throws ContractException {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.generated.Uint256(_initialAmount),
-                new org.fisco.bcos.sdk.abi.datatypes.Utf8String(_tokenName),
-                new org.fisco.bcos.sdk.abi.datatypes.generated.Uint8(_decimalUnits),
-                new org.fisco.bcos.sdk.abi.datatypes.Utf8String(_tokenSymbol)));
-        return deploy(ContractTokenService.class, client, credential, getBinary(client.getCryptoSuite()), encodedConstructor);
     }
 
     public static class ApprovalEventResponse {

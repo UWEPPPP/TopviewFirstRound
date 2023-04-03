@@ -72,7 +72,7 @@ public class TraceFeedbackPO {
                 "买家='" + buyer + '\'' +
                         ", 评论='" + comment + '\'' +
                         ", 商品名字='" + itemName + '\'' +
-                        "商品hash=" + itemHash +
+                        ",商品hash=" + itemHash +
                         ", 评价类型=" + (likeOrReport ? "好评" : "差评") +
                         (isAppeal ?
                                 ", 卖家='" + seller + '\'' +

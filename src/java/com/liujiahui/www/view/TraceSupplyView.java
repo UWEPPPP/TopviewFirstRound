@@ -45,7 +45,7 @@ public class TraceSupplyView {
             System.out.println("请输入投入的token");
             System.out.println("注：必须10以上及为10的倍数");
             token = in.nextBigInteger();
-        } while (!(token.intValue() % 10 == 0 && token.intValue() > 10));
+        } while (!(token.intValue() % 10 == 0 && token.intValue() >= 10));
         in.nextLine();
         System.out.println("--模拟商品真实属性--");
         System.out.println("如果商品为正品，请保证以上信息与商品真实信息一致");
@@ -202,9 +202,9 @@ public class TraceSupplyView {
     public static void showAllFeedback(List<TraceFeedbackPO> pos) throws SQLException, IOException {
         for (TraceFeedbackPO po : pos) {
             if (po.getRead()) {
-                System.out.println("已读的反馈 " + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash" + po.getItemHash());
+                System.out.println("已读的反馈 " + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash:" + po.getItemHash());
             } else {
-                System.out.println("未读的新反馈！" + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash" + po.getItemHash());
+                System.out.println("未读的新反馈！" + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash:" + po.getItemHash());
             }
         }
         System.out.println("1.对不实的反馈进行申诉");

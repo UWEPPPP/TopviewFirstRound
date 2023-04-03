@@ -9,7 +9,6 @@ import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.spec.InvalidKeySpecException;
 
 public class Test {
@@ -18,8 +17,8 @@ public class Test {
         Client client = sdk.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String hexPrivateKey = cryptoKeyPair.getHexPrivateKey();
-        ContractTokenService deploy2 = ContractTokenService.deploy(client, cryptoKeyPair, 100000,"topview",1,"TV");
-                System.out.println(cryptoKeyPair.getAddress());
+        ContractTokenService deploy2 = ContractTokenService.deploy(client, cryptoKeyPair, 100000, "topview", 1, "TV");
+        System.out.println(cryptoKeyPair.getAddress());
         System.out.println("hexPrivateKey = " + hexPrivateKey);
         ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair, deploy2.getContractAddress());
         ContractTradeService deploy1 = ContractTradeService.deploy(client, cryptoKeyPair, deploy.getContractAddress());

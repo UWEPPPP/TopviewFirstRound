@@ -36,11 +36,10 @@ public class TraceContractServiceImpl implements TraceContractService {
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(cryptoSuite);
-        ContractTradeService asset = ContractTradeService.load("0xc3349ef75c56157c469174549931c08bcfd55d56", client, keyPair);
+        ContractTradeService asset = ContractTradeService.load("0x59a2382be64ef6abedeb47ef8d26597b39b4b032", client, keyPair);
         TraceInformationSaveDTO userInformationSaveDTO = TraceInformationSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
-        System.out.println("getBalance:" + asset.getBalance());
         return asset.getBalance();
     }
 
@@ -50,7 +49,7 @@ public class TraceContractServiceImpl implements TraceContractService {
         Client client = sdk.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractTradeService asset = ContractTradeService.load("0xc3349ef75c56157c469174549931c08bcfd55d56", client, cryptoKeyPair);
+        ContractTradeService asset = ContractTradeService.load("0x59a2382be64ef6abedeb47ef8d26597b39b4b032", client, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));

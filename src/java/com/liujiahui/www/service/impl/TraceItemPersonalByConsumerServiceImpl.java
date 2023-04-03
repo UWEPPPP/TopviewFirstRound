@@ -65,7 +65,6 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         }
         List<ContractTradeService.ItemSoldEventResponse> itemSoldEvents = contractTradeServiceSolidity.getItemSoldEvents(transactionReceipt);
         ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
-        System.out.println(itemSoldEventResponse);
         BigInteger bigInteger1 = index.toBigInteger();
         ((TraceConsumerDAOImpl) USER_ITEM).buyItem(seller, bigInteger1);
         BigInteger balance = contractTradeServiceSolidity.getBalance();
@@ -78,7 +77,6 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
     public TraceRealAndOutItemDTO checkByHash(String hash) throws ContractException {
         byte[] bytes = Numeric.hexStringToByteArray(hash);
         Tuple3<String, String, String> realItem = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
-
         TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
         traceRealAndOutItemDTO.setRealName(realItem.getValue1());
         traceRealAndOutItemDTO.setRealDescription(realItem.getValue2());
@@ -122,7 +120,7 @@ public class TraceItemPersonalByConsumerServiceImpl implements TraceItemPersonal
         String comment = traceFeedbackBO.getComment();
         int choice = traceFeedbackBO.getChoice();
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
-        itemTradeSolidity.handing_feedback(seller,choice == 1, Numeric.hexStringToByteArray(itemHash));
+        itemTradeSolidity.handing_feedback(seller, choice == 1, Numeric.hexStringToByteArray(itemHash));
         ((TraceConsumerDAOImpl) USER_ITEM).writeDown(seller, buyer, comment, choice, itemHash);
     }
 

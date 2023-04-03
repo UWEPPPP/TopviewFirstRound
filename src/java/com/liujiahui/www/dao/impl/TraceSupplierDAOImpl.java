@@ -163,6 +163,7 @@ public class TraceSupplierDAOImpl implements TraceUserDAO {
             traceFeedbackPo.setComment(set.getString("comment"));
             traceFeedbackPo.setItemName(set.getString("name"));
             traceFeedbackPo.setRead(set.getBoolean("is_read"));
+            traceFeedbackPo.setItemHash(set.getString("item_hash"));
             list.add(traceFeedbackPo);
         }
         String sql1 = "update user.consumer_feedback set is_read = true where seller_account = ?";

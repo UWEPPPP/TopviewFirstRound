@@ -33,9 +33,10 @@ public class TraceInitView {
                     if (TraceAdminController.adminLogin(password)) {
                         System.out.println("登录成功");
                         TraceAdminView.start();
+                        TraceInitView.start();
                     } else {
-
                         System.out.println("输入错误，请重新输入！");
+                        TraceInitView.start();
                     }
                 }
                 break;
