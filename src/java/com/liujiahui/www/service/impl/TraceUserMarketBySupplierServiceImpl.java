@@ -9,7 +9,7 @@ import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
-import com.liujiahui.www.service.TraceItemPersonalService;
+import com.liujiahui.www.service.TraceUserMarketService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
@@ -28,14 +28,14 @@ import java.util.Map;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class TraceItemPersonalBySupplierServiceImpl implements TraceItemPersonalService {
-    private static final TraceItemPersonalBySupplierServiceImpl INSTANCE = new TraceItemPersonalBySupplierServiceImpl();
+public class TraceUserMarketBySupplierServiceImpl implements TraceUserMarketService {
+    private static final TraceUserMarketBySupplierServiceImpl INSTANCE = new TraceUserMarketBySupplierServiceImpl();
     private static final TraceUserDAO TRACE_USER_DAO = TraceFactoryDAO.getTraceFactoryDAO(true);
 
-    private TraceItemPersonalBySupplierServiceImpl() {
+    private TraceUserMarketBySupplierServiceImpl() {
     }
 
-    public static TraceItemPersonalBySupplierServiceImpl getInstance() {
+    public static TraceUserMarketBySupplierServiceImpl getInstance() {
         return INSTANCE;
     }
 

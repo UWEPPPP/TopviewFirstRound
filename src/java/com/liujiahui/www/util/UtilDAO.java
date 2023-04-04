@@ -1,4 +1,4 @@
-package com.liujiahui.www.dao.util;
+package com.liujiahui.www.util;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,14 +23,15 @@ public class UtilDAO {
     }
 
     public static void close(Connection connection, ResultSet set, PreparedStatement preparedStatement) throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
         if (set != null) {
             set.close();
         }
         if (preparedStatement != null) {
             preparedStatement.close();
         }
+        if (connection != null) {
+            connection.close();
+        }
+
     }
 }

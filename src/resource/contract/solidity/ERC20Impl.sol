@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.1;
 
-import "ERC20.sol";
+import "erc20.sol";
 
 contract MyToken is Token {
     // MAX_UINT256 代表最大的 uint256 值
@@ -51,19 +51,21 @@ NOTE:
     // 转账函数，将指定数量的代币从发送方地址转移到接收方地址
     function transfer(address _to, uint256 _value)
     public
+
     override
     returns (bool success)
     {
         // 当发送方地址余额小于转移数量时，抛出异常
+        _to.delegatecall;
         require(
-            balances[msg.sender] >= _value,
+            balances[admin] >= _value,
             "token balance is lower than the value requested"
         );
         // 更新发送方地址和接收方地址的余额
-        balances[msg.sender] -= _value;
+        balances[admin] -= _value;
         balances[_to] += _value;
         // 触发 Transfer 事件
-        emit Transfer(msg.sender, _to, _value);
+        emit Transfer(admin, _to, _value);
         //solhint-disable-line indent, no-unused-vars
         return true;
     }
@@ -75,7 +77,7 @@ NOTE:
         uint256 _value
     ) public override returns (bool success) {
         // 获取发送方地址授权给当前地址的代币数量
-        uint256 allowance = allowed[_from][msg.sender];
+        uint256 allowance = allowed[_from][admin];
         // 当发送方地址余额小于转移数量或授权数量小于转移数量时，抛出异常
         require(
             balances[_from] >= _value && allowance >= _value,
@@ -86,7 +88,7 @@ NOTE:
         balances[_from] -= _value;
         // 当授权数量不是最大值时，减少发送方地址授权的代币数量
         if (allowance < MAX_UINT256) {
-            allowed[_from][msg.sender] -= _value;
+            allowed[_from][admin] -= _value;
         }
         // 触发 Transfer 事件
         emit Transfer(_from, _to, _value);
@@ -105,15 +107,15 @@ NOTE:
     }
 
     // 授权指定地址可以转移指定数量的代币
-    function approve(address _spender, uint256 _value)
+    function approve(address owner, uint256 _value)
     public
     override
     returns (bool success)
     {
         // 更新发送方地址授权给指定地址的代币数量
-        allowed[msg.sender][_spender] = _value;
+        allowed[owner][admin] = _value;
         // 触发 Approval 事件
-        emit Approval(msg.sender, _spender, _value);
+        emit Approval(admin, owner, _value);
         //solhint-disable-line indent, no-unused-vars
         return true;
     }
@@ -130,7 +132,8 @@ NOTE:
 
     //注册
     function register(address user) external {
-        transferFrom(admin, user, 100);
+        approve(user, 1000);
+        transfer(user, 100);
     }
 
     //质押货币
@@ -139,6 +142,6 @@ NOTE:
     }
 
     function reward(address supplier, uint count) external {
-        transferFrom(admin, supplier, count);
+        transfer(supplier, count);
     }
 }

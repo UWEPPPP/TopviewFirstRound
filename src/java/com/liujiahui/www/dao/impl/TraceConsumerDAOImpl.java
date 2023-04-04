@@ -1,10 +1,10 @@
 package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.TraceUserDAO;
-import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
+import com.liujiahui.www.util.UtilDAO;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;

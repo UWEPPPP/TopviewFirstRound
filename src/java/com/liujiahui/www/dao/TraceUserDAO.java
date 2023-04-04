@@ -1,9 +1,9 @@
 package com.liujiahui.www.dao;
 
-import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.util.UtilDAO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;

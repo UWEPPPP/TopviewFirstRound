@@ -4,6 +4,7 @@ import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.vo.TraceAfterLoginVO;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.view.TraceEntryView;
 import com.liujiahui.www.view.TraceLoginView;
 
@@ -15,6 +16,7 @@ import com.liujiahui.www.view.TraceLoginView;
  */
 public class TraceLoginController {
     private static String identity;
+    private final TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
 
     public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws Exception {
         if (userInformationDTO == null) {
@@ -39,12 +41,12 @@ public class TraceLoginController {
         if (!choice) {
             TraceLoginBO traceLoginBO = new TraceLoginBO(account, password, "consumer");
             identity = "consumer";
-            TraceInformationSaveDTO login = TraceRegisterAndLoginService.login(traceLoginBO);
+            TraceInformationSaveDTO login = traceRegisterAndLoginService.login(traceLoginBO);
             loginBackView(login);
         } else {
             TraceLoginBO traceLoginBO = new TraceLoginBO(account, password, "suppliers");
             identity = "suppliers";
-            TraceInformationSaveDTO login = TraceRegisterAndLoginService.login(traceLoginBO);
+            TraceInformationSaveDTO login = traceRegisterAndLoginService.login(traceLoginBO);
             loginBackView(login);
         }
     }

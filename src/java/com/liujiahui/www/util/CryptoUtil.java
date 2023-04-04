@@ -1,4 +1,4 @@
-package com.liujiahui.www.service.util;
+package com.liujiahui.www.util;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;

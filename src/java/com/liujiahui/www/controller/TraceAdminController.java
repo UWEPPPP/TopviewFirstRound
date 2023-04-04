@@ -3,7 +3,7 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.service.TraceAdminService;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2023/03/31
  */
 public class TraceAdminController {
-    private static final TraceAdminService traceAdminService = TraceFactoryImplService.getTraceAdminService();
+    private static final TraceAdminService traceAdminService = TraceFactoryService.getTraceAdminService();
 
     public static Boolean adminLogin(String password) {
         return traceAdminService.login(password);

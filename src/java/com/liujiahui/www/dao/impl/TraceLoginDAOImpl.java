@@ -1,11 +1,11 @@
 package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.TraceLoginDAO;
-import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.dto.TraceAccountOnJavaDTO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.service.impl.TraceContractServiceImpl;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.util.UtilDAO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import javax.crypto.BadPaddingException;
@@ -51,7 +51,7 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
             ResultSet set = preparedStatement.executeQuery();
             if (set.next()) {
                 TraceInformationSaveDTO user = TraceInformationSaveDTO.getInstance();
-                TraceContractServiceImpl traceContractService = TraceFactoryImplService.getTraceContractService();
+                TraceContractServiceImpl traceContractService = TraceFactoryService.getTraceContractService();
                 String balance = String.valueOf(traceContractService.getBalance(set.getString("private_key")));
                 user.setUserName(set.getString("user_name"));
                 user.setBalance(balance);
@@ -69,7 +69,7 @@ public class TraceLoginDAOImpl implements TraceLoginDAO {
                         user.setInformationSize(set1.getInt(1));
                     }
                 }
-                String sql2 = "select count(*) from user.consumer_feedback INNER  JOIN user.supplier_appeal on supplier_appeal.item_hash=consumer_feedback.item_hash  where "+identityCheck+"=? and appeal_result IS NOT NULL and "+judge+"!= true";
+                String sql2 = "select count(*) from user.consumer_feedback INNER  JOIN user.supplier_appeal on supplier_appeal.item_hash=consumer_feedback.item_hash  where " + identityCheck + "=? and appeal_result IS NOT NULL and " + judge + "!= true";
                 PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
                 preparedStatement2.setString(1, user.getContractAccount());
                 ResultSet set2 = preparedStatement2.executeQuery();

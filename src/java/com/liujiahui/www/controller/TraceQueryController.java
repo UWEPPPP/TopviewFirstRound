@@ -2,7 +2,7 @@ package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.TraceQueryService;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2023/03/26
  */
 public class TraceQueryController {
-    private static final TraceQueryService TRACE_QUERY_SERVICE = TraceFactoryImplService.getTraceQueryService();
+    private static final TraceQueryService TRACE_QUERY_SERVICE = TraceFactoryService.getTraceQueryService();
 
     public List<TraceItemPO> queryByPrice(int max, int min, int choice) {
         return TRACE_QUERY_SERVICE.queryByPrice(max, min, choice);

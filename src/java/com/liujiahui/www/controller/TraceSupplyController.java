@@ -5,9 +5,9 @@ import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
-import com.liujiahui.www.service.TraceItemPersonalService;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
-import com.liujiahui.www.service.impl.TraceItemPersonalBySupplierServiceImpl;
+import com.liujiahui.www.service.TraceUserMarketService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.impl.TraceUserMarketBySupplierServiceImpl;
 import com.liujiahui.www.view.TraceSupplyView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * @date 2023/03/25
  */
 public class TraceSupplyController {
-    private final TraceItemPersonalService traceItemPersonalService = TraceFactoryImplService.getTraceItemPersonalService(true);
+    private final TraceUserMarketService traceUserMarketService = TraceFactoryService.getTraceItemPersonalService(true);
 
     public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) throws SQLException, IOException {
         TraceItemBO traceItemBO = new TraceItemBO();
@@ -36,12 +36,12 @@ public class TraceSupplyController {
         traceItemBO.setLocation(location);
         traceItemBO.setStorage(storage);
         traceItemBO.setToken(token);
-        ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).addItem(traceItemBO);
+        ((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).addItem(traceItemBO);
     }
 
 
     public void updateLogistics(int id, String logistics, int status) {
-        ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).updateLogistics(id, logistics, status);
+        ((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).updateLogistics(id, logistics, status);
     }
 
     public void updateItem(int index, List<TraceItemPO> traceItemPos, String name, String description, String price) throws SQLException, IOException {
@@ -57,33 +57,33 @@ public class TraceSupplyController {
         updateBO.setName(name);
         updateBO.setDescription(description);
         updateBO.setPrice(price);
-        ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).updateItem(updateBO);
+        ((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).updateItem(updateBO);
     }
 
     public void showSupplierItem() throws ContractException, SQLException, IOException {
-        TraceSupplyView.showSupplierItem(traceItemPersonalService.showItem());
+        TraceSupplyView.showSupplierItem(traceUserMarketService.showItem());
     }
 
     public void removeItem(int index, Boolean choice) throws SQLException, IOException {
-        ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).removeItem(index, choice);
+        ((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).removeItem(index, choice);
     }
 
     public List<TraceFeedbackPO> showSupplierFeedback() throws SQLException, IOException {
-        return ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).showFeedback();
+        return ((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).showFeedback();
     }
 
     public void showToken() throws ContractException {
-        TraceSupplyView.showToken(((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).showToken());
+        TraceSupplyView.showToken(((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).showToken());
     }
 
     public void appealFeedback(String hash, String comment) throws SQLException, IOException {
         TraceFeedbackBO traceFeedbackBO = new TraceFeedbackBO();
         traceFeedbackBO.setItemHash(hash);
         traceFeedbackBO.setComment(comment);
-        ((TraceItemPersonalBySupplierServiceImpl) traceItemPersonalService).appealFeedback(traceFeedbackBO);
+        ((TraceUserMarketBySupplierServiceImpl) traceUserMarketService).appealFeedback(traceFeedbackBO);
     }
 
     public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
-        return TraceItemPersonalService.showAppealResult();
+        return TraceUserMarketService.showAppealResult();
     }
 }

@@ -3,7 +3,7 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceRegisterDTO;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.view.TraceRegisterView;
 
 /**
@@ -20,7 +20,7 @@ public class TraceRegisterController {
         traceRegisterBO.setPhone(traceRegisterDTO.getPhone());
         traceRegisterBO.setPassword(traceRegisterDTO.getPassword());
         traceRegisterBO.setAddress(traceRegisterDTO.getAddress());
-        TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryImplService.getTraceRegisterAndLoginService(traceRegisterDTO.getChoice());
+        TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
         TraceRegisterView.returnInterface(traceRegisterAndLoginService.register(traceRegisterBO));
     }
 

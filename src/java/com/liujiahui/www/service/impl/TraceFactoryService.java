@@ -1,7 +1,7 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.service.TraceAdminService;
-import com.liujiahui.www.service.TraceItemPersonalService;
+import com.liujiahui.www.service.TraceUserMarketService;
 import com.liujiahui.www.service.TraceQueryService;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
 
@@ -11,17 +11,13 @@ import com.liujiahui.www.service.TraceRegisterAndLoginService;
  * @author 刘家辉
  * @date 2023/03/25
  */
-public class TraceFactoryImplService {
+public class TraceFactoryService {
     static public TraceQueryService getTraceQueryService() {
         return TraceQueryServiceImpl.getInstance();
     }
 
-    static public TraceRegisterAndLoginService getTraceRegisterAndLoginService(Boolean choice) {
-        if (choice) {
-            return TraceRegisterAndLoginBySupplierServiceImpl.getInstance();
-        } else {
-            return TraceRegisterAndLoginByConsumerServiceImpl.getInstance();
-        }
+    static public TraceRegisterAndLoginService getTraceRegisterAndLoginService() {
+        return TraceRegisterOrLoginServiceImpl.getInstance();
     }
 
     public static TraceAdminService getTraceAdminService() {
@@ -29,11 +25,11 @@ public class TraceFactoryImplService {
     }
 
 
-    static public TraceItemPersonalService getTraceItemPersonalService(Boolean choice) {
+    static public TraceUserMarketService getTraceItemPersonalService(Boolean choice) {
         if (choice) {
-            return TraceItemPersonalBySupplierServiceImpl.getInstance();
+            return TraceUserMarketBySupplierServiceImpl.getInstance();
         } else {
-            return TraceItemPersonalByConsumerServiceImpl.getInstance();
+            return TraceUserMarketByConsumerServiceImpl.getInstance();
         }
     }
 

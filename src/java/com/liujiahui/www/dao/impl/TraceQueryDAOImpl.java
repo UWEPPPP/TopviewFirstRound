@@ -1,8 +1,8 @@
 package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.TraceQueryDAO;
-import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.util.UtilDAO;
 
 import java.io.IOException;
 import java.math.BigInteger;

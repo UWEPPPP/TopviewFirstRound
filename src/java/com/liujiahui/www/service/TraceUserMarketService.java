@@ -16,7 +16,7 @@ import java.util.Map;
  * @author 刘家辉
  * @date 2023/03/25
  */
-public interface TraceItemPersonalService {
+public interface TraceUserMarketService {
     /**
      * 显示所有项
      * 查看所有产品的功能

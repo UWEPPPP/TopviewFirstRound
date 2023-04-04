@@ -24,6 +24,7 @@ public class TraceInformationSaveDTO {
     private TransactionDecoderInterface decoder;
     private Integer informationSize;
     private Integer appealResultSize;
+
     private TraceInformationSaveDTO() {
     }
 

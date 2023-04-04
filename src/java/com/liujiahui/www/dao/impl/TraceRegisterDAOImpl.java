@@ -1,11 +1,11 @@
 package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.TraceRegisterDAO;
-import com.liujiahui.www.dao.util.UtilDAO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.po.TraceSupplierPO;
 import com.liujiahui.www.entity.po.TraceUserPO;
-import com.liujiahui.www.service.impl.TraceFactoryImplService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.util.UtilDAO;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -18,7 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.liujiahui.www.dao.util.UtilDAO.close;
+import static com.liujiahui.www.util.UtilDAO.close;
 
 /**
  * 用户刀
@@ -52,7 +52,7 @@ public class TraceRegisterDAOImpl implements TraceRegisterDAO {
         if (checkUserExist(table, traceUserPo.getName(), connection)) {
             return false;
         }
-        TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryImplService.getTraceContractService().initByContract(table);
+        TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceContractService().initByContract(table);
         String sql = "insert into user." + tableAndLimit;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, traceUserPo.getName());

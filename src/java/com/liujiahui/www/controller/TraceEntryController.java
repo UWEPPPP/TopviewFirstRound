@@ -5,7 +5,7 @@ import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
-import com.liujiahui.www.service.TraceItemPersonalService;
+import com.liujiahui.www.service.TraceUserMarketService;
 import com.liujiahui.www.view.TraceConsumeView;
 import com.liujiahui.www.view.TraceSameView;
 import com.liujiahui.www.view.TraceSupplyView;
@@ -89,7 +89,7 @@ public class TraceEntryController {
      * 以下均为公共方法
      */
     private void showItemList() throws SQLException, IOException, ContractException {
-        List<TraceItemPO> traceItems = TraceItemPersonalService.showAllItem();
+        List<TraceItemPO> traceItems = TraceUserMarketService.showAllItem();
         String check = "consumer";
         if (check.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
             TraceConsumeView.showAndBuyItemByConsumer(traceItems);
@@ -116,7 +116,7 @@ public class TraceEntryController {
         userChangeServiceBO.setChange(change);
         userChangeServiceBO.setChoice(choice);
         userChangeServiceBO.setIdentity(TraceInformationSaveDTO.getInstance().getIdentity());
-        TraceItemPersonalService.updatePersonalMessage(userChangeServiceBO);
+        TraceUserMarketService.updatePersonalMessage(userChangeServiceBO);
         switch (choice) {
             case 1:
                 TraceInformationSaveDTO.getInstance().setUserName(change);
@@ -133,7 +133,7 @@ public class TraceEntryController {
 
 
     public void showHistory(String name) throws SQLException, IOException {
-        List<TraceFeedbackPO> history = TraceItemPersonalService.getHistory(name);
+        List<TraceFeedbackPO> history = TraceUserMarketService.getHistory(name);
         TraceSameView.showHistory(history);
     }
 
