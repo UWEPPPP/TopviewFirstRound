@@ -9,7 +9,7 @@ import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
-import com.liujiahui.www.service.TraceUserMarketService;
+import com.liujiahui.www.service.SupplierService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
@@ -28,17 +28,20 @@ import java.util.Map;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class TraceUserMarketBySupplierServiceImpl implements TraceUserMarketService {
-    private static final TraceUserMarketBySupplierServiceImpl INSTANCE = new TraceUserMarketBySupplierServiceImpl();
+public class SupplierServiceImpl implements SupplierService {
+    private static class SupplierMarketServiceImplHolder {
+        private static final SupplierServiceImpl INSTANCE = new SupplierServiceImpl();
+    }
     private static final TraceUserDAO TRACE_USER_DAO = TraceFactoryDAO.getTraceFactoryDAO(true);
 
-    private TraceUserMarketBySupplierServiceImpl() {
+    private SupplierServiceImpl() {
     }
 
-    public static TraceUserMarketBySupplierServiceImpl getInstance() {
-        return INSTANCE;
+    public static SupplierServiceImpl getInstance() {
+        return SupplierMarketServiceImplHolder.INSTANCE;
     }
 
+    @Override
     public void addItem(TraceItemBO traceItemBO) throws SQLException, IOException {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
@@ -51,6 +54,7 @@ public class TraceUserMarketBySupplierServiceImpl implements TraceUserMarketServ
     }
 
 
+    @Override
     public void updateItem(TraceItemUpdateBO traceItemUpdateBO) throws SQLException, IOException {
         String oldName = traceItemUpdateBO.getOldName();
         String name = traceItemUpdateBO.getName();
@@ -60,6 +64,7 @@ public class TraceUserMarketBySupplierServiceImpl implements TraceUserMarketServ
         TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(traceItemUpdateBO.getIndex())), new BigInteger(price));
     }
 
+    @Override
     public void updateLogistics(int index, String logistics, int status) {
         TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status));
     }
@@ -69,21 +74,25 @@ public class TraceUserMarketBySupplierServiceImpl implements TraceUserMarketServ
         return TRACE_USER_DAO.showItem(TraceInformationSaveDTO.getInstance().getContractAccount());
     }
 
+    @Override
     public void removeItem(int index, Boolean choice) throws SQLException, IOException {
         ((TraceSupplierDAOImpl) TRACE_USER_DAO).removeOrRestoredItem(index, choice);
     }
 
+    @Override
     public List<TraceFeedbackPO> showFeedback() throws SQLException, IOException {
         String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
         return ((TraceSupplierDAOImpl) TRACE_USER_DAO).showFeedback(contractAccount);
     }
 
+    @Override
     public Integer showToken() throws ContractException {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         String contractAccount = instance.getContractAccount();
         return instance.getItemTradeSolidity().showSupplierToken(contractAccount).intValue();
     }
 
+    @Override
     public void appealFeedback(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
         ((TraceSupplierDAOImpl) TRACE_USER_DAO).appealFeedback(traceFeedbackBO.getItemHash(), traceFeedbackBO.getComment());
     }

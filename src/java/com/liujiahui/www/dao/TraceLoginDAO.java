@@ -1,6 +1,5 @@
 package com.liujiahui.www.dao;
 
-import com.liujiahui.www.entity.dto.TraceAccountOnJavaDTO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 

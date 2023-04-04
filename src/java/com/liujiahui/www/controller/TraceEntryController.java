@@ -5,7 +5,8 @@ import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
-import com.liujiahui.www.service.TraceUserMarketService;
+import com.liujiahui.www.service.CommonUsedMarketService;
+import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.view.TraceConsumeView;
 import com.liujiahui.www.view.TraceSameView;
 import com.liujiahui.www.view.TraceSupplyView;
@@ -22,6 +23,7 @@ import java.util.List;
  * @date 2023/03/18
  */
 public class TraceEntryController {
+    private static final CommonUsedMarketService CommonUsedMarketService = TraceFactoryService.getCommonUsedService();
 
     /**
      * 条目
@@ -49,7 +51,7 @@ public class TraceEntryController {
                 traceConsumeController.showUserItem();
                 break;
             case 4:
-                TraceConsumeView.showAppealResult(traceConsumeController.showAppealResult());
+                TraceConsumeView.showAppealResult(showAppealResult());
                 break;
             default:
         }
@@ -78,7 +80,7 @@ public class TraceEntryController {
                 traceSupplyController.showToken();
                 break;
             case 7:
-                TraceSupplyView.showAppealResult(traceSupplyController.showAppealResult());
+                TraceSupplyView.showAppealResult(showAppealResult());
                 break;
             default:
         }
@@ -89,7 +91,7 @@ public class TraceEntryController {
      * 以下均为公共方法
      */
     private void showItemList() throws SQLException, IOException, ContractException {
-        List<TraceItemPO> traceItems = TraceUserMarketService.showAllItem();
+        List<TraceItemPO> traceItems = CommonUsedMarketService.showAllItem();
         String check = "consumer";
         if (check.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
             TraceConsumeView.showAndBuyItemByConsumer(traceItems);
@@ -116,7 +118,7 @@ public class TraceEntryController {
         userChangeServiceBO.setChange(change);
         userChangeServiceBO.setChoice(choice);
         userChangeServiceBO.setIdentity(TraceInformationSaveDTO.getInstance().getIdentity());
-        TraceUserMarketService.updatePersonalMessage(userChangeServiceBO);
+        CommonUsedMarketService.updatePersonalMessage(userChangeServiceBO);
         switch (choice) {
             case 1:
                 TraceInformationSaveDTO.getInstance().setUserName(change);
@@ -133,8 +135,12 @@ public class TraceEntryController {
 
 
     public void showHistory(String name) throws SQLException, IOException {
-        List<TraceFeedbackPO> history = TraceUserMarketService.getHistory(name);
+        List<TraceFeedbackPO> history = CommonUsedMarketService.getHistory(name);
         TraceSameView.showHistory(history);
+    }
+
+    public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
+        return CommonUsedMarketService.showAppealResult();
     }
 
 }

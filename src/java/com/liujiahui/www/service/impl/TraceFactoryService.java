@@ -1,9 +1,6 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.service.TraceAdminService;
-import com.liujiahui.www.service.TraceUserMarketService;
-import com.liujiahui.www.service.TraceQueryService;
-import com.liujiahui.www.service.TraceRegisterAndLoginService;
+import com.liujiahui.www.service.*;
 
 /**
  * 跟踪工厂impl
@@ -20,17 +17,20 @@ public class TraceFactoryService {
         return TraceRegisterOrLoginServiceImpl.getInstance();
     }
 
-    public static TraceAdminService getTraceAdminService() {
-        return TraceAdminServiceImpl.getInstance();
+    public static AdminService getTraceAdminService() {
+        return AdminServiceImpl.getInstance();
     }
 
+    public static ConsumerService getConsumeUsedService() {
+        return ConsumerServiceImpl.getInstance();
+    }
 
-    static public TraceUserMarketService getTraceItemPersonalService(Boolean choice) {
-        if (choice) {
-            return TraceUserMarketBySupplierServiceImpl.getInstance();
-        } else {
-            return TraceUserMarketByConsumerServiceImpl.getInstance();
-        }
+    public static SupplierService getSupplierUsedService() {
+        return SupplierServiceImpl.getInstance();
+    }
+
+    static public CommonUsedMarketService getCommonUsedService(){
+         return CommonUsedMarketServiceImpl.getInstance();
     }
 
     static public TraceContractServiceImpl getTraceContractService() {

@@ -6,7 +6,7 @@ package com.liujiahui.www.entity.po;
  * @author 刘家辉
  * @date 2023/03/16
  */
-public class TraceSupplierPO extends TraceUserPO {
+public class SupplierPO extends UserPO {
     protected String address;
 
     public String getAddress() {

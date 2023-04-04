@@ -6,7 +6,7 @@ import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
-import com.liujiahui.www.service.TraceAdminService;
+import com.liujiahui.www.service.AdminService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.util.CryptoUtil;
@@ -29,17 +29,17 @@ import java.util.Objects;
  * @author 刘家辉
  * @date 2023/03/31
  */
-public class TraceAdminServiceImpl implements TraceAdminService {
-    private static final TraceAdminServiceImpl INSTANCE = new TraceAdminServiceImpl();
+public class AdminServiceImpl implements AdminService {
+    private static final AdminServiceImpl INSTANCE = new AdminServiceImpl();
     private final TraceAdminDAO traceAdminDAO = TraceFactoryDAO.getTraceAdminDAO();
     private String buyer;
     private String seller;
     private BigInteger token;
 
-    private TraceAdminServiceImpl() {
+    private AdminServiceImpl() {
     }
 
-    public static TraceAdminServiceImpl getInstance() {
+    public static AdminServiceImpl getInstance() {
         return INSTANCE;
     }
 

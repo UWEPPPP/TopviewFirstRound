@@ -5,13 +5,11 @@ import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
-import com.liujiahui.www.service.TraceUserMarketService;
+import com.liujiahui.www.service.ConsumerService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
-import com.liujiahui.www.service.impl.TraceUserMarketByConsumerServiceImpl;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.view.TraceConsumeView;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -30,12 +28,11 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
  * @date 2023/03/19
  */
 public class TraceConsumeController {
-    private final TraceUserMarketService traceUserMarketService = TraceFactoryService.getTraceItemPersonalService(false);
-
+    private static final ConsumerService CONSUMER_SERVICE = TraceFactoryService.getConsumeUsedService();
     public void buy(int id, List<TraceItemPO> items) throws ContractException, SQLException, IOException {
         for (TraceItemPO item : items) {
             if (item.getId() == id) {
-                TraceTransactionDTO traceTransactionDTO = ((TraceUserMarketByConsumerServiceImpl) traceUserMarketService).buyItem(item.getOwner(), item.getIndex());
+                TraceTransactionDTO traceTransactionDTO = CONSUMER_SERVICE.buyItem(item.getOwner(), item.getIndex());
                 if (traceTransactionDTO != null && traceTransactionDTO.getReturnMessage() == null) {
                     String balance = traceTransactionDTO.getBalance();
                     ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = traceTransactionDTO.getItemSoldEventResponse();
@@ -53,7 +50,7 @@ public class TraceConsumeController {
     }
 
     public TraceTransactionVO checkByHash(String hash) throws ContractException {
-        TraceRealAndOutItemDTO traceRealAndOutItemDTO = ((TraceUserMarketByConsumerServiceImpl) traceUserMarketService).checkByHash(hash);
+        TraceRealAndOutItemDTO traceRealAndOutItemDTO = CONSUMER_SERVICE.checkByHash(hash);
         TraceTransactionVO traceTransactionVO = new TraceTransactionVO();
         traceTransactionVO.setName(traceRealAndOutItemDTO.getRealName());
         traceTransactionVO.setHash(hash);
@@ -63,7 +60,7 @@ public class TraceConsumeController {
     }
 
     public TraceItemStatusVO checkStatus(String hash1) throws ContractException {
-        TraceItemStatusDTO traceItemStatusDTO = ((TraceUserMarketByConsumerServiceImpl) traceUserMarketService).checkStatus(hash1);
+        TraceItemStatusDTO traceItemStatusDTO = CONSUMER_SERVICE.checkStatus(hash1);
         TraceItemStatusVO traceItemStatusVO = new TraceItemStatusVO();
         traceItemStatusVO.setDate(traceItemStatusDTO.getDate());
         traceItemStatusVO.setPlace(traceItemStatusDTO.getPlace());
@@ -72,7 +69,7 @@ public class TraceConsumeController {
     }
 
     public void showUserItem() throws SQLException, IOException, ContractException {
-        List<TraceItemPO> items = traceUserMarketService.showItem().get("item");
+        List<TraceItemPO> items = CONSUMER_SERVICE.showItem().get("item");
         TraceConsumeView.showMyItem(items);
     }
 
@@ -83,19 +80,15 @@ public class TraceConsumeController {
         traceFeedbackBO.setItemHash(itemHash);
         traceFeedbackBO.setChoice(score);
         traceFeedbackBO.setBuyer(TraceInformationSaveDTO.getInstance().getContractAccount());
-        ((TraceUserMarketByConsumerServiceImpl) traceUserMarketService).supplierWriteDownService(traceFeedbackBO);
+        CONSUMER_SERVICE.supplierWriteDownService(traceFeedbackBO);
     }
 
 
     public void returnItem(String hash2) throws SQLException, IOException {
-        ((TraceUserMarketByConsumerServiceImpl) traceUserMarketService).returnItem(hash2);
+        CONSUMER_SERVICE.returnItem(hash2);
     }
 
     public List<TraceItemStatusDTO> checkLife(String hash3) throws ContractException {
-        return ((TraceUserMarketByConsumerServiceImpl) traceUserMarketService).checkLife(hash3);
-    }
-
-    public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
-        return TraceUserMarketService.showAppealResult();
+        return CONSUMER_SERVICE.checkLife(hash3);
     }
 }

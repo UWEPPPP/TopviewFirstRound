@@ -22,7 +22,7 @@ public class UtilDAO {
         return DriverManager.getConnection(url, username, password);
     }
 
-    public static void close(Connection connection, ResultSet set, PreparedStatement preparedStatement) throws SQLException {
+    public static void close(Connection connection,PreparedStatement preparedStatement, ResultSet set) throws SQLException {
         if (set != null) {
             set.close();
         }

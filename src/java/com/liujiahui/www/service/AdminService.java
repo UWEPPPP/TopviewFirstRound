@@ -14,7 +14,7 @@ import java.util.List;
  * @author 刘家辉
  * @date 2023/03/31
  */
-public interface TraceAdminService {
+public interface AdminService {
     /**
      * 得到所有反馈和投诉
      *

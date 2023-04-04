@@ -2,7 +2,6 @@ package com.liujiahui.www.service;
 
 import com.liujiahui.www.dao.TraceRegisterDAO;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
-import com.liujiahui.www.dao.impl.TraceLoginDAOImpl;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
@@ -24,8 +23,6 @@ import java.sql.SQLException;
  */
 public interface TraceRegisterAndLoginService {
     TraceRegisterDAO TRACE_REGISTER_DAO = TraceFactoryDAO.getTraceRegisterDAO();
-    TraceLoginDAOImpl TRACE_LOGIN_DAO = TraceFactoryDAO.getTraceLoginDAO();
-
     /**
      * @param traceLoginBO 用户登录博
      * @return {@link TraceInformationSaveDTO}

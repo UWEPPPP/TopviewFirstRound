@@ -1,6 +1,6 @@
 package com.liujiahui.www.dao;
 
-import com.liujiahui.www.entity.po.TraceUserPO;
+import com.liujiahui.www.entity.po.UserPO;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,12 +21,12 @@ public interface TraceRegisterDAO {
     /**
      * 注册
      *
-     * @param traceUserPo 用户
+     * @param userPo 用户
      * @return {@link Boolean}
      * @throws SQLException sqlexception异常
      * @throws IOException  ioexception
      */
-    Boolean register(TraceUserPO traceUserPo) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
+    Boolean register(UserPO userPo) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
 
     /**
      * 检查用户存在

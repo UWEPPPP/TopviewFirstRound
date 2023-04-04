@@ -9,7 +9,7 @@ import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
 import com.liujiahui.www.entity.po.TraceItemPO;
-import com.liujiahui.www.service.TraceUserMarketService;
+import com.liujiahui.www.service.ConsumerService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
@@ -31,15 +31,17 @@ import java.util.*;
  * @author 刘家辉
  * @date 2023/03/24
  */
-public class TraceUserMarketByConsumerServiceImpl implements TraceUserMarketService {
-    private static final TraceUserMarketByConsumerServiceImpl SERVICE = new TraceUserMarketByConsumerServiceImpl();
+public class ConsumerServiceImpl implements ConsumerService {
+    private static class CommonUsedMarketByConsumerServiceImplImplHolder {
+        private static final ConsumerServiceImpl INSTANCE = new ConsumerServiceImpl();
+    }
     private static final TraceUserDAO USER_ITEM = TraceFactoryDAO.getTraceFactoryDAO(false);
 
-    private TraceUserMarketByConsumerServiceImpl() {
+    private ConsumerServiceImpl() {
     }
 
-    public static TraceUserMarketByConsumerServiceImpl getInstance() {
-        return SERVICE;
+    public static ConsumerService getInstance() {
+        return CommonUsedMarketByConsumerServiceImplImplHolder.INSTANCE;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class TraceUserMarketByConsumerServiceImpl implements TraceUserMarketServ
         return map;
     }
 
+    @Override
     public TraceTransactionDTO buyItem(String seller, BigDecimal index) throws ContractException, SQLException, IOException {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
@@ -74,6 +77,7 @@ public class TraceUserMarketByConsumerServiceImpl implements TraceUserMarketServ
         return traceTransactionDTO;
     }
 
+    @Override
     public TraceRealAndOutItemDTO checkByHash(String hash) throws ContractException {
         byte[] bytes = Numeric.hexStringToByteArray(hash);
         Tuple3<String, String, String> realItem = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
@@ -85,6 +89,7 @@ public class TraceUserMarketByConsumerServiceImpl implements TraceUserMarketServ
     }
 
 
+    @Override
     public TraceItemStatusDTO checkStatus(String hash1) throws ContractException {
         byte[] bytes = Numeric.hexStringToByteArray(hash1);
         Tuple3<BigInteger, String, BigInteger> status = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getStatus(bytes);
@@ -113,6 +118,7 @@ public class TraceUserMarketByConsumerServiceImpl implements TraceUserMarketServ
         }
     }
 
+    @Override
     public void supplierWriteDownService(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
         String buyer = traceFeedbackBO.getBuyer();
         String seller = traceFeedbackBO.getSeller();
@@ -124,10 +130,12 @@ public class TraceUserMarketByConsumerServiceImpl implements TraceUserMarketServ
         ((TraceConsumerDAOImpl) USER_ITEM).writeDown(seller, buyer, comment, choice, itemHash);
     }
 
+    @Override
     public void returnItem(String hash2) throws SQLException, IOException {
         ((TraceConsumerDAOImpl) USER_ITEM).returnItem(hash2);
     }
 
+    @Override
     public List<TraceItemStatusDTO> checkLife(String hash3) throws ContractException {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
