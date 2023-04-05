@@ -19,15 +19,14 @@ public interface AdminService {
      * 得到所有反馈和投诉
      *
      * @return {@link List}<{@link TraceFeedbackPO}>
-     * @throws Exception 异常
      */
-    List<TraceFeedbackPO> getAllFeedbackAndComplaint() throws Exception;
+    List<TraceFeedbackPO> getAllFeedbackAndComplaint();
 
     /**
      * @param hash1 hash1
      * @return
      */
-    TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException, SQLException, IOException;
+    TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException;
 
     /**
      * 解决上诉
@@ -36,7 +35,7 @@ public interface AdminService {
      * @param result
      * @param choice
      */
-    void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) throws SQLException, IOException;
+    void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice);
 
     /**
      * @param password

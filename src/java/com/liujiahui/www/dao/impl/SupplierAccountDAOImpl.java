@@ -1,5 +1,6 @@
-package com.liujiahui.www.dao;
+package com.liujiahui.www.dao.impl;
 
+import com.liujiahui.www.dao.SupplierAccountDAO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
@@ -26,7 +27,8 @@ import static com.liujiahui.www.util.UtilDAO.close;
  * @author 刘家辉
  * @date 2023/04/04
  */
-public class SupplierDAO {
+public class SupplierAccountDAOImpl implements SupplierAccountDAO {
+    @Override
     public ConsumerPO login(String userAccount, String userPassword) {
         try (Connection connection = UtilDAO.getConnection()) {
             PreparedStatement preparedStatement;
@@ -37,7 +39,7 @@ public class SupplierDAO {
         }
     }
 
-    static ConsumerPO entertainUser(String userAccount, String userPassword, PreparedStatement preparedStatement) throws SQLException {
+    public static ConsumerPO entertainUser(String userAccount, String userPassword, PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(1, userAccount);
         preparedStatement.setString(2, userPassword);
         ResultSet set = preparedStatement.executeQuery();
@@ -55,13 +57,14 @@ public class SupplierDAO {
         }
     }
 
+    @Override
     public Boolean register(TraceRegisterBO traceRegisterBO) {
         try {
             Connection connection = UtilDAO.getConnection();
-            getaExist("suppliers", traceRegisterBO.getName(), connection);
+            SupplierAccountDAO.getaExist("suppliers", traceRegisterBO.getName(), connection);
             TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceContractService().initByContract("suppliers");
             String sql = "insert into user.suppliers(user_name, gender, phone_number, `password`,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = ConsumerDAO.setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
+            PreparedStatement preparedStatement = ConsumerAccountDAOImpl.setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
             preparedStatement.setString(7, traceRegisterBO.getAddress());
             preparedStatement.setLong(8, 0);
             preparedStatement.setLong(9, 0);
@@ -75,6 +78,7 @@ public class SupplierDAO {
         }
     }
 
+    @Override
     public void updatePersonalInformation(String type, String change) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String name = TraceInformationSaveDTO.getInstance().getUserName();
@@ -86,6 +90,7 @@ public class SupplierDAO {
         UtilDAO.close(connection, preparedStatement, null);
     }
 
+    @Override
     public String getSupplierAccount(String name) {
         try {
             Connection connection = UtilDAO.getConnection();
@@ -105,16 +110,4 @@ public class SupplierDAO {
         }
     }
 
-    public static Boolean getaExist(String table, String name, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = null;
-        ResultSet set = null;
-        try {
-            preparedStatement = connection.prepareStatement("select * from user." + table + " where user_name=?");
-            preparedStatement.setString(1, name);
-            set = preparedStatement.executeQuery();
-            return set.next();
-        } finally {
-            close(null, preparedStatement, set);
-        }
-    }
 }

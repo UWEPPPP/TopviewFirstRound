@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 
 public class Test {
-    public static void main(String[] args) throws ContractException, IOException, InvalidKeySpecException {
+    public static void main(String[] args) throws ContractException {
         BcosSDK sdk = BcosSDK.build("config-example.toml");
         Client client = sdk.getClient(1);
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();

@@ -1,9 +1,9 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.ConsumerDAO;
-import com.liujiahui.www.dao.ConsumerFeedbackDAO;
-import com.liujiahui.www.dao.SupplierAppealDAO;
-import com.liujiahui.www.dao.SupplierDAO;
+import com.liujiahui.www.dao.impl.ConsumerAccountDAOImpl;
+import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
+import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
+import com.liujiahui.www.dao.impl.SupplierAccountDAOImpl;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
@@ -38,7 +38,7 @@ public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginSer
     }
 
     @Override
-    public TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException, SQLException, IOException {
+    public TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException {
         String userAccount = traceLoginBO.getAccount();
         String userPassword = traceLoginBO.getPassword();
         String identity = traceLoginBO.getIdentity();
@@ -47,9 +47,9 @@ public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginSer
         UserPO login;
         String inform = "suppliers";
         if(!Objects.equals(identity, inform)){
-            login = new ConsumerDAO().login(userAccount, userPassword);
+            login = new ConsumerAccountDAOImpl().login(userAccount, userPassword);
         }else {
-            login = new SupplierDAO().login(userAccount, userPassword);
+            login = new SupplierAccountDAOImpl().login(userAccount, userPassword);
         }
         TraceInformationSaveDTO user = TraceInformationSaveDTO.getInstance();
         TraceContractServiceImpl traceContractService = TraceFactoryService.getTraceContractService();
@@ -68,18 +68,18 @@ public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginSer
         user.setIdentity(identity);
         user.setContractAccount(login.getAddress());
         if (identity.equals(inform)) {
-            user.setInformationSize(new ConsumerFeedbackDAO().getFeedbackNumber(login.getAddress()));
+            user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
         }
-        user.setAppealResultSize(new SupplierAppealDAO().getResultAppealSize(login.getAddress(),identityCheck,judge));
+        user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(),identityCheck,judge));
 
         return user;
     }
     @Override
-    public Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public Boolean register(TraceRegisterBO traceRegisterBO) {
         if(traceRegisterBO.getAddress()!=null){
-           return new SupplierDAO().register(traceRegisterBO);
+           return new SupplierAccountDAOImpl().register(traceRegisterBO);
         }else {
-            return new ConsumerDAO().register(traceRegisterBO);
+            return new ConsumerAccountDAOImpl().register(traceRegisterBO);
         }
     }
 

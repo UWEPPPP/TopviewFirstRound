@@ -1,5 +1,6 @@
-package com.liujiahui.www.dao;
+package com.liujiahui.www.dao.impl;
 
+import com.liujiahui.www.dao.ConsumerAccountDAO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
@@ -15,11 +16,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.liujiahui.www.dao.SupplierDAO.entertainUser;
-import static com.liujiahui.www.dao.SupplierDAO.getaExist;
+import static com.liujiahui.www.dao.SupplierAccountDAO.getaExist;
+import static com.liujiahui.www.dao.impl.SupplierAccountDAOImpl.entertainUser;
 import static com.liujiahui.www.util.UtilDAO.close;
 
 /**
@@ -28,7 +28,8 @@ import static com.liujiahui.www.util.UtilDAO.close;
  * @author 刘家辉
  * @date 2023/04/04
  */
-public class ConsumerDAO {
+public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
+    @Override
     public ConsumerPO login(String userAccount, String userPassword) {
         try (Connection connection = UtilDAO.getConnection()) {
             PreparedStatement preparedStatement;
@@ -39,6 +40,7 @@ public class ConsumerDAO {
         }
     }
 
+    @Override
     public Boolean register(TraceRegisterBO traceRegisterBO){
          try {
              Connection connection = UtilDAO.getConnection();
@@ -58,6 +60,7 @@ public class ConsumerDAO {
              throw new RuntimeException(e);
          }
     }
+    @Override
     public void updatePersonalInformation(String type, String change) throws SQLException, IOException {
         Connection connection = UtilDAO.getConnection();
         String name = TraceInformationSaveDTO.getInstance().getUserName();

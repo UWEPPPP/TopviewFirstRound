@@ -1,6 +1,5 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.dao.TraceRegisterDAO;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
@@ -22,18 +21,17 @@ import java.sql.SQLException;
  * @date 2023/03/24
  */
 public interface TraceRegisterAndLoginService {
-    TraceRegisterDAO TRACE_REGISTER_DAO = TraceFactoryDAO.getTraceRegisterDAO();
     /**
      * @param traceLoginBO 用户登录博
      * @return {@link TraceInformationSaveDTO}
      * 用于用户登录
      */
-    TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException, SQLException, IOException;
+    TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException;
 
     /**
      * @param traceRegisterBO 用户登记薄
      * @return {@link Boolean}
      * 用于用户注册
      */
-    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException, IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
+    Boolean register(TraceRegisterBO traceRegisterBO);
 }

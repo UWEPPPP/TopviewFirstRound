@@ -1,6 +1,5 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.TraceQueryDAO;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.TraceQueryService;
@@ -13,7 +12,6 @@ import java.util.List;
  */
 public class TraceQueryServiceImpl implements TraceQueryService {
     private static final TraceQueryServiceImpl INSTANCE = new TraceQueryServiceImpl();
-    private static final TraceQueryDAO TRACE_QUERY_DAO = TraceFactoryDAO.getTraceQueryDAO();
 
     private TraceQueryServiceImpl() {
     }
@@ -24,21 +22,21 @@ public class TraceQueryServiceImpl implements TraceQueryService {
 
     @Override
     public List<TraceItemPO> queryByPrice(int max, int min, int choice) {
-        return TRACE_QUERY_DAO.queryByPrice(max, min, choice);
+        return TraceFactoryDAO.getItemShowDAO().queryByPrice(max, min, choice);
     }
 
     @Override
     public List<TraceItemPO> queryByKeyword(String keyword) {
-        return TRACE_QUERY_DAO.queryByKeyword(keyword);
+        return TraceFactoryDAO.getItemShowDAO().queryByKeyword(keyword);
     }
 
     @Override
     public List<TraceItemPO> queryByType(String type) {
-        return TRACE_QUERY_DAO.queryByType(type);
+        return TraceFactoryDAO.getItemShowDAO().queryByType(type);
     }
 
     @Override
     public List<TraceItemPO> queryBySeller(String seller) {
-        return TRACE_QUERY_DAO.queryBySeller(seller);
+        return TraceFactoryDAO.getItemShowDAO().queryBySeller(seller);
     }
 }

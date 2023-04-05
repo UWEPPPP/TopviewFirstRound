@@ -1,7 +1,7 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.TraceUserDAO;
-import com.liujiahui.www.dao.impl.TraceConsumerDAOImpl;
+import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
+import com.liujiahui.www.dao.impl.ItemBehindDAOImpl;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
@@ -35,7 +35,6 @@ public class ConsumerServiceImpl implements ConsumerService {
     private static class CommonUsedMarketByConsumerServiceImplImplHolder {
         private static final ConsumerServiceImpl INSTANCE = new ConsumerServiceImpl();
     }
-    private static final TraceUserDAO USER_ITEM = TraceFactoryDAO.getTraceFactoryDAO(false);
 
     private ConsumerServiceImpl() {
     }
@@ -45,9 +44,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public Map<String, List<TraceItemPO>> showItem() throws SQLException, IOException, ContractException {
+    public Map<String, List<TraceItemPO>> showItem() throws SQLException, IOException {
         Map<String, List<TraceItemPO>> map = new HashMap<>(1);
-        Map<String, List<TraceItemPO>> stringListMap = USER_ITEM.showItem(TraceInformationSaveDTO.getInstance().getContractAccount());
+        Map<String, List<TraceItemPO>> stringListMap = TraceFactoryDAO.getItemShowDAO().showConsumerItem(TraceInformationSaveDTO.getInstance().getContractAccount());
         map.put("item", stringListMap.get("item"));
         return map;
     }
@@ -69,7 +68,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         List<ContractTradeService.ItemSoldEventResponse> itemSoldEvents = contractTradeServiceSolidity.getItemSoldEvents(transactionReceipt);
         ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
         BigInteger bigInteger1 = index.toBigInteger();
-        ((TraceConsumerDAOImpl) USER_ITEM).buyItem(seller, bigInteger1);
+        TraceFactoryDAO.getItemBehindDAO().buyItem(seller, bigInteger1);
         BigInteger balance = contractTradeServiceSolidity.getBalance();
         instance.setBalance(String.valueOf(balance));
         traceTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);
@@ -127,12 +126,14 @@ public class ConsumerServiceImpl implements ConsumerService {
         int choice = traceFeedbackBO.getChoice();
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.handing_feedback(seller, choice == 1, Numeric.hexStringToByteArray(itemHash));
-        ((TraceConsumerDAOImpl) USER_ITEM).writeDown(seller, buyer, comment, choice, itemHash);
+        new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice, itemHash);
     }
 
     @Override
     public void returnItem(String hash2) throws SQLException, IOException {
-        ((TraceConsumerDAOImpl) USER_ITEM).returnItem(hash2);
+        TraceItemPO traceItemPO = new ItemBehindDAOImpl().returnItem(hash2);
+        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+        itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2),traceItemPO.getIndex().toBigInteger());
     }
 
     @Override

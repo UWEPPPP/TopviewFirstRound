@@ -1,6 +1,6 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.*;
+import com.liujiahui.www.dao.impl.*;
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
@@ -31,7 +31,7 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
      */
     @Override
     public List<TraceItemPO> showAllItem() throws SQLException, IOException {
-        return new ItemShowDAO().showAllItem();
+        return new ItemShowDAOImpl().showAllItem();
     }
 
     /**
@@ -56,9 +56,9 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
             default:
         }
         if("suppliers".equals(identity)){
-            new SupplierDAO().updatePersonalInformation(type, change);
+            new SupplierAccountDAOImpl().updatePersonalInformation(type, change);
         }
-           new ConsumerDAO().updatePersonalInformation(type, change);
+           new ConsumerAccountDAOImpl().updatePersonalInformation(type, change);
         }
 
     /**
@@ -71,14 +71,14 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
      */
     @Override
     public List<TraceFeedbackPO> getHistory(String name) throws SQLException, IOException {
-        String supplierAccount = new SupplierDAO().getSupplierAccount(name);
-        return new ConsumerFeedbackDAO().getSupplierHistory(supplierAccount);
+        String supplierAccount = new SupplierAccountDAOImpl().getSupplierAccount(name);
+        return new ConsumerFeedbackDAOImpl().getSupplierHistory(supplierAccount);
     }
 
     @Override
     public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
         String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
-        return new SupplierAppealDAO().showReportAndAppealResult(contractAccount);
+        return new SupplierAppealDAOImpl().showReportAndAppealResult(contractAccount);
     }
 
 }

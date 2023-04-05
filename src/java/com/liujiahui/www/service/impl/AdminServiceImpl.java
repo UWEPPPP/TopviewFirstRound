@@ -1,6 +1,5 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.TraceAdminDAO;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
@@ -31,7 +30,6 @@ import java.util.Objects;
  */
 public class AdminServiceImpl implements AdminService {
     private static final AdminServiceImpl INSTANCE = new AdminServiceImpl();
-    private final TraceAdminDAO traceAdminDAO = TraceFactoryDAO.getTraceAdminDAO();
     private String buyer;
     private String seller;
     private BigInteger token;
@@ -44,15 +42,26 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<TraceFeedbackPO> getAllFeedbackAndComplaint() throws Exception {
-        return traceAdminDAO.getAllFeedbackAndComplaint();
+    public List<TraceFeedbackPO> getAllFeedbackAndComplaint() {
+        try {
+            return TraceFactoryDAO.getConsumerFeedbackDAO().getAllFeedbackAndComplaint();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
+
     @Override
-    public TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException, SQLException, IOException {
+    public TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException {
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
         ContractStorageService.Item singleItem = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
-        TraceItemPO singleItem1 = traceAdminDAO.getSingleItem(hash1);
+        TraceItemPO singleItem1 = null;
+        try {
+            singleItem1 = TraceFactoryDAO.getItemShowDAO().getSingleItem(hash1);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
         TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
         traceRealAndOutItemDTO.setRealName(singleItem.name);
         traceRealAndOutItemDTO.setRealDescription(singleItem.description);
@@ -65,7 +74,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) throws SQLException, IOException {
+    public void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) {
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
         if (!choice) {
             //申诉判定
@@ -83,7 +92,11 @@ public class AdminServiceImpl implements AdminService {
                 //商家扣除获得的token，用户扣除余额
             }
         }
-        traceAdminDAO.resolveBadLikeOrAppeal(hash1, result);
+        try {
+            TraceFactoryDAO.getSupplierAppealDAO().resolveBadLikeOrAppeal(hash1, result);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

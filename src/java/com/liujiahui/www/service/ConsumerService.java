@@ -20,9 +20,8 @@ public interface ConsumerService {
      * @return {@link Map}<{@link String}, {@link List}<{@link TraceItemPO}>>
      * @throws SQLException      sqlexception异常
      * @throws IOException       ioexception
-     * @throws ContractException 合同例外
      */
-    Map<String, List<TraceItemPO>> showItem() throws SQLException, IOException, ContractException;
+    Map<String, List<TraceItemPO>> showItem() throws SQLException, IOException;
 
     /**
      * 购买物品
