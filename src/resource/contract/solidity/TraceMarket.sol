@@ -168,15 +168,15 @@ contract TraceMarket {
         trace.itemIsSold(item.seller, index, false);
     }
 
-    function removeItem(uint256 index, bool choice) external {
+    function removeItem(uint256 index, bool choice) external onlySupplier {
         trace.removeOrRestoreItem(index, msg.sender, choice);
     }
 
-    function handing_feedback(address seller,bool chioce,bytes32 hash) external{
+    function handing_feedback(address seller,bool chioce,bytes32 hash) external onlyConsumer{
         trace.like_or_report(seller,chioce,hash);
     }
 
-    function showSupplierToken(address supplier) external view returns(uint256){
+    function showSupplierToken(address supplier) external view onlySupplier returns(uint256){
         return trace.getToken(supplier);
     }
 

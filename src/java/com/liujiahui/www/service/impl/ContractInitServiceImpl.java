@@ -33,7 +33,7 @@ public class ContractInitServiceImpl implements ContractInitService {
         CryptoKeyPair keyPair = CRYPTO_SUITE.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
-        ContractTradeService asset = ContractTradeService.load("0x2a8e6f2d815a4e44de6d5377763228256a3e64d9", CLIENT, keyPair);
+        ContractTradeService asset = ContractTradeService.load("0xda2e706a91e057e35947abda735736c1f6042b2b", CLIENT, keyPair);
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
@@ -49,7 +49,7 @@ public class ContractInitServiceImpl implements ContractInitService {
     public TraceAccountOnContractDTO initByContract(String table) {
         CryptoKeyPair cryptoKeyPair = CRYPTO_SUITE.createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractTradeService asset = ContractTradeService.load("0x2a8e6f2d815a4e44de6d5377763228256a3e64d9", CLIENT, cryptoKeyPair);
+        ContractTradeService asset = ContractTradeService.load("0xda2e706a91e057e35947abda735736c1f6042b2b", CLIENT, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));

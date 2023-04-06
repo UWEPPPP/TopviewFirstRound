@@ -67,6 +67,7 @@ contract TraceStorage {
 
     constructor(address erc20Address) public {
         erc20 = MyToken(erc20Address);
+        erc20.setStorage(address(this));
     }
 
     function setLogic(address logicAddress) external {
