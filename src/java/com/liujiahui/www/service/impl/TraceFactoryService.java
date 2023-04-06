@@ -29,8 +29,8 @@ public class TraceFactoryService {
         return SupplierServiceImpl.getInstance();
     }
 
-    static public CommonUsedMarketService getCommonUsedService(){
-         return CommonUsedMarketServiceImpl.getInstance();
+    static public CommonUsedMarketService getCommonUsedService() {
+        return CommonUsedMarketServiceImpl.getInstance();
     }
 
     static public TraceContractServiceImpl getTraceContractService() {

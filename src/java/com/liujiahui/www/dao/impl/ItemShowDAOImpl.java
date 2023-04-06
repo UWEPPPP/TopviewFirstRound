@@ -2,7 +2,7 @@ package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.ItemShowDAO;
 import com.liujiahui.www.entity.po.TraceItemPO;
-import com.liujiahui.www.util.UtilDAO;
+import com.liujiahui.www.util.ConnectionPool;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.io.IOException;
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.liujiahui.www.util.ConnectionPool.close;
 
 /**
  * 项显示刀
@@ -33,13 +35,15 @@ public class ItemShowDAOImpl implements ItemShowDAO {
         } else {
             order = "desc";
         }
-        try (Connection connection = UtilDAO.getConnection()) {
+        try {
+            Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_show INNER join user.item_behind ib on item_show.hash = ib.hash where price between ? and ? order by price  " + order;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, min);
             preparedStatement.setInt(2, max);
+            ConnectionPool.getInstance().releaseConnection(connection);
             return querySame(preparedStatement);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -47,12 +51,14 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
     @Override
     public List<TraceItemPO> queryByKeyword(String keyword) {
-        try (Connection connection = UtilDAO.getConnection()) {
+        try {
+            Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash        where name like ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, "%" + keyword + "%");
+            ConnectionPool.getInstance().releaseConnection(connection);
             return querySame(preparedStatement);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -60,12 +66,14 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
     @Override
     public List<TraceItemPO> queryByType(String type) {
-        try (Connection connection = UtilDAO.getConnection()) {
+        try {
+            Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_show INNER JOIN user.item_behind ib on item_show.hash = ib.hash where type=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, type);
+            ConnectionPool.getInstance().releaseConnection(connection);
             return querySame(preparedStatement);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -73,13 +81,15 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
     @Override
     public List<TraceItemPO> queryBySeller(String seller) {
-        try (Connection connection = UtilDAO.getConnection()) {
+        try {
+            Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_behind INNER JOIN user.item_show ON item_behind.hash " +
                     "= item_show.hash where seller_address=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, seller);
+            ConnectionPool.getInstance().releaseConnection(connection);
             return querySame(preparedStatement);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -101,11 +111,13 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             po.setType(set.getString("type"));
             list.add(po);
         }
+
         return list;
     }
+
     @Override
-    public List<TraceItemPO> showAllItem() throws SQLException, IOException {
-        Connection connection = UtilDAO.getConnection();
+    public List<TraceItemPO> showAllItem() throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash where isRemoved = false";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet set = preparedStatement.executeQuery();
@@ -116,13 +128,14 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             traceItemPo.setType(set.getString("type"));
             list.add(traceItemPo);
         }
-        UtilDAO.close(connection, preparedStatement,set);
+        close(preparedStatement, set);
+        ConnectionPool.getInstance().releaseConnection(connection);
         return list;
     }
 
     @Override
-    public void updateItem(String oldName, String name, String description, String price) throws SQLException, IOException {
-        Connection connection = UtilDAO.getConnection();
+    public void updateItem(String oldName, String name, String description, String price) throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "update user.item_show set name = ?,description = ?,price = ? where name = ?";
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(sql);
@@ -131,13 +144,17 @@ public class ItemShowDAOImpl implements ItemShowDAO {
         BigDecimal bigDecimal = new BigDecimal(price);
         preparedStatement.setBigDecimal(3, bigDecimal);
         preparedStatement.setString(4, oldName);
-        preparedStatement.executeUpdate();
-        UtilDAO.close(connection, preparedStatement, null);
+        int result = preparedStatement.executeUpdate();
+        close(preparedStatement, null);
+        ConnectionPool.getInstance().releaseConnection(connection);
+        if (result == 0) {
+            throw new RuntimeException("更新失败");
+        }
     }
 
     @Override
-    public void insert(String name, BigInteger price, String description, String userName, int type, String hash) throws SQLException, IOException {
-        Connection connection = UtilDAO.getConnection();
+    public void insert(String name, BigInteger price, String description, String userName, int type, String hash) throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "insert into user.item_show (name, price, description,owner_name,type,hash) values (?,?,?,?,?,?)";
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(sql);
@@ -167,12 +184,17 @@ public class ItemShowDAOImpl implements ItemShowDAO {
         }
         preparedStatement.setString(5, itemType);
         preparedStatement.setString(6, hash);
-        preparedStatement.executeUpdate();
+        int result = preparedStatement.executeUpdate();
+        close(preparedStatement, null);
+        ConnectionPool.getInstance().releaseConnection(connection);
+        if (result == 0) {
+            throw new RuntimeException("insert item failed");
+        }
     }
 
     @Override
-    public Map<String, List<TraceItemPO>> showConsumerItem(String accountAddress) throws SQLException, IOException {
-        Connection connection = UtilDAO.getConnection();
+    public Map<String, List<TraceItemPO>> showConsumerItem(String accountAddress) throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash " +
                 " where owner_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -184,16 +206,17 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             TraceItemPO traceItem = new TraceItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_name"), set.getBigDecimal("index"), set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
             list.add(traceItem);
         }
-        UtilDAO.close(connection, preparedStatement, null);
+        close(preparedStatement, null);
         HashMap<String, List<TraceItemPO>> listHashMap = new HashMap<>(1);
         listHashMap.put("item", list);
+        ConnectionPool.getInstance().releaseConnection(connection);
         return listHashMap;
     }
 
 
     @Override
-    public TraceItemPO getSingleItem(String hash) throws SQLException, IOException {
-        Connection connection = UtilDAO.getConnection();
+    public TraceItemPO getSingleItem(String hash) throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash  where item_show.hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, hash);
@@ -207,6 +230,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             traceItemPo.setSeller(resultSet.getString("seller_account"));
             traceItemPo.setToken(resultSet.getInt("token"));
         }
+        ConnectionPool.getInstance().releaseConnection(connection);
         return traceItemPo;
     }
 

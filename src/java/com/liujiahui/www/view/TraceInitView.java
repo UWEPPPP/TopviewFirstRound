@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @date 2023/03/16
  */
 public class TraceInitView {
-    public static void start() throws Exception {
+    public static void start() {
         Scanner in = new Scanner(System.in);
         System.out.println("欢迎来到Topview集团旗下的产品溯源系统");
         System.out.println("1.登录");

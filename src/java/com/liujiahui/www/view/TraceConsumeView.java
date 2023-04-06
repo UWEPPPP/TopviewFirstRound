@@ -8,10 +8,7 @@ import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +23,7 @@ import static com.liujiahui.www.view.TraceSameView.showItem;
  * @date 2023/03/25
  */
 public class TraceConsumeView {
-    public static void showMyItem(List<TraceItemPO> traceItems) throws ContractException, SQLException, IOException {
+    public static void showMyItem(List<TraceItemPO> traceItems) {
         System.out.println("这是您已购入的商品列表");
         for (TraceItemPO traceItem : traceItems) {
             System.out.println(traceItem.getId() + " " + "商品名称：" + traceItem.getName() + " 商品价格：" + traceItem.getPrice() + " 商品描述:" + traceItem.getDescription() + " 商品hash:" + traceItem.getHashes());
@@ -123,7 +120,7 @@ public class TraceConsumeView {
         System.out.println("交易后余额：" + traceTransactionVO.getBalance());
     }
 
-    public static void showAndBuyItemByConsumer(List<TraceItemPO> traceItems) throws SQLException, IOException, ContractException {
+    public static void showAndBuyItemByConsumer(List<TraceItemPO> traceItems) {
         showItem(traceItems);
         TraceEntryController traceEntryController = new TraceEntryController();
         System.out.println("1:购买产品");

@@ -45,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
     public List<TraceFeedbackPO> getAllFeedbackAndComplaint() {
         try {
             return TraceFactoryDAO.getConsumerFeedbackDAO().getAllFeedbackAndComplaint();
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -53,23 +53,28 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException {
+    public TraceRealAndOutItemDTO checkItem(String hash1) {
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
-        ContractStorageService.Item singleItem = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
-        TraceItemPO singleItem1 = null;
+        ContractStorageService.Item singleItem;
+        TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
+        try {
+            singleItem = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
+            traceRealAndOutItemDTO.setRealName(singleItem.name);
+            traceRealAndOutItemDTO.setRealDescription(singleItem.description);
+        } catch (ContractException e) {
+            throw new RuntimeException("合约异常");
+        }
+        TraceItemPO singleItem1;
         try {
             singleItem1 = TraceFactoryDAO.getItemShowDAO().getSingleItem(hash1);
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            traceRealAndOutItemDTO.setOutName(singleItem1.getName());
+            traceRealAndOutItemDTO.setOutDescription(singleItem1.getDescription());
+            token = BigInteger.valueOf(singleItem1.getToken());
+            buyer = singleItem1.getOwner();
+            seller = singleItem1.getSeller();
+        } catch (SQLException e) {
+            throw new RuntimeException("数据库异常");
         }
-        TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
-        traceRealAndOutItemDTO.setRealName(singleItem.name);
-        traceRealAndOutItemDTO.setRealDescription(singleItem.description);
-        traceRealAndOutItemDTO.setOutName(singleItem1.getName());
-        traceRealAndOutItemDTO.setOutDescription(singleItem1.getDescription());
-        buyer = singleItem1.getOwner();
-        seller = singleItem1.getSeller();
-        token = BigInteger.valueOf(singleItem1.getToken());
         return traceRealAndOutItemDTO;
     }
 
@@ -92,11 +97,7 @@ public class AdminServiceImpl implements AdminService {
                 //商家扣除获得的token，用户扣除余额
             }
         }
-        try {
-            TraceFactoryDAO.getSupplierAppealDAO().resolveBadLikeOrAppeal(hash1, result);
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
+        TraceFactoryDAO.getSupplierAppealDAO().resolveBadLikeOrAppeal(hash1, result);
     }
 
     @Override

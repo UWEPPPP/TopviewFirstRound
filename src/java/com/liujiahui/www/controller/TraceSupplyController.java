@@ -8,11 +8,8 @@ import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.service.SupplierService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.view.TraceSupplyView;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -23,7 +20,8 @@ import java.util.List;
  */
 public class TraceSupplyController {
     private static final SupplierService marketService = TraceFactoryService.getSupplierUsedService();
-    public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) throws SQLException, IOException {
+
+    public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) {
         TraceItemBO traceItemBO = new TraceItemBO();
         traceItemBO.setName(name);
         traceItemBO.setPrice(price);
@@ -42,7 +40,7 @@ public class TraceSupplyController {
         marketService.updateLogistics(id, logistics, status);
     }
 
-    public void updateItem(int index, List<TraceItemPO> traceItemPos, String name, String description, String price) throws SQLException, IOException {
+    public void updateItem(int index, List<TraceItemPO> traceItemPos, String name, String description, String price) {
         String oldName = null;
         for (TraceItemPO traceItemPoOne : traceItemPos) {
             if (traceItemPoOne.getIndex().intValue() == index) {
@@ -58,23 +56,23 @@ public class TraceSupplyController {
         marketService.updateItem(updateBO);
     }
 
-    public void showSupplierItem() throws ContractException, SQLException, IOException {
+    public void showSupplierItem() {
         TraceSupplyView.showSupplierItem(marketService.showItem());
     }
 
-    public void removeItem(int index, Boolean choice) throws SQLException, IOException {
+    public void removeItem(int index, Boolean choice) {
         marketService.removeItem(index, choice);
     }
 
-    public List<TraceFeedbackPO> showSupplierFeedback() throws SQLException, IOException {
+    public List<TraceFeedbackPO> showSupplierFeedback() {
         return marketService.showFeedback();
     }
 
-    public void showToken() throws ContractException {
+    public void showToken() {
         TraceSupplyView.showToken(marketService.showToken());
     }
 
-    public void appealFeedback(String hash, String comment) throws SQLException, IOException {
+    public void appealFeedback(String hash, String comment) {
         TraceFeedbackBO traceFeedbackBO = new TraceFeedbackBO();
         traceFeedbackBO.setItemHash(hash);
         traceFeedbackBO.setComment(comment);

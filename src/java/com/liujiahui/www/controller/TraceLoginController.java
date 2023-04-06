@@ -18,7 +18,7 @@ public class TraceLoginController {
     private static String identity;
     private final TraceRegisterAndLoginService traceRegisterAndLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
 
-    public static void loginBackView(TraceInformationSaveDTO userInformationDTO) throws Exception {
+    public static void loginBackView(TraceInformationSaveDTO userInformationDTO) {
         if (userInformationDTO == null) {
             TraceLoginView.loginReturnInterface();
         }
@@ -37,7 +37,7 @@ public class TraceLoginController {
         }
     }
 
-    public void login(String account, String password, Boolean choice) throws Exception {
+    public void login(String account, String password, Boolean choice) {
         if (!choice) {
             TraceLoginBO traceLoginBO = new TraceLoginBO(account, password, "consumer");
             identity = "consumer";
@@ -55,7 +55,7 @@ public class TraceLoginController {
      * 登录
      * +
      */
-    public void loginOrderByIdentity(int choice1) throws Exception {
+    public void loginOrderByIdentity(int choice1) {
         if (choice1 == 1) {
             new TraceLoginView().loginBySupplier();
         } else {

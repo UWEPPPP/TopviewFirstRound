@@ -6,21 +6,17 @@ import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.ConsumerPO;
 import com.liujiahui.www.service.impl.TraceFactoryService;
-import com.liujiahui.www.util.UtilDAO;
+import com.liujiahui.www.util.ConnectionPool;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import static com.liujiahui.www.dao.SupplierAccountDAO.getaExist;
 import static com.liujiahui.www.dao.impl.SupplierAccountDAOImpl.entertainUser;
-import static com.liujiahui.www.util.UtilDAO.close;
+import static com.liujiahui.www.util.ConnectionPool.close;
+
 
 /**
  * 消费者刀
@@ -29,47 +25,14 @@ import static com.liujiahui.www.util.UtilDAO.close;
  * @date 2023/04/04
  */
 public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
-    @Override
-    public ConsumerPO login(String userAccount, String userPassword) {
-        try (Connection connection = UtilDAO.getConnection()) {
-            PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement("select * from user.consumer  where user_name=? and password=?");
-            return entertainUser(userAccount, userPassword, preparedStatement);
-        } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Boolean register(TraceRegisterBO traceRegisterBO){
-         try {
-             Connection connection = UtilDAO.getConnection();
-             PreparedStatement preparedStatement;
-                if (getaExist("consumer", traceRegisterBO.getName(), connection)) {
-                    throw new RuntimeException("用户已存在");
-                }
-             TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceContractService().initByContract("consumer");
-             String sql = "insert into user.suppliers(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
-             preparedStatement = setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
-             int result = preparedStatement.executeUpdate();
-             close(connection, preparedStatement, null);
-             return result > 0;
-         } catch (SQLException | NoSuchPaddingException | IllegalBlockSizeException | IOException |
-                  NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
-             System.out.println("初始化失败");
-             throw new RuntimeException(e);
-         }
-    }
-    @Override
-    public void updatePersonalInformation(String type, String change) throws SQLException, IOException {
-        Connection connection = UtilDAO.getConnection();
-        String name = TraceInformationSaveDTO.getInstance().getUserName();
-        String sql = "update user.consumer set " + type + " = ? where user_name = ?";
+    static Boolean changeAccount(String change, Connection connection, String name, String sql) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, change);
         preparedStatement.setString(2, name);
-        preparedStatement.executeUpdate();
-        UtilDAO.close(connection, preparedStatement,null);
+        int result = preparedStatement.executeUpdate();
+        close(preparedStatement, null);
+        ConnectionPool.getInstance().releaseConnection(connection);
+        return result > 0;
     }
 
     static PreparedStatement setUser(TraceRegisterBO traceRegisterBO, Connection connection, TraceAccountOnContractDTO traceAccountOnContractDTO, String sql) throws SQLException {
@@ -82,5 +45,49 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
         preparedStatement.setString(5, traceAccountOnContractDTO.getPrivateKey());
         preparedStatement.setString(6, traceAccountOnContractDTO.getAccountAddress());
         return preparedStatement;
+    }
+
+    @Override
+    public ConsumerPO login(String userAccount, String userPassword) {
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement("select * from user.consumer  where user_name=? and password=?");
+            ConnectionPool.getInstance().releaseConnection(connection);
+            return entertainUser(userAccount, userPassword, preparedStatement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException {
+
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement preparedStatement;
+        String check = "consumer";
+        if (getaExist(check, traceRegisterBO.getName(), connection)) {
+            throw new RuntimeException("用户已存在");
+        }
+        TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceContractService().initByContract("consumer");
+        String sql = "insert into user.suppliers(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
+        preparedStatement = setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
+        int result = preparedStatement.executeUpdate();
+        close(preparedStatement, null);
+        ConnectionPool.getInstance().releaseConnection(connection);
+        return result > 0;
+    }
+
+    @Override
+    public Boolean updatePersonalInformation(String type, String change) {
+        try {
+            Connection connection = ConnectionPool.getInstance().getConnection();
+            String name = TraceInformationSaveDTO.getInstance().getUserName();
+            String sql = "update user.consumer set " + type + " = ? where user_name = ?";
+            return changeAccount(change, connection, name, sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

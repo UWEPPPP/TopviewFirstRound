@@ -9,7 +9,7 @@ import com.liujiahui.www.view.TraceInitView;
  * @date 2023/03/17
  */
 public class Start {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         TraceInitView.start();
     }
 }

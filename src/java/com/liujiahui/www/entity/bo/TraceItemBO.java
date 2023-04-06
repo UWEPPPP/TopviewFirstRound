@@ -3,7 +3,7 @@ package com.liujiahui.www.entity.bo;
 import java.math.BigInteger;
 
 /**
- * 项波
+ * 用于商品信息的BO
  *
  * @author 刘家辉
  * @date 2023/03/18

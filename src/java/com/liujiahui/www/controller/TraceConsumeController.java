@@ -12,11 +12,8 @@ import com.liujiahui.www.service.ConsumerService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.view.TraceConsumeView;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import static com.liujiahui.www.view.TraceConsumeView.showResult;
@@ -29,7 +26,8 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
  */
 public class TraceConsumeController {
     private static final ConsumerService CONSUMER_SERVICE = TraceFactoryService.getConsumeUsedService();
-    public void buy(int id, List<TraceItemPO> items) throws ContractException, SQLException, IOException {
+
+    public void buy(int id, List<TraceItemPO> items) {
         for (TraceItemPO item : items) {
             if (item.getId() == id) {
                 TraceTransactionDTO traceTransactionDTO = CONSUMER_SERVICE.buyItem(item.getOwner(), item.getIndex());
@@ -49,7 +47,7 @@ public class TraceConsumeController {
         }
     }
 
-    public TraceTransactionVO checkByHash(String hash) throws ContractException {
+    public TraceTransactionVO checkByHash(String hash) {
         TraceRealAndOutItemDTO traceRealAndOutItemDTO = CONSUMER_SERVICE.checkByHash(hash);
         TraceTransactionVO traceTransactionVO = new TraceTransactionVO();
         traceTransactionVO.setName(traceRealAndOutItemDTO.getRealName());
@@ -59,7 +57,7 @@ public class TraceConsumeController {
         return traceTransactionVO;
     }
 
-    public TraceItemStatusVO checkStatus(String hash1) throws ContractException {
+    public TraceItemStatusVO checkStatus(String hash1) {
         TraceItemStatusDTO traceItemStatusDTO = CONSUMER_SERVICE.checkStatus(hash1);
         TraceItemStatusVO traceItemStatusVO = new TraceItemStatusVO();
         traceItemStatusVO.setDate(traceItemStatusDTO.getDate());
@@ -68,12 +66,12 @@ public class TraceConsumeController {
         return traceItemStatusVO;
     }
 
-    public void showUserItem() throws SQLException, IOException, ContractException {
+    public void showUserItem() {
         List<TraceItemPO> items = CONSUMER_SERVICE.showItem().get("item");
         TraceConsumeView.showMyItem(items);
     }
 
-    public void feedback(int score, String seller, String comment, String itemHash) throws SQLException, IOException {
+    public void feedback(int score, String seller, String comment, String itemHash) {
         TraceFeedbackBO traceFeedbackBO = new TraceFeedbackBO();
         traceFeedbackBO.setSeller(seller);
         traceFeedbackBO.setComment(comment);
@@ -84,11 +82,11 @@ public class TraceConsumeController {
     }
 
 
-    public void returnItem(String hash2) throws SQLException, IOException {
+    public void returnItem(String hash2) {
         CONSUMER_SERVICE.returnItem(hash2);
     }
 
-    public List<TraceItemStatusDTO> checkLife(String hash3) throws ContractException {
+    public List<TraceItemStatusDTO> checkLife(String hash3) {
         return CONSUMER_SERVICE.checkLife(hash3);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class TraceRegisterView {
     static Scanner in = new Scanner(System.in);
 
-    public static void returnInterface(Boolean bool) throws Exception {
+    public static void returnInterface(Boolean bool) {
         if (bool) {
             System.out.println("注册成功");
             System.out.println("登录时账号即为您输入的名字" + " ,密码为你设置的密码 " + " ,账号初始余额为1000");
@@ -26,7 +26,7 @@ public class TraceRegisterView {
         TraceInitView.start();
     }
 
-    public void registerByConsumer() throws Exception {
+    public void registerByConsumer() {
         System.out.println("进入消费者注册界面");
         System.out.println("请输入您的姓名：");
         String name = in.next();
@@ -51,7 +51,7 @@ public class TraceRegisterView {
         return traceRegisterDTO;
     }
 
-    public void registerBySupplier() throws Exception {
+    public void registerBySupplier() {
         System.out.println("进入供应商注册界面");
         System.out.println("请输入您的姓名：");
         String name = in.next();

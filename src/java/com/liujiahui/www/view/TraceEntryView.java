@@ -2,10 +2,7 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceEntryController;
 import com.liujiahui.www.entity.vo.TraceAfterLoginVO;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -17,7 +14,7 @@ import java.util.Scanner;
 public class TraceEntryView {
     static Scanner in = new Scanner(System.in);
 
-    public static void viewConsumer(TraceAfterLoginVO traceAfterLoginVO) throws Exception {
+    public static void viewConsumer(TraceAfterLoginVO traceAfterLoginVO) {
         if (traceAfterLoginVO != null) {
             System.out.println("您好消费者" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             System.out.println("您的初始余额为" + traceAfterLoginVO.getBalance());
@@ -36,7 +33,7 @@ public class TraceEntryView {
         }
     }
 
-    private static boolean mainInterface(Boolean bool) throws SQLException, IOException, ContractException {
+    private static boolean mainInterface(Boolean bool) {
         System.out.println("0.退出登录");
         int choice = in.nextInt();
         if (choice != 0) {
@@ -50,7 +47,7 @@ public class TraceEntryView {
         return true;
     }
 
-    public static void viewSupplier(TraceAfterLoginVO traceAfterLoginVO) throws Exception {
+    public static void viewSupplier(TraceAfterLoginVO traceAfterLoginVO) {
         if (traceAfterLoginVO != null) {
             System.out.println("您好 供应商" + traceAfterLoginVO.getName() + "欢迎您来到Topview的产品溯源系统");
             System.out.println("您的余额为" + traceAfterLoginVO.getBalance());

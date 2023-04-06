@@ -1,18 +1,8 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 
 /**
  * 用户注册和登录服务
@@ -26,7 +16,7 @@ public interface TraceRegisterAndLoginService {
      * @return {@link TraceInformationSaveDTO}
      * 用于用户登录
      */
-    TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException;
+    TraceInformationSaveDTO login(TraceLoginBO traceLoginBO);
 
     /**
      * @param traceRegisterBO 用户登记薄

@@ -1,7 +1,7 @@
 package com.liujiahui.www.entity.bo;
 
 /**
- * 用户项目更新博
+ * 用户项目更新bo
  *
  * @author 刘家辉
  * @date 2023/03/21

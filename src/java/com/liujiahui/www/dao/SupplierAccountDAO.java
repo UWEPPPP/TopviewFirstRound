@@ -2,14 +2,13 @@ package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.po.ConsumerPO;
+import com.liujiahui.www.util.ConnectionPool;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static com.liujiahui.www.util.UtilDAO.close;
 
 public interface SupplierAccountDAO {
     static Boolean getaExist(String table, String name, Connection connection) throws SQLException {
@@ -21,7 +20,7 @@ public interface SupplierAccountDAO {
             set = preparedStatement.executeQuery();
             return set.next();
         } finally {
-            close(null, preparedStatement, set);
+            ConnectionPool.close(preparedStatement, set);
         }
     }
 
@@ -29,7 +28,7 @@ public interface SupplierAccountDAO {
 
     Boolean register(TraceRegisterBO traceRegisterBO);
 
-    void updatePersonalInformation(String type, String change) throws SQLException, IOException;
+    Boolean updatePersonalInformation(String type, String change);
 
     String getSupplierAccount(String name);
 }

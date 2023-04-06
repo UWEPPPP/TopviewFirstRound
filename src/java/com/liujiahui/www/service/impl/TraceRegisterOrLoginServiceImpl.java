@@ -1,22 +1,14 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.impl.ConsumerAccountDAOImpl;
-import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
-import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
-import com.liujiahui.www.dao.impl.SupplierAccountDAOImpl;
+import com.liujiahui.www.dao.impl.*;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.UserPO;
 import com.liujiahui.www.service.TraceRegisterAndLoginService;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+import com.liujiahui.www.util.CryptoUtil;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Objects;
 
@@ -26,10 +18,6 @@ import java.util.Objects;
  */
 public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginService {
 
-    private static class RegisterOrLoginInstance {
-        private static final TraceRegisterOrLoginServiceImpl INSTANCE = new TraceRegisterOrLoginServiceImpl();
-    }
-
     private TraceRegisterOrLoginServiceImpl() {
     }
 
@@ -38,7 +26,7 @@ public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginSer
     }
 
     @Override
-    public TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) throws ContractException {
+    public TraceInformationSaveDTO login(TraceLoginBO traceLoginBO) {
         String userAccount = traceLoginBO.getAccount();
         String userPassword = traceLoginBO.getPassword();
         String identity = traceLoginBO.getIdentity();
@@ -46,21 +34,15 @@ public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginSer
         String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
         UserPO login;
         String inform = "suppliers";
-        if(!Objects.equals(identity, inform)){
-            login = new ConsumerAccountDAOImpl().login(userAccount, userPassword);
-        }else {
-            login = new SupplierAccountDAOImpl().login(userAccount, userPassword);
+        if (!Objects.equals(identity, inform)) {
+            login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
+        } else {
+            login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
         }
         TraceInformationSaveDTO user = TraceInformationSaveDTO.getInstance();
         TraceContractServiceImpl traceContractService = TraceFactoryService.getTraceContractService();
         String balance;
-        try {
-            balance = String.valueOf(traceContractService.getBalance(login.getPrivateKey()));
-        } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException |
-                 InvalidKeyException e) {
-            System.out.println("获取余额失败");
-            throw new RuntimeException(e);
-        }
+        balance = String.valueOf(traceContractService.getBalance(login.getPrivateKey()));
         user.setUserName(login.getName());
         user.setBalance(balance);
         user.setGender(login.getGender());
@@ -70,17 +52,29 @@ public class TraceRegisterOrLoginServiceImpl implements TraceRegisterAndLoginSer
         if (identity.equals(inform)) {
             user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
         }
-        user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(),identityCheck,judge));
+        user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
 
         return user;
     }
+
     @Override
     public Boolean register(TraceRegisterBO traceRegisterBO) {
-        if(traceRegisterBO.getAddress()!=null){
-           return new SupplierAccountDAOImpl().register(traceRegisterBO);
-        }else {
-            return new ConsumerAccountDAOImpl().register(traceRegisterBO);
+        String password = traceRegisterBO.getPassword();
+        traceRegisterBO.setPassword(CryptoUtil.decryptHexPrivateKey(password, "src/resource/password.txt"));
+        if (traceRegisterBO.getAddress() != null) {
+            return new SupplierAccountDAOImpl().register(traceRegisterBO);
+        } else {
+            try {
+                return new ConsumerAccountDAOImpl().register(traceRegisterBO);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+    }
+
+    private static class RegisterOrLoginInstance {
+        private static final TraceRegisterOrLoginServiceImpl INSTANCE = new TraceRegisterOrLoginServiceImpl();
     }
 
 }

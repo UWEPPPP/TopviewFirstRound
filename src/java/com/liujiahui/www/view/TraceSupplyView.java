@@ -6,9 +6,7 @@ import com.liujiahui.www.controller.TraceSupplyController;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +24,7 @@ public class TraceSupplyView {
     public static TraceSupplyController traceSupplyController = new TraceSupplyController();
     static Scanner in = new Scanner(System.in);
 
-    public static void registerItem() throws SQLException, IOException {
+    public static void registerItem() {
         Scanner in = new Scanner(System.in);
         System.out.println("请输入产品种类");
         System.out.println("食品：0  服装：1  电子产品：2   家具：3  其他：4 ");
@@ -67,7 +65,7 @@ public class TraceSupplyView {
         System.out.println("商品上架成功");
     }
 
-    public static void showAndBuyItemBySupplier(List<TraceItemPO> pos) throws SQLException, IOException {
+    public static void showAndBuyItemBySupplier(List<TraceItemPO> pos) {
         showItem(pos);
         System.out.println("1:查看卖家的历史");
         System.out.println("2:按照条件筛选商品");
@@ -136,7 +134,7 @@ public class TraceSupplyView {
         return traceItem;
     }
 
-    public static void showSupplierItem(Map<String, List<TraceItemPO>> items) throws SQLException, IOException {
+    public static void showSupplierItem(Map<String, List<TraceItemPO>> items) {
         System.out.println("对外公布商品列表");
         showItem(items.get("Outside"));
         System.out.println("真实信息列表");
@@ -199,7 +197,7 @@ public class TraceSupplyView {
         }
     }
 
-    public static void showAllFeedback(List<TraceFeedbackPO> pos) throws SQLException, IOException {
+    public static void showAllFeedback(List<TraceFeedbackPO> pos) {
         for (TraceFeedbackPO po : pos) {
             if (po.getRead()) {
                 System.out.println("已读的反馈 " + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash:" + po.getItemHash());

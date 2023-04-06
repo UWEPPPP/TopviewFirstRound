@@ -1,6 +1,9 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.impl.*;
+import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
+import com.liujiahui.www.dao.impl.ItemShowDAOImpl;
+import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
+import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
 import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
@@ -18,10 +21,8 @@ import java.util.List;
 public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
     private CommonUsedMarketServiceImpl() {
     }
-    private static class CommonUsedMarketServiceImplHolder{
-        private static final CommonUsedMarketServiceImpl INSTANCE = new CommonUsedMarketServiceImpl();
-    }
-    public static CommonUsedMarketServiceImpl getInstance(){
+
+    public static CommonUsedMarketServiceImpl getInstance() {
         return CommonUsedMarketServiceImplHolder.INSTANCE;
     }
 
@@ -30,15 +31,20 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
      * 查看所有产品的功能
      */
     @Override
-    public List<TraceItemPO> showAllItem() throws SQLException, IOException {
-        return new ItemShowDAOImpl().showAllItem();
+    public List<TraceItemPO> showAllItem() {
+        try {
+            return new ItemShowDAOImpl().showAllItem();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
      * 更新个人信息
      */
     @Override
-    public void updatePersonalMessage(TraceChangePersonalBO userChangeServiceBO) throws SQLException, IOException {
+    public void updatePersonalMessage(TraceChangePersonalBO userChangeServiceBO) {
         Integer choice = userChangeServiceBO.getChoice();
         String change = userChangeServiceBO.getChange();
         String identity = userChangeServiceBO.getIdentity();
@@ -55,30 +61,48 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
                 break;
             default:
         }
-        if("suppliers".equals(identity)){
-            new SupplierAccountDAOImpl().updatePersonalInformation(type, change);
+        String judge = "suppliers";
+        Boolean result;
+        if (judge.equals(identity)) {
+            result = TraceFactoryDAO.getSupplierDAO().updatePersonalInformation(type, change);
+        }else {
+            result = TraceFactoryDAO.getConsumerDAO().updatePersonalInformation(type, change);
         }
-           new ConsumerAccountDAOImpl().updatePersonalInformation(type, change);
+        if (!result) {
+            throw new RuntimeException("更新失败");
         }
+
+    }
 
     /**
      * 输出商家的历史评价
      *
      * @param name 名字
      * @return {@link List}<{@link TraceFeedbackPO}>
-     * @throws SQLException sqlexception异常
-     * @throws IOException  ioexception
      */
     @Override
-    public List<TraceFeedbackPO> getHistory(String name) throws SQLException, IOException {
-        String supplierAccount = new SupplierAccountDAOImpl().getSupplierAccount(name);
-        return new ConsumerFeedbackDAOImpl().getSupplierHistory(supplierAccount);
+    public List<TraceFeedbackPO> getHistory(String name) {
+        String supplierAccount = TraceFactoryDAO.getSupplierDAO().getSupplierAccount(name);
+        try {
+            return new ConsumerFeedbackDAOImpl().getSupplierHistory(supplierAccount);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
+    public List<TraceFeedbackPO> showAppealResult() {
         String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
-        return new SupplierAppealDAOImpl().showReportAndAppealResult(contractAccount);
+        try {
+            return new SupplierAppealDAOImpl().showReportAndAppealResult(contractAccount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static class CommonUsedMarketServiceImplHolder {
+        private static final CommonUsedMarketServiceImpl INSTANCE = new CommonUsedMarketServiceImpl();
     }
 
 }

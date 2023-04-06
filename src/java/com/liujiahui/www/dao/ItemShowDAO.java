@@ -17,13 +17,13 @@ public interface ItemShowDAO {
 
     List<TraceItemPO> queryBySeller(String seller);
 
-    List<TraceItemPO> showAllItem() throws SQLException, IOException;
+    List<TraceItemPO> showAllItem() throws SQLException;
 
-    void updateItem(String oldName, String name, String description, String price) throws SQLException, IOException;
+    void updateItem(String oldName, String name, String description, String price) throws SQLException;
 
-    void insert(String name, BigInteger price, String description, String userName, int type, String hash) throws SQLException, IOException;
+    void insert(String name, BigInteger price, String description, String userName, int type, String hash) throws SQLException;
 
-    Map<String, List<TraceItemPO>> showConsumerItem(String accountAddress) throws SQLException, IOException;
+    Map<String, List<TraceItemPO>> showConsumerItem(String accountAddress) throws SQLException;
 
-    TraceItemPO getSingleItem(String hash) throws SQLException, IOException;
+    TraceItemPO getSingleItem(String hash) throws SQLException;
 }

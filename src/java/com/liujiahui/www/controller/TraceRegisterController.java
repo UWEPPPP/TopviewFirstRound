@@ -13,7 +13,7 @@ import com.liujiahui.www.view.TraceRegisterView;
  * @date 2023/03/16
  */
 public class TraceRegisterController {
-    public void register(TraceRegisterDTO traceRegisterDTO) throws Exception {
+    public void register(TraceRegisterDTO traceRegisterDTO) {
         TraceRegisterBO traceRegisterBO = new TraceRegisterBO();
         traceRegisterBO.setName(traceRegisterDTO.getName());
         traceRegisterBO.setGender(traceRegisterDTO.getGender());
@@ -24,7 +24,7 @@ public class TraceRegisterController {
         TraceRegisterView.returnInterface(traceRegisterAndLoginService.register(traceRegisterBO));
     }
 
-    public void registerOrderByIdentity(int choice2) throws Exception {
+    public void registerOrderByIdentity(int choice2) {
         if (choice2 == 1) {
             new TraceRegisterView().registerBySupplier();
         } else {

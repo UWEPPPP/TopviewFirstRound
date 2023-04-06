@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 
 /**
  * 加密工具 用于加密私钥
@@ -17,14 +18,20 @@ import java.security.NoSuchAlgorithmException;
  * @date 2023/03/25
  */
 public class CryptoUtil {
+    private static final Logger logger = Logger.getLogger(CryptoUtil.class.getName());
     private static SecretKey key;
 
-    public static SecretKey generateSecretKey(String password) throws NoSuchAlgorithmException {
+    public static SecretKey generateSecretKey(String password) {
         if (key != null) {
             return key;
         }
         byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
-        MessageDigest instance = MessageDigest.getInstance("SHA-256");
+        MessageDigest instance;
+        try {
+            instance = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         byte[] digest = instance.digest(passwordBytes);
         key = new SecretKeySpec(digest, "AES");
         return key;
@@ -42,21 +49,31 @@ public class CryptoUtil {
      * @throws IllegalBlockSizeException 非法块大小异常
      * @throws BadPaddingException       坏填充例外
      */
-    public static String encryptHexPrivateKey(String privateKey, String path) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static String encryptHexPrivateKey(String privateKey, String path) {
         SecretKey aes = generateSecretKey(readPassword(path));
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, aes);
-        byte[] encryptedBytes = cipher.doFinal(privateKey.getBytes(StandardCharsets.UTF_8));
-        return bytesToHex(encryptedBytes);
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, aes);
+            byte[] encryptedBytes = cipher.doFinal(privateKey.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(encryptedBytes);
+        } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException |
+                 InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String decryptHexPrivateKey(String privateKey, String path) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static String decryptHexPrivateKey(String privateKey, String path) {
         SecretKey aes = generateSecretKey(readPassword(path));
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, aes);
-        byte[] encryptedBytes = hexToBytes(privateKey);
-        byte[] decrypt = cipher.doFinal(encryptedBytes);
-        return new String(decrypt, StandardCharsets.UTF_8);
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, aes);
+            byte[] encryptedBytes = hexToBytes(privateKey);
+            byte[] decrypt = cipher.doFinal(encryptedBytes);
+            return new String(decrypt, StandardCharsets.UTF_8);
+        } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException |
+                 InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

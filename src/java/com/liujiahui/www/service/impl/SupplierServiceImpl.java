@@ -32,11 +32,6 @@ import java.util.Map;
  * @date 2023/03/18
  */
 public class SupplierServiceImpl implements SupplierService {
-    private static class SupplierMarketServiceImplHolder {
-        private static final SupplierServiceImpl INSTANCE = new SupplierServiceImpl();
-    }
-
-
     private SupplierServiceImpl() {
     }
 
@@ -45,7 +40,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void addItem(TraceItemBO traceItemBO) throws SQLException, IOException {
+    public void addItem(TraceItemBO traceItemBO) {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()), traceItemBO.getToken());
@@ -53,18 +48,25 @@ public class SupplierServiceImpl implements SupplierService {
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3));
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4));
         String hash = Numeric.toHexString(addItemOutput.getValue2());
-        new ItemShowDAOImpl().insert(traceItemBO.getName(),traceItemBO.getPrice(),traceItemBO.getDescription(), instance.getUserName(),traceItemBO.getType(),hash);
-        new ItemBehindDAOImpl().insert(traceItemBO.getName(),instance.getContractAccount(),addItemOutput.getValue1(),hash,traceItemBO.getToken());
+        try {
+            new ItemShowDAOImpl().insert(traceItemBO.getName(), traceItemBO.getPrice(), traceItemBO.getDescription(), instance.getUserName(), traceItemBO.getType(), hash);
+            new ItemBehindDAOImpl().insert(traceItemBO.getName(), instance.getContractAccount(), addItemOutput.getValue1(), hash, traceItemBO.getToken());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
+    }
 
     @Override
-    public void updateItem(TraceItemUpdateBO traceItemUpdateBO) throws SQLException, IOException {
+    public void updateItem(TraceItemUpdateBO traceItemUpdateBO) {
         String oldName = traceItemUpdateBO.getOldName();
         String name = traceItemUpdateBO.getName();
         String description = traceItemUpdateBO.getDescription();
         String price = traceItemUpdateBO.getPrice();
-        TraceFactoryDAO.getItemShowDAO().updateItem(oldName, name, description, price);
+        try {
+            TraceFactoryDAO.getItemShowDAO().updateItem(oldName, name, description, price);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(traceItemUpdateBO.getIndex())), new BigInteger(price));
     }
 
@@ -74,49 +76,79 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Map<String, List<TraceItemPO>> showItem() throws ContractException, SQLException, IOException {
-        Map<String, List<TraceItemPO>> allItems=new HashMap<>(2);
-        List<TraceItemPO> allItem = new ItemBehindDAOImpl().getAllItem(TraceInformationSaveDTO.getInstance().getUserAddress());
-        allItems.put("outside",allItem);
-        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
-        DynamicArray<ContractStorageService.Item> soldItem = instance.getItemTradeSolidity().getSoldItems();
-        List<TraceItemPO> list1 = new ArrayList<>();
-        int index = 0;
-        for (ContractStorageService.Item item : soldItem.getValue()) {
-            TraceItemPO traceItemPoOne = new TraceItemPO(item.name, item.price, item.description);
-            traceItemPoOne.setIndex(new BigDecimal(index));
-            traceItemPoOne.setSold(item.isSold);
-            list1.add(traceItemPoOne);
-            index++;
+    public Map<String, List<TraceItemPO>> showItem() {
+        Map<String, List<TraceItemPO>> allItems = new HashMap<>(2);
+        try {
+            List<TraceItemPO> allItem = TraceFactoryDAO.getItemBehindDAO().getAllItem(TraceInformationSaveDTO.getInstance().getUserAddress());
+            allItems.put("outside", allItem);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        allItems.put("real",list1);
+        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
+        try {
+            DynamicArray<ContractStorageService.Item> soldItem = instance.getItemTradeSolidity().getSoldItems();
+            List<TraceItemPO> list1 = new ArrayList<>();
+            int index = 0;
+            for (ContractStorageService.Item item : soldItem.getValue()) {
+                TraceItemPO traceItemPoOne = new TraceItemPO(item.name, item.price, item.description);
+                traceItemPoOne.setIndex(new BigDecimal(index));
+                traceItemPoOne.setSold(item.isSold);
+                list1.add(traceItemPoOne);
+                index++;
+            }
+            allItems.put("real", list1);
+        } catch (ContractException e) {
+            e.printStackTrace();
+        }
         return allItems;
     }
 
     @Override
-    public void removeItem(int index, Boolean choice) throws SQLException, IOException {
+    public void removeItem(int index, Boolean choice) {
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.removeItem(BigInteger.valueOf(index), choice);
-        new ItemBehindDAOImpl().removeOrRestoredItem(index,choice);
+        try {
+            new ItemBehindDAOImpl().removeOrRestoredItem(index, choice);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public List<TraceFeedbackPO> showFeedback() throws SQLException, IOException {
+    public List<TraceFeedbackPO> showFeedback() {
         String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
-        return new ItemBehindDAOImpl().showAndUpdateFeedback(contractAccount);
+        try {
+            return new ItemBehindDAOImpl().showAndUpdateFeedback(contractAccount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public Integer showToken() throws ContractException {
+    public Integer showToken() {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         String contractAccount = instance.getContractAccount();
-        return instance.getItemTradeSolidity().showSupplierToken(contractAccount).intValue();
+        try {
+            return instance.getItemTradeSolidity().showSupplierToken(contractAccount).intValue();
+        } catch (ContractException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public void appealFeedback(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
-         new SupplierAppealDAOImpl().insert(traceFeedbackBO.getItemHash(),traceFeedbackBO.getComment());
-         new ConsumerFeedbackDAOImpl().updateFeedback(traceFeedbackBO.getItemHash());
+    public void appealFeedback(TraceFeedbackBO traceFeedbackBO) {
+        try {
+            new SupplierAppealDAOImpl().insert(traceFeedbackBO.getItemHash(), traceFeedbackBO.getComment());
+            new ConsumerFeedbackDAOImpl().updateFeedback(traceFeedbackBO.getItemHash());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static class SupplierMarketServiceImplHolder {
+        private static final SupplierServiceImpl INSTANCE = new SupplierServiceImpl();
     }
 
 

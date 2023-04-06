@@ -1,7 +1,7 @@
 package com.liujiahui.www.entity.bo;
 
 /**
- * 用户改变波
+ * 用于修改个人信息的BO
  *
  * @author 刘家辉
  * @date 2023/03/18

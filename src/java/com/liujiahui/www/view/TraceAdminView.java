@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class TraceAdminView {
     static Scanner input = new Scanner(System.in);
 
-    public static void start() throws Exception {
+    public static void start() {
         System.out.println("你好管理员");
         System.out.println("以下为所有用户的反馈信息");
         List<TraceFeedbackPO> feedbacks = TraceAdminController.showAllFeedbackAndComplaint();

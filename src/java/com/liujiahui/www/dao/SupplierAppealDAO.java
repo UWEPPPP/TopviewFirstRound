@@ -9,11 +9,11 @@ import java.util.List;
 public interface SupplierAppealDAO {
     int getResultAppealSize(String account, String identityCheck, String judge);
 
-    List<TraceFeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException, IOException;
+    List<TraceFeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException;
 
     void updateResultRead(String accountAddress, String identity, String judge);
 
-    void insert(String hash, String comment) throws SQLException, IOException;
+    void insert(String hash, String comment) throws SQLException;
 
-    void resolveBadLikeOrAppeal(String hash, Boolean result) throws SQLException, IOException;
+    void resolveBadLikeOrAppeal(String hash, Boolean result);
 }

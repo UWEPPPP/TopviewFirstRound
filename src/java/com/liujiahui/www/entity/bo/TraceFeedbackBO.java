@@ -1,7 +1,7 @@
 package com.liujiahui.www.entity.bo;
 
 /**
- * 用户反馈波
+ * 用于得到反馈的BO
  *
  * @author 刘家辉
  * @date 2023/03/22

@@ -5,8 +5,6 @@ import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.entity.po.TraceItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,7 +30,7 @@ public class TraceSameView {
         }
     }
 
-    public static void showPersonalInterface(TraceDetailedVO traceDetailedVO) throws SQLException, IOException {
+    public static void showPersonalInterface(TraceDetailedVO traceDetailedVO) {
         System.out.println("用户名：" + traceDetailedVO.getUserName());
         System.out.println("身份：" + traceDetailedVO.getIdentify());
         System.out.println("性别：" + traceDetailedVO.getGender());

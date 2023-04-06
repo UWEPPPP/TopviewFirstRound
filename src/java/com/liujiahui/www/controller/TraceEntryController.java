@@ -10,10 +10,7 @@ import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.view.TraceConsumeView;
 import com.liujiahui.www.view.TraceSameView;
 import com.liujiahui.www.view.TraceSupplyView;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -29,7 +26,7 @@ public class TraceEntryController {
      * 条目
      * 进入选择页面
      */
-    public void entry(int choice) throws SQLException, IOException, ContractException {
+    public void entry(int choice) {
         String identity = "consumer";
         if (identity.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
             consumerEntry(choice);
@@ -38,7 +35,7 @@ public class TraceEntryController {
         }
     }
 
-    public void consumerEntry(int choice) throws SQLException, IOException, ContractException {
+    public void consumerEntry(int choice) {
         TraceConsumeController traceConsumeController = new TraceConsumeController();
         switch (choice) {
             case 1:
@@ -58,7 +55,7 @@ public class TraceEntryController {
     }
 
 
-    public void supplierEntry(int choice) throws SQLException, IOException, ContractException {
+    public void supplierEntry(int choice) {
         TraceSupplyController traceSupplyController = new TraceSupplyController();
         switch (choice) {
             case 1:
@@ -90,7 +87,7 @@ public class TraceEntryController {
      * 显示项目列表
      * 以下均为公共方法
      */
-    private void showItemList() throws SQLException, IOException, ContractException {
+    private void showItemList() {
         List<TraceItemPO> traceItems = CommonUsedMarketService.showAllItem();
         String check = "consumer";
         if (check.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
@@ -101,7 +98,7 @@ public class TraceEntryController {
     }
 
 
-    public void showUser() throws SQLException, IOException {
+    public void showUser() {
         TraceInformationSaveDTO information = TraceInformationSaveDTO.getInstance();
         TraceDetailedVO vo = new TraceDetailedVO();
         vo.setUserName(information.getUserName());
@@ -113,7 +110,7 @@ public class TraceEntryController {
     }
 
 
-    public void changeUser(int choice, String change) throws SQLException, IOException {
+    public void changeUser(int choice, String change) {
         TraceChangePersonalBO userChangeServiceBO = new TraceChangePersonalBO();
         userChangeServiceBO.setChange(change);
         userChangeServiceBO.setChoice(choice);
@@ -134,12 +131,12 @@ public class TraceEntryController {
     }
 
 
-    public void showHistory(String name) throws SQLException, IOException {
+    public void showHistory(String name) {
         List<TraceFeedbackPO> history = CommonUsedMarketService.getHistory(name);
         TraceSameView.showHistory(history);
     }
 
-    public List<TraceFeedbackPO> showAppealResult() throws SQLException, IOException {
+    public List<TraceFeedbackPO> showAppealResult() {
         return CommonUsedMarketService.showAppealResult();
     }
 

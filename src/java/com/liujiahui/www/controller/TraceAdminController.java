@@ -4,10 +4,7 @@ import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.TraceFeedbackPO;
 import com.liujiahui.www.service.AdminService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -23,16 +20,16 @@ public class TraceAdminController {
         return ADMIN_SERVICE.login(password);
     }
 
-    public static List<TraceFeedbackPO> showAllFeedbackAndComplaint() throws Exception {
+    public static List<TraceFeedbackPO> showAllFeedbackAndComplaint() {
         return ADMIN_SERVICE.getAllFeedbackAndComplaint();
     }
 
 
-    public static TraceRealAndOutItemDTO checkItem(String hash1) throws ContractException, SQLException, IOException {
+    public static TraceRealAndOutItemDTO checkItem(String hash1) {
         return ADMIN_SERVICE.checkItem(hash1);
     }
 
-    public static void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) throws SQLException, IOException {
+    public static void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) {
         ADMIN_SERVICE.resolveBadLikeOrAppeal(hash1, result, choice);
     }
 }

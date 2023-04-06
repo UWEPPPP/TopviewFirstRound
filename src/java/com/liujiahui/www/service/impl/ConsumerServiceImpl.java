@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 跟踪项目个人消费者service impl
@@ -32,10 +33,6 @@ import java.util.*;
  * @date 2023/03/24
  */
 public class ConsumerServiceImpl implements ConsumerService {
-    private static class CommonUsedMarketByConsumerServiceImplImplHolder {
-        private static final ConsumerServiceImpl INSTANCE = new ConsumerServiceImpl();
-    }
-
     private ConsumerServiceImpl() {
     }
 
@@ -44,15 +41,21 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public Map<String, List<TraceItemPO>> showItem() throws SQLException, IOException {
+    public Map<String, List<TraceItemPO>> showItem() {
         Map<String, List<TraceItemPO>> map = new HashMap<>(1);
-        Map<String, List<TraceItemPO>> stringListMap = TraceFactoryDAO.getItemShowDAO().showConsumerItem(TraceInformationSaveDTO.getInstance().getContractAccount());
+        Map<String, List<TraceItemPO>> stringListMap;
+        try {
+            stringListMap = TraceFactoryDAO.getItemShowDAO().showConsumerItem(TraceInformationSaveDTO.getInstance().getContractAccount());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
         map.put("item", stringListMap.get("item"));
         return map;
     }
 
     @Override
-    public TraceTransactionDTO buyItem(String seller, BigDecimal index) throws ContractException, SQLException, IOException {
+    public TraceTransactionDTO buyItem(String seller, BigDecimal index) {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         BigInteger bigInteger = index.toBigInteger();
@@ -68,39 +71,57 @@ public class ConsumerServiceImpl implements ConsumerService {
         List<ContractTradeService.ItemSoldEventResponse> itemSoldEvents = contractTradeServiceSolidity.getItemSoldEvents(transactionReceipt);
         ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = itemSoldEvents.get(0);
         BigInteger bigInteger1 = index.toBigInteger();
-        TraceFactoryDAO.getItemBehindDAO().buyItem(seller, bigInteger1);
-        BigInteger balance = contractTradeServiceSolidity.getBalance();
-        instance.setBalance(String.valueOf(balance));
-        traceTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);
-        traceTransactionDTO.setBalance(String.valueOf(balance));
+        try {
+            TraceFactoryDAO.getItemBehindDAO().buyItem(seller, bigInteger1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        BigInteger balance;
+        try {
+            balance = contractTradeServiceSolidity.getBalance();
+            instance.setBalance(String.valueOf(balance));
+            traceTransactionDTO.setItemSoldEventResponse(itemSoldEventResponse);
+            traceTransactionDTO.setBalance(String.valueOf(balance));
+        } catch (ContractException e) {
+            throw new RuntimeException(e);
+        }
         return traceTransactionDTO;
     }
 
     @Override
-    public TraceRealAndOutItemDTO checkByHash(String hash) throws ContractException {
+    public TraceRealAndOutItemDTO checkByHash(String hash) {
         byte[] bytes = Numeric.hexStringToByteArray(hash);
-        Tuple3<String, String, String> realItem = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
-        TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
-        traceRealAndOutItemDTO.setRealName(realItem.getValue1());
-        traceRealAndOutItemDTO.setRealDescription(realItem.getValue2());
-        traceRealAndOutItemDTO.setSeller(realItem.getValue3());
-        return traceRealAndOutItemDTO;
+        try {
+            Tuple3<String, String, String> realItem = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getRealItem(bytes);
+            TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
+            traceRealAndOutItemDTO.setRealName(realItem.getValue1());
+            traceRealAndOutItemDTO.setRealDescription(realItem.getValue2());
+            traceRealAndOutItemDTO.setSeller(realItem.getValue3());
+            return traceRealAndOutItemDTO;
+        } catch (ContractException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-
     @Override
-    public TraceItemStatusDTO checkStatus(String hash1) throws ContractException {
+    public TraceItemStatusDTO checkStatus(String hash1) {
         byte[] bytes = Numeric.hexStringToByteArray(hash1);
-        Tuple3<BigInteger, String, BigInteger> status = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getStatus(bytes);
-        TraceItemStatusDTO traceItemStatusDTO = new TraceItemStatusDTO();
-        long longValue = status.getValue1().longValue();
-        Date date = new Date(longValue * 1000);
-        traceItemStatusDTO.setDate(date);
-        traceItemStatusDTO.setPlace(status.getValue2());
-        BigInteger value3 = status.getValue3();
-        int intValue = value3.intValue();
-        stuffingStatus(traceItemStatusDTO, intValue);
-        return traceItemStatusDTO;
+        try {
+            Tuple3<BigInteger, String, BigInteger> status = TraceInformationSaveDTO.getInstance().getItemTradeSolidity().getStatus(bytes);
+            TraceItemStatusDTO traceItemStatusDTO = new TraceItemStatusDTO();
+            long longValue = status.getValue1().longValue();
+            Date date = new Date(longValue * 1000);
+            traceItemStatusDTO.setDate(date);
+            traceItemStatusDTO.setPlace(status.getValue2());
+            BigInteger value3 = status.getValue3();
+            int intValue = value3.intValue();
+            stuffingStatus(traceItemStatusDTO, intValue);
+            return traceItemStatusDTO;
+        } catch (ContractException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void stuffingStatus(TraceItemStatusDTO traceItemStatusDTO, int intValue) {
@@ -118,7 +139,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public void supplierWriteDownService(TraceFeedbackBO traceFeedbackBO) throws SQLException, IOException {
+    public void supplierWriteDownService(TraceFeedbackBO traceFeedbackBO) {
         String buyer = traceFeedbackBO.getBuyer();
         String seller = traceFeedbackBO.getSeller();
         String itemHash = traceFeedbackBO.getItemHash();
@@ -126,34 +147,53 @@ public class ConsumerServiceImpl implements ConsumerService {
         int choice = traceFeedbackBO.getChoice();
         ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.handing_feedback(seller, choice == 1, Numeric.hexStringToByteArray(itemHash));
-        new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice, itemHash);
+        try {
+            new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void returnItem(String hash2) throws SQLException, IOException {
-        TraceItemPO traceItemPO = new ItemBehindDAOImpl().returnItem(hash2);
-        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
-        itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2),traceItemPO.getIndex().toBigInteger());
+    public void returnItem(String hash2) {
+        try {
+            TraceItemPO traceItemPO = new ItemBehindDAOImpl().returnItem(hash2);
+            ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+            itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2), traceItemPO.getIndex().toBigInteger());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public List<TraceItemStatusDTO> checkLife(String hash3) throws ContractException {
+    public List<TraceItemStatusDTO> checkLife(String hash3) {
         TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         byte[] bytes = Numeric.hexStringToByteArray(hash3);
-        DynamicArray<ContractStorageService.ItemLife> itemLifeDynamicArray = contractTradeServiceSolidity.showWholeLife(bytes);
-        List<ContractStorageService.ItemLife> itemLifeList = itemLifeDynamicArray.getValue();
-        List<TraceItemStatusDTO> itemStauts = new ArrayList<>();
-        for (ContractStorageService.ItemLife itemLife : itemLifeList) {
-            TraceItemStatusDTO traceItemStatusDTO = new TraceItemStatusDTO();
-            long time = itemLife.date.longValue();
-            Date date = new Date(time * 1000);
-            traceItemStatusDTO.setDate(date);
-            traceItemStatusDTO.setPlace(itemLife.place);
-            int status = itemLife.status.intValue();
-            stuffingStatus(traceItemStatusDTO, status);
-            itemStauts.add(traceItemStatusDTO);
+        try {
+            DynamicArray<ContractStorageService.ItemLife> itemLifeDynamicArray = contractTradeServiceSolidity.showWholeLife(bytes);
+            List<ContractStorageService.ItemLife> itemLifeList = itemLifeDynamicArray.getValue();
+            List<TraceItemStatusDTO> itemStatus;
+            itemStatus = itemLifeList.stream()
+                    .map(itemLife -> {
+                        TraceItemStatusDTO traceItemStatusDTO = new TraceItemStatusDTO();
+                        long time = itemLife.date.longValue();
+                        Date date = new Date(time * 1000);
+                        traceItemStatusDTO.setDate(date);
+                        traceItemStatusDTO.setPlace(itemLife.place);
+                        int status = itemLife.status.intValue();
+                        stuffingStatus(traceItemStatusDTO, status);
+                        return traceItemStatusDTO;
+                    })
+                    .collect(Collectors.toList());
+            return itemStatus;
+        } catch (ContractException e) {
+            e.printStackTrace();
+            return null;
         }
-        return itemStauts;
+    }
+
+    private static class CommonUsedMarketByConsumerServiceImplImplHolder {
+        private static final ConsumerServiceImpl INSTANCE = new ConsumerServiceImpl();
     }
 }
