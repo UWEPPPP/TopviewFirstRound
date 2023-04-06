@@ -1,11 +1,10 @@
 package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.ItemShowDAO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.util.ConnectionPool;
 import org.fisco.bcos.sdk.utils.Numeric;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
@@ -28,13 +27,7 @@ import static com.liujiahui.www.util.ConnectionPool.close;
 public class ItemShowDAOImpl implements ItemShowDAO {
 
     @Override
-    public List<TraceItemPO> queryByPrice(int min, int max, int choice) {
-        String order;
-        if (choice == 1) {
-            order = "asc";
-        } else {
-            order = "desc";
-        }
+    public List<ItemPO> queryByPrice(int min, int max, String order) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_show INNER join user.item_behind ib on item_show.hash = ib.hash where price between ? and ? order by price  " + order;
@@ -50,7 +43,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
 
     @Override
-    public List<TraceItemPO> queryByKeyword(String keyword) {
+    public List<ItemPO> queryByKeyword(String keyword) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash        where name like ?";
@@ -65,7 +58,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
 
     @Override
-    public List<TraceItemPO> queryByType(String type) {
+    public List<ItemPO> queryByType(String type) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_show INNER JOIN user.item_behind ib on item_show.hash = ib.hash where type=?";
@@ -80,7 +73,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
 
     @Override
-    public List<TraceItemPO> queryBySeller(String seller) {
+    public List<ItemPO> queryBySeller(String seller) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             String sql = "select * from user.item_behind INNER JOIN user.item_show ON item_behind.hash " +
@@ -95,11 +88,11 @@ public class ItemShowDAOImpl implements ItemShowDAO {
     }
 
 
-    private List<TraceItemPO> querySame(PreparedStatement preparedStatement) throws SQLException {
+    private List<ItemPO> querySame(PreparedStatement preparedStatement) throws SQLException {
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceItemPO> list = new ArrayList<>();
+        List<ItemPO> list = new ArrayList<>();
         while (set.next()) {
-            TraceItemPO po = new TraceItemPO();
+            ItemPO po = new ItemPO();
             po.setId(set.getInt("id"));
             po.setName(set.getString("name"));
             po.setPrice(BigInteger.valueOf(set.getInt("price")));
@@ -111,22 +104,22 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             po.setType(set.getString("type"));
             list.add(po);
         }
-
+        close(preparedStatement, set);
         return list;
     }
 
     @Override
-    public List<TraceItemPO> showAllItem() throws SQLException {
+    public List<ItemPO> showAllItem() throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash where isRemoved = false";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceItemPO> list = new ArrayList<>();
+        List<ItemPO> list = new ArrayList<>();
         while (set.next()) {
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_address"), set.getBigDecimal("index"), set.getBoolean("isSold"), set.getString("owner_name"));
-            traceItemPo.setType(set.getString("type"));
-            list.add(traceItemPo);
+            ItemPO itemPo = new ItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_address"), set.getBigDecimal("index"), set.getBoolean("isSold"), set.getString("owner_name"));
+            itemPo.setType(set.getString("type"));
+            list.add(itemPo);
         }
         close(preparedStatement, set);
         ConnectionPool.getInstance().releaseConnection(connection);
@@ -193,21 +186,21 @@ public class ItemShowDAOImpl implements ItemShowDAO {
     }
 
     @Override
-    public Map<String, List<TraceItemPO>> showConsumerItem(String accountAddress) throws SQLException {
+    public Map<String, List<ItemPO>> showConsumerItem(String accountAddress) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "select * from user.item_show INNER JOIN user.item_behind on item_show.hash = item_behind.hash " +
                 " where owner_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceItemPO> list = new ArrayList<>();
+        List<ItemPO> list = new ArrayList<>();
         while (set.next()) {
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItem = new TraceItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_name"), set.getBigDecimal("index"), set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
+            ItemPO traceItem = new ItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_name"), set.getBigDecimal("index"), set.getBoolean("isSold"), Numeric.hexStringToByteArray(set.getString("hash")));
             list.add(traceItem);
         }
-        close(preparedStatement, null);
-        HashMap<String, List<TraceItemPO>> listHashMap = new HashMap<>(1);
+        close(preparedStatement, set);
+        HashMap<String, List<ItemPO>> listHashMap = new HashMap<>(1);
         listHashMap.put("item", list);
         ConnectionPool.getInstance().releaseConnection(connection);
         return listHashMap;
@@ -215,23 +208,24 @@ public class ItemShowDAOImpl implements ItemShowDAO {
 
 
     @Override
-    public TraceItemPO getSingleItem(String hash) throws SQLException {
+    public ItemPO getSingleItem(String hash) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash  where item_show.hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, hash);
         ResultSet resultSet = preparedStatement.executeQuery();
-        TraceItemPO traceItemPo = new TraceItemPO();
+        ItemPO itemPo = new ItemPO();
         while (resultSet.next()) {
-            traceItemPo.setId(resultSet.getInt("id"));
-            traceItemPo.setName(resultSet.getString("name"));
-            traceItemPo.setDescription(resultSet.getString("description"));
-            traceItemPo.setOwner(resultSet.getString("owner_account"));
-            traceItemPo.setSeller(resultSet.getString("seller_account"));
-            traceItemPo.setToken(resultSet.getInt("token"));
+            itemPo.setId(resultSet.getInt("id"));
+            itemPo.setName(resultSet.getString("name"));
+            itemPo.setDescription(resultSet.getString("description"));
+            itemPo.setOwner(resultSet.getString("owner_account"));
+            itemPo.setSeller(resultSet.getString("seller_account"));
+            itemPo.setToken(resultSet.getInt("token"));
         }
+        close(preparedStatement, resultSet);
         ConnectionPool.getInstance().releaseConnection(connection);
-        return traceItemPo;
+        return itemPo;
     }
 
 

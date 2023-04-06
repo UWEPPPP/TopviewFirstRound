@@ -4,8 +4,8 @@ import com.liujiahui.www.controller.TraceConsumeController;
 import com.liujiahui.www.controller.TraceEntryController;
 import com.liujiahui.www.controller.TraceQueryController;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
 
@@ -23,9 +23,9 @@ import static com.liujiahui.www.view.TraceSameView.showItem;
  * @date 2023/03/25
  */
 public class TraceConsumeView {
-    public static void showMyItem(List<TraceItemPO> traceItems) {
+    public static void showMyItem(List<ItemPO> traceItems) {
         System.out.println("这是您已购入的商品列表");
-        for (TraceItemPO traceItem : traceItems) {
+        for (ItemPO traceItem : traceItems) {
             System.out.println(traceItem.getId() + " " + "商品名称：" + traceItem.getName() + " 商品价格：" + traceItem.getPrice() + " 商品描述:" + traceItem.getDescription() + " 商品hash:" + traceItem.getHashes());
         }
         System.out.println("1.通过产品购买时给予的hash值验伪");
@@ -120,7 +120,7 @@ public class TraceConsumeView {
         System.out.println("交易后余额：" + traceTransactionVO.getBalance());
     }
 
-    public static void showAndBuyItemByConsumer(List<TraceItemPO> traceItems) {
+    public static void showAndBuyItemByConsumer(List<ItemPO> traceItems) {
         showItem(traceItems);
         TraceEntryController traceEntryController = new TraceEntryController();
         System.out.println("1:购买产品");
@@ -148,7 +148,7 @@ public class TraceConsumeView {
                 System.out.println("4:按照商家筛选");
                 int choice1 = in.nextInt();
                 TraceQueryController traceQueryController = new TraceQueryController();
-                List<TraceItemPO> traceItem = new ArrayList<>();
+                List<ItemPO> traceItem = new ArrayList<>();
                 traceItem = TraceSupplyView.getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
                 showItem(traceItem);
             default:
@@ -156,8 +156,8 @@ public class TraceConsumeView {
         }
     }
 
-    public static void showAppealResult(List<TraceFeedbackPO> list) {
-        for (TraceFeedbackPO feedbacks : list) {
+    public static void showAppealResult(List<FeedbackPO> list) {
+        for (FeedbackPO feedbacks : list) {
             if (feedbacks.isAppealResult()) {
                 System.out.println("被举报人：" + feedbacks.getSeller() + " 举报物品" + feedbacks.getItemName() + " 举报结果：被鉴定为恶意举报 将进行一定资产的没收");
             } else {

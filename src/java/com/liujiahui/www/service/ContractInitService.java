@@ -10,7 +10,7 @@ import java.math.BigInteger;
  * @author 刘家辉
  * @date 2023/03/25
  */
-public interface TraceContractService {
+public interface ContractInitService {
     /**
      * @param privateKey 私钥
      * @return {@link BigInteger}

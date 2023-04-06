@@ -1,9 +1,9 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
 import com.liujiahui.www.service.CommonUsedMarketService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
@@ -28,7 +28,7 @@ public class TraceEntryController {
      */
     public void entry(int choice) {
         String identity = "consumer";
-        if (identity.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
+        if (identity.equals(UserSaveDTO.getInstance().getIdentity())) {
             consumerEntry(choice);
         } else {
             supplierEntry(choice);
@@ -88,9 +88,9 @@ public class TraceEntryController {
      * 以下均为公共方法
      */
     private void showItemList() {
-        List<TraceItemPO> traceItems = CommonUsedMarketService.showAllItem();
+        List<ItemPO> traceItems = CommonUsedMarketService.showAllItem();
         String check = "consumer";
-        if (check.equals(TraceInformationSaveDTO.getInstance().getIdentity())) {
+        if (check.equals(UserSaveDTO.getInstance().getIdentity())) {
             TraceConsumeView.showAndBuyItemByConsumer(traceItems);
         } else {
             TraceSupplyView.showAndBuyItemBySupplier(traceItems);
@@ -99,7 +99,7 @@ public class TraceEntryController {
 
 
     public void showUser() {
-        TraceInformationSaveDTO information = TraceInformationSaveDTO.getInstance();
+        UserSaveDTO information = UserSaveDTO.getInstance();
         TraceDetailedVO vo = new TraceDetailedVO();
         vo.setUserName(information.getUserName());
         vo.setGender(information.getGender());
@@ -114,17 +114,17 @@ public class TraceEntryController {
         TraceChangePersonalBO userChangeServiceBO = new TraceChangePersonalBO();
         userChangeServiceBO.setChange(change);
         userChangeServiceBO.setChoice(choice);
-        userChangeServiceBO.setIdentity(TraceInformationSaveDTO.getInstance().getIdentity());
+        userChangeServiceBO.setIdentity(UserSaveDTO.getInstance().getIdentity());
         CommonUsedMarketService.updatePersonalMessage(userChangeServiceBO);
         switch (choice) {
             case 1:
-                TraceInformationSaveDTO.getInstance().setUserName(change);
+                UserSaveDTO.getInstance().setUserName(change);
                 break;
             case 2:
-                TraceInformationSaveDTO.getInstance().setGender(change);
+                UserSaveDTO.getInstance().setGender(change);
                 break;
             case 3:
-                TraceInformationSaveDTO.getInstance().setPhone(change);
+                UserSaveDTO.getInstance().setPhone(change);
                 break;
             default:
         }
@@ -132,11 +132,11 @@ public class TraceEntryController {
 
 
     public void showHistory(String name) {
-        List<TraceFeedbackPO> history = CommonUsedMarketService.getHistory(name);
+        List<FeedbackPO> history = CommonUsedMarketService.getHistory(name);
         TraceSameView.showHistory(history);
     }
 
-    public List<TraceFeedbackPO> showAppealResult() {
+    public List<FeedbackPO> showAppealResult() {
         return CommonUsedMarketService.showAppealResult();
     }
 

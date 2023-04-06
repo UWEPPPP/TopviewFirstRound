@@ -41,13 +41,15 @@ public class TraceRegisterView {
     }
 
     private TraceRegisterDTO showRegister(String name, String gender, String phone) {
-        System.out.println("请输入您要设置的密码：");
+        System.out.println("请输入您要设置的密码：(4-12位)");
         String password = in.next();
+        String paddedStr = String.format("%-32s",password).replace(' ', '0');
+        System.out.println(paddedStr);
         TraceRegisterDTO traceRegisterDTO = new TraceRegisterDTO();
         traceRegisterDTO.setName(name);
         traceRegisterDTO.setGender(gender);
         traceRegisterDTO.setPhone(phone);
-        traceRegisterDTO.setPassword(password);
+        traceRegisterDTO.setPassword(paddedStr);
         return traceRegisterDTO;
     }
 

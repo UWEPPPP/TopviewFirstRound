@@ -3,8 +3,8 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.SupplierService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.view.TraceSupplyView;
@@ -40,11 +40,11 @@ public class TraceSupplyController {
         marketService.updateLogistics(id, logistics, status);
     }
 
-    public void updateItem(int index, List<TraceItemPO> traceItemPos, String name, String description, String price) {
+    public void updateItem(int index, List<ItemPO> itemPos, String name, String description, String price) {
         String oldName = null;
-        for (TraceItemPO traceItemPoOne : traceItemPos) {
-            if (traceItemPoOne.getIndex().intValue() == index) {
-                oldName = traceItemPoOne.getName();
+        for (ItemPO itemPoOne : itemPos) {
+            if (itemPoOne.getIndex().intValue() == index) {
+                oldName = itemPoOne.getName();
             }
         }
         TraceItemUpdateBO updateBO = new TraceItemUpdateBO();
@@ -64,7 +64,7 @@ public class TraceSupplyController {
         marketService.removeItem(index, choice);
     }
 
-    public List<TraceFeedbackPO> showSupplierFeedback() {
+    public List<FeedbackPO> showSupplierFeedback() {
         return marketService.showFeedback();
     }
 

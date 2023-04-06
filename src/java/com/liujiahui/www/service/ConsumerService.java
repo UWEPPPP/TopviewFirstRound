@@ -4,7 +4,7 @@ import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.ItemPO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,9 +20,9 @@ public interface ConsumerService {
     /**
      * 显示项
      *
-     * @return {@link Map}<{@link String}, {@link List}<{@link TraceItemPO}>>
+     * @return {@link Map}<{@link String}, {@link List}<{@link ItemPO}>>
      */
-    Map<String, List<TraceItemPO>> showItem();
+    Map<String, List<ItemPO>> showItem();
 
     /**
      * 购买物品

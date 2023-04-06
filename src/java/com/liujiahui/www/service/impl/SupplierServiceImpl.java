@@ -4,9 +4,9 @@ import com.liujiahui.www.dao.impl.*;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.SupplierService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
@@ -16,7 +16,6 @@ import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
@@ -41,7 +40,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void addItem(TraceItemBO traceItemBO) {
-        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
+        UserSaveDTO instance = UserSaveDTO.getInstance();
         ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()), traceItemBO.getToken());
         Tuple2<BigInteger, byte[]> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
@@ -67,33 +66,33 @@ public class SupplierServiceImpl implements SupplierService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(traceItemUpdateBO.getIndex())), new BigInteger(price));
+        UserSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(traceItemUpdateBO.getIndex())), new BigInteger(price));
     }
 
     @Override
     public void updateLogistics(int index, String logistics, int status) {
-        TraceInformationSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status));
+        UserSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status));
     }
 
     @Override
-    public Map<String, List<TraceItemPO>> showItem() {
-        Map<String, List<TraceItemPO>> allItems = new HashMap<>(2);
+    public Map<String, List<ItemPO>> showItem() {
+        Map<String, List<ItemPO>> allItems = new HashMap<>(2);
         try {
-            List<TraceItemPO> allItem = TraceFactoryDAO.getItemBehindDAO().getAllItem(TraceInformationSaveDTO.getInstance().getUserAddress());
+            List<ItemPO> allItem = TraceFactoryDAO.getItemBehindDAO().getAllItem(UserSaveDTO.getInstance().getUserAddress());
             allItems.put("outside", allItem);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
+        UserSaveDTO instance = UserSaveDTO.getInstance();
         try {
             DynamicArray<ContractStorageService.Item> soldItem = instance.getItemTradeSolidity().getSoldItems();
-            List<TraceItemPO> list1 = new ArrayList<>();
+            List<ItemPO> list1 = new ArrayList<>();
             int index = 0;
             for (ContractStorageService.Item item : soldItem.getValue()) {
-                TraceItemPO traceItemPoOne = new TraceItemPO(item.name, item.price, item.description);
-                traceItemPoOne.setIndex(new BigDecimal(index));
-                traceItemPoOne.setSold(item.isSold);
-                list1.add(traceItemPoOne);
+                ItemPO itemPoOne = new ItemPO(item.name, item.price, item.description);
+                itemPoOne.setIndex(new BigDecimal(index));
+                itemPoOne.setSold(item.isSold);
+                list1.add(itemPoOne);
                 index++;
             }
             allItems.put("real", list1);
@@ -105,7 +104,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void removeItem(int index, Boolean choice) {
-        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+        ContractTradeService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.removeItem(BigInteger.valueOf(index), choice);
         try {
             new ItemBehindDAOImpl().removeOrRestoredItem(index, choice);
@@ -115,8 +114,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public List<TraceFeedbackPO> showFeedback() {
-        String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
+    public List<FeedbackPO> showFeedback() {
+        String contractAccount = UserSaveDTO.getInstance().getContractAccount();
         try {
             return new ItemBehindDAOImpl().showAndUpdateFeedback(contractAccount);
         } catch (SQLException e) {
@@ -127,7 +126,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Integer showToken() {
-        TraceInformationSaveDTO instance = TraceInformationSaveDTO.getInstance();
+        UserSaveDTO instance = UserSaveDTO.getInstance();
         String contractAccount = instance.getContractAccount();
         try {
             return instance.getItemTradeSolidity().showSupplierToken(contractAccount).intValue();

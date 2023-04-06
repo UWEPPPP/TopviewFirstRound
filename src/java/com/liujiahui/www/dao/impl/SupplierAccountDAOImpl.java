@@ -3,8 +3,10 @@ package com.liujiahui.www.dao.impl;
 import com.liujiahui.www.dao.SupplierAccountDAO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.ConsumerPO;
+import com.liujiahui.www.entity.po.SupplierPO;
+import com.liujiahui.www.entity.po.UserPO;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.util.ConnectionPool;
 
@@ -24,26 +26,27 @@ import static com.liujiahui.www.util.ConnectionPool.close;
  * @date 2023/04/04
  */
 public class SupplierAccountDAOImpl implements SupplierAccountDAO {
-    public static ConsumerPO entertainUser(String userAccount, String userPassword, PreparedStatement preparedStatement) throws SQLException {
+    public static UserPO entertainUser(String userAccount, String userPassword, PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(1, userAccount);
         preparedStatement.setString(2, userPassword);
         ResultSet set = preparedStatement.executeQuery();
         if (set.next()) {
-            ConsumerPO consumer = new ConsumerPO();
-            consumer.setPrivateKey(set.getString("private_key"));
-            consumer.setAddress(set.getString("account_address"));
-            consumer.setName(set.getString("user_name"));
-            consumer.setGender(set.getString("gender"));
-            consumer.setPhoneNumber(set.getString("phone_number"));
-            consumer.setPassword(set.getString("password"));
-            return consumer;
+            UserPO user = new UserPO();
+            user.setPrivateKey(set.getString("private_key"));
+            user.setAddress(set.getString("account_address"));
+            user.setName(set.getString("user_name"));
+            user.setGender(set.getString("gender"));
+            user.setPhoneNumber(set.getString("phone_number"));
+            user.setPassword(set.getString("password"));
+            close(preparedStatement, set);
+            return user;
         } else {
             return null;
         }
     }
 
     @Override
-    public ConsumerPO login(String userAccount, String userPassword) {
+    public UserPO login(String userAccount, String userPassword) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement preparedStatement;
@@ -80,7 +83,7 @@ public class SupplierAccountDAOImpl implements SupplierAccountDAO {
     public Boolean updatePersonalInformation(String type, String change) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
-            String name = TraceInformationSaveDTO.getInstance().getUserName();
+            String name = UserSaveDTO.getInstance().getUserName();
             String sql = "update user.suppliers set " + type + " = ? where user_name = ?";
             return changeAccount(change, connection, name, sql);
         } catch (SQLException e) {
@@ -97,12 +100,12 @@ public class SupplierAccountDAOImpl implements SupplierAccountDAO {
             preparedStatement.setString(1, name);
             ResultSet set = preparedStatement.executeQuery();
             if (set.next()) {
+                String accountAddress = set.getString("account_address");
                 close(preparedStatement, set);
-                return set.getString("account_address");
+                ConnectionPool.getInstance().releaseConnection(connection);
+                return accountAddress;
             }
-            close(preparedStatement, set);
-            ConnectionPool.getInstance().releaseConnection(connection);
-            return null;
+            throw new RuntimeException("查询失败");
         } catch (SQLException e) {
             System.out.println("查询商家历史失败");
             throw new RuntimeException(e);

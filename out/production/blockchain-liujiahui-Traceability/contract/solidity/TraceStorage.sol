@@ -202,16 +202,26 @@ contract TraceStorage {
         Balances[user] += amount;
     }
 
-    function like_or_report(address supplier, bool choice, bytes32 hash) external {
+    function like_or_report(
+        address supplier,
+        bool choice,
+        bytes32 hash
+    ) external {
         uint256 calculate = user_counter[supplier][hash] / 10;
         if (choice) {
             erc20.reward(supplier, calculate);
         } else {
             user_counter[supplier][hash] -= calculate;
         }
+        returnToken(supplier, hash);
     }
 
-    function getToken(address supplier) external view returns (uint256){
+    function returnToken(address supplier, bytes32 hash) internal {
+        erc20.reward(supplier, user_counter[supplier][hash]);
+        user_counter[supplier][hash] = 0;
+    }
+
+    function getToken(address supplier) external view returns (uint256) {
         return erc20.balanceOf(supplier);
     }
 
@@ -220,10 +230,17 @@ contract TraceStorage {
         return identity;
     }
 
-    function appeal(address feedbacker, address supplier, uint256 calculate) external {
-        erc20.reward(supplier, calculate);
+    function appeal(
+        address feedbacker,
+        address supplier,
+        uint256 calculate,
+        bool choice
+    ) external {
+        if (choice) {
+            erc20.reward(supplier, calculate);
+        } else {
+            erc20.pledge(supplier, calculate);
+        }
         Balances[feedbacker] -= calculate;
     }
-
-
 }

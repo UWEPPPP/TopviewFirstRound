@@ -11,8 +11,8 @@ import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class TraceInformationSaveDTO {
-    private static final TraceInformationSaveDTO INSTANCE = new TraceInformationSaveDTO();
+public class UserSaveDTO {
+    private static final UserSaveDTO INSTANCE = new UserSaveDTO();
     private String userName;
     private String gender;
     private String phone;
@@ -25,10 +25,10 @@ public class TraceInformationSaveDTO {
     private Integer informationSize;
     private Integer appealResultSize;
 
-    private TraceInformationSaveDTO() {
+    private UserSaveDTO() {
     }
 
-    public static TraceInformationSaveDTO getInstance() {
+    public static UserSaveDTO getInstance() {
         return INSTANCE;
     }
 

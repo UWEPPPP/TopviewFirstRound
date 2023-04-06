@@ -1,7 +1,7 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.service.AdminService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 
@@ -20,7 +20,7 @@ public class TraceAdminController {
         return ADMIN_SERVICE.login(password);
     }
 
-    public static List<TraceFeedbackPO> showAllFeedbackAndComplaint() {
+    public static List<FeedbackPO> showAllFeedbackAndComplaint() {
         return ADMIN_SERVICE.getAllFeedbackAndComplaint();
     }
 

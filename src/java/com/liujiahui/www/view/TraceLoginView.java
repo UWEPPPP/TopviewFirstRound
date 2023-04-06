@@ -19,23 +19,18 @@ public class TraceLoginView {
         TraceInitView.start();
     }
 
-    public void loginByConsumer() {
-        System.out.println("进入消费者登录界面");
+    public void login(Boolean choice) {
+        if (choice) {
+            System.out.println("进入供应商登录界面");
+        } else {
+            System.out.println("进入消费者登录界面");
+        }
         System.out.println("请输入您的账号：");
         String account = in.next();
         System.out.println("请输入您的密码：");
         String password = in.next();
+        String paddedStr = String.format("%-32s", password).replace(' ', '0');
         TraceLoginController traceLoginController = new TraceLoginController();
-        traceLoginController.login(account, password, false);
-    }
-
-    public void loginBySupplier() {
-        System.out.println("进入供应商登录界面");
-        System.out.println("请输入您的账号：");
-        String account = in.next();
-        System.out.println("请输入您的密码：");
-        String password = in.next();
-        TraceLoginController traceLoginController = new TraceLoginController();
-        traceLoginController.login(account, password, true);
+        traceLoginController.login(account, paddedStr, choice);
     }
 }

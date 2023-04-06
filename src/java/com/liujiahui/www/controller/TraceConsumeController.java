@@ -1,11 +1,11 @@
 package com.liujiahui.www.controller;
 
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.TraceTransactionDTO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
 import com.liujiahui.www.service.ConsumerService;
@@ -27,8 +27,8 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
 public class TraceConsumeController {
     private static final ConsumerService CONSUMER_SERVICE = TraceFactoryService.getConsumeUsedService();
 
-    public void buy(int id, List<TraceItemPO> items) {
-        for (TraceItemPO item : items) {
+    public void buy(int id, List<ItemPO> items) {
+        for (ItemPO item : items) {
             if (item.getId() == id) {
                 TraceTransactionDTO traceTransactionDTO = CONSUMER_SERVICE.buyItem(item.getOwner(), item.getIndex());
                 if (traceTransactionDTO != null && traceTransactionDTO.getReturnMessage() == null) {
@@ -67,7 +67,7 @@ public class TraceConsumeController {
     }
 
     public void showUserItem() {
-        List<TraceItemPO> items = CONSUMER_SERVICE.showItem().get("item");
+        List<ItemPO> items = CONSUMER_SERVICE.showItem().get("item");
         TraceConsumeView.showMyItem(items);
     }
 
@@ -77,7 +77,7 @@ public class TraceConsumeController {
         traceFeedbackBO.setComment(comment);
         traceFeedbackBO.setItemHash(itemHash);
         traceFeedbackBO.setChoice(score);
-        traceFeedbackBO.setBuyer(TraceInformationSaveDTO.getInstance().getContractAccount());
+        traceFeedbackBO.setBuyer(UserSaveDTO.getInstance().getContractAccount());
         CONSUMER_SERVICE.supplierWriteDownService(traceFeedbackBO);
     }
 

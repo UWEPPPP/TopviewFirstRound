@@ -1,11 +1,10 @@
 package com.liujiahui.www.dao.impl;
 
 import com.liujiahui.www.dao.SupplierAppealDAO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.util.ConnectionPool;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,32 +32,33 @@ public class SupplierAppealDAOImpl implements SupplierAppealDAO {
             if (set2.next()) {
                 int size = set2.getInt(1);
                 close(preparedStatement2, set2);
+                ConnectionPool.getInstance().releaseConnection(connection);
                 return size;
             }
+            throw new RuntimeException("获取申诉结果异常");
         } catch (SQLException e) {
             System.out.println("获取申诉结果异常");
             throw new RuntimeException(e);
         }
-        return 0;
     }
 
     @Override
-    public List<TraceFeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException {
+    public List<FeedbackPO> showReportAndAppealResult(String accountAddress) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        String identity = Objects.equals(TraceInformationSaveDTO.getInstance().getIdentity(), "consumer") ? "buyer_account" : "seller_account";
+        String identity = Objects.equals(UserSaveDTO.getInstance().getIdentity(), "consumer") ? "buyer_account" : "seller_account";
         String judge = "buyer_account".equals(identity) ? "consumer_is_read" : "supplier_is_read";
         String sql = "SELECT * FROM user.consumer_feedback INNER JOIN user.supplier_appeal on consumer_feedback.item_hash = supplier_appeal.item_hash  WHERE " + identity + "=? and is_appeal IS NOT NULL ";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceFeedbackPO> list = new ArrayList<>();
+        List<FeedbackPO> list = new ArrayList<>();
         while (set.next()) {
-            TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
-            traceFeedbackPo.setBuyer(set.getString("buyer_account"));
-            traceFeedbackPo.setItemHash(set.getString("item_hash"));
-            traceFeedbackPo.setAppealResult(set.getBoolean("appeal_result"));
-            traceFeedbackPo.setSeller(set.getString("seller_account"));
-            list.add(traceFeedbackPo);
+            FeedbackPO feedbackPo = new FeedbackPO();
+            feedbackPo.setBuyer(set.getString("buyer_account"));
+            feedbackPo.setItemHash(set.getString("item_hash"));
+            feedbackPo.setAppealResult(set.getBoolean("appeal_result"));
+            feedbackPo.setSeller(set.getString("seller_account"));
+            list.add(feedbackPo);
         }
         updateResultRead(accountAddress, identity, judge);
         close(preparedStatement, set);
@@ -105,6 +105,8 @@ public class SupplierAppealDAOImpl implements SupplierAppealDAO {
             preparedStatement.setBoolean(1, result);
             preparedStatement.setString(2, hash);
             int results = preparedStatement.executeUpdate();
+            close(preparedStatement, null);
+            ConnectionPool.getInstance().releaseConnection(connection);
             if (results == 0) {
                 throw new RuntimeException("更新失败");
             }
@@ -113,13 +115,10 @@ public class SupplierAppealDAOImpl implements SupplierAppealDAO {
                 if (connection != null) {
                     connection.rollback();
                 }
-                ConnectionPool.getInstance().releaseConnection(connection);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
             throw new RuntimeException(e);
-        } finally {
-            close(preparedStatement, null);
         }
     }
 

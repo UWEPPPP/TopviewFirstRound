@@ -3,8 +3,8 @@ package com.liujiahui.www.view;
 import com.liujiahui.www.controller.TraceEntryController;
 import com.liujiahui.www.controller.TraceQueryController;
 import com.liujiahui.www.controller.TraceSupplyController;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class TraceSupplyView {
         System.out.println("商品上架成功");
     }
 
-    public static void showAndBuyItemBySupplier(List<TraceItemPO> pos) {
+    public static void showAndBuyItemBySupplier(List<ItemPO> pos) {
         showItem(pos);
         System.out.println("1:查看卖家的历史");
         System.out.println("2:按照条件筛选商品");
@@ -85,7 +85,7 @@ public class TraceSupplyView {
                 System.out.println("4:按照商家筛选");
                 int choice1 = in.nextInt();
                 TraceQueryController traceQueryController = new TraceQueryController();
-                List<TraceItemPO> traceItem = new ArrayList<>();
+                List<ItemPO> traceItem = new ArrayList<>();
                 traceItem = getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
                 showItem(traceItem);
             default:
@@ -93,7 +93,7 @@ public class TraceSupplyView {
         }
     }
 
-    static List<TraceItemPO> getTraceItemSameWay(Scanner in, int choice1, TraceQueryController traceQueryController, List<TraceItemPO> traceItem) {
+    static List<ItemPO> getTraceItemSameWay(Scanner in, int choice1, TraceQueryController traceQueryController, List<ItemPO> traceItem) {
         switch (choice1) {
             case 1:
                 System.out.println("请输入你希望的最高价位");
@@ -134,7 +134,7 @@ public class TraceSupplyView {
         return traceItem;
     }
 
-    public static void showSupplierItem(Map<String, List<TraceItemPO>> items) {
+    public static void showSupplierItem(Map<String, List<ItemPO>> items) {
         System.out.println("对外公布商品列表");
         showItem(items.get("Outside"));
         System.out.println("真实信息列表");
@@ -181,8 +181,8 @@ public class TraceSupplyView {
         }
     }
 
-    public static void showItem(List<TraceItemPO> pos) {
-        for (TraceItemPO itemPo : pos) {
+    public static void showItem(List<ItemPO> pos) {
+        for (ItemPO itemPo : pos) {
             if (itemPo.getSold()) {
                 System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 已售出 ");
             } else {
@@ -191,14 +191,14 @@ public class TraceSupplyView {
         }
     }
 
-    public static void showRealItem(List<TraceItemPO> pos) {
-        for (TraceItemPO po : pos) {
+    public static void showRealItem(List<ItemPO> pos) {
+        for (ItemPO po : pos) {
             System.out.println("商品真实名称：" + po.getName() + " 商品真实描述：" + po.getDescription());
         }
     }
 
-    public static void showAllFeedback(List<TraceFeedbackPO> pos) {
-        for (TraceFeedbackPO po : pos) {
+    public static void showAllFeedback(List<FeedbackPO> pos) {
+        for (FeedbackPO po : pos) {
             if (po.getRead()) {
                 System.out.println("已读的反馈 " + "反馈者：" + po.getBuyer() + " 类型：" + (po.getLikeOrReport() ? "好评" : "差评") + " 反馈内容：" + po.getComment() + " 反馈物品：" + po.getItemName() + " 物品hash:" + po.getItemHash());
             } else {
@@ -222,8 +222,8 @@ public class TraceSupplyView {
         System.out.println("您的token为：" + integer);
     }
 
-    public static void showAppealResult(List<TraceFeedbackPO> traceFeedbacks) {
-        for (TraceFeedbackPO po : traceFeedbacks) {
+    public static void showAppealResult(List<FeedbackPO> traceFeedbacks) {
+        for (FeedbackPO po : traceFeedbacks) {
             if (po.isAppealResult()) {
                 System.out.println("申诉内容  " + "举报者：" + po.getBuyer() + "举报物品：" + po.getItemHash() + "申诉结果：" + "申诉成功，举报已驳回");
             } else {

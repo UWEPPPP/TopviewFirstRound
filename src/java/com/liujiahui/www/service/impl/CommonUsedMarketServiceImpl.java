@@ -5,12 +5,11 @@ import com.liujiahui.www.dao.impl.ItemShowDAOImpl;
 import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.CommonUsedMarketService;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
      * 查看所有产品的功能
      */
     @Override
-    public List<TraceItemPO> showAllItem() {
+    public List<ItemPO> showAllItem() {
         try {
             return new ItemShowDAOImpl().showAllItem();
         } catch (SQLException e) {
@@ -65,7 +64,7 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
         Boolean result;
         if (judge.equals(identity)) {
             result = TraceFactoryDAO.getSupplierDAO().updatePersonalInformation(type, change);
-        }else {
+        } else {
             result = TraceFactoryDAO.getConsumerDAO().updatePersonalInformation(type, change);
         }
         if (!result) {
@@ -78,10 +77,10 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
      * 输出商家的历史评价
      *
      * @param name 名字
-     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @return {@link List}<{@link FeedbackPO}>
      */
     @Override
-    public List<TraceFeedbackPO> getHistory(String name) {
+    public List<FeedbackPO> getHistory(String name) {
         String supplierAccount = TraceFactoryDAO.getSupplierDAO().getSupplierAccount(name);
         try {
             return new ConsumerFeedbackDAOImpl().getSupplierHistory(supplierAccount);
@@ -91,8 +90,8 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
     }
 
     @Override
-    public List<TraceFeedbackPO> showAppealResult() {
-        String contractAccount = TraceInformationSaveDTO.getInstance().getContractAccount();
+    public List<FeedbackPO> showAppealResult() {
+        String contractAccount = UserSaveDTO.getInstance().getContractAccount();
         try {
             return new SupplierAppealDAOImpl().showReportAndAppealResult(contractAccount);
         } catch (SQLException e) {

@@ -1,8 +1,8 @@
 package com.liujiahui.www.service;
 
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ public interface CommonUsedMarketService {
     /**
      * 显示所有项
      *
-     * @return {@link List}<{@link TraceItemPO}>
+     * @return {@link List}<{@link ItemPO}>
      */
-    List<TraceItemPO> showAllItem();
+    List<ItemPO> showAllItem();
 
     /**
      * 更新个人信息
@@ -31,14 +31,14 @@ public interface CommonUsedMarketService {
      * 获得商家历史
      *
      * @param name 名字
-     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @return {@link List}<{@link FeedbackPO}>
      */
-    List<TraceFeedbackPO> getHistory(String name);
+    List<FeedbackPO> getHistory(String name);
 
     /**
      * 上诉结果展示
      *
-     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @return {@link List}<{@link FeedbackPO}>
      */
-    List<TraceFeedbackPO> showAppealResult();
+    List<FeedbackPO> showAppealResult();
 }

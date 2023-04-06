@@ -1,10 +1,10 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.dao.impl.TraceFactoryDAO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.AdminService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
@@ -16,7 +16,6 @@ import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.List;
@@ -42,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<TraceFeedbackPO> getAllFeedbackAndComplaint() {
+    public List<FeedbackPO> getAllFeedbackAndComplaint() {
         try {
             return TraceFactoryDAO.getConsumerFeedbackDAO().getAllFeedbackAndComplaint();
         } catch (SQLException e) {
@@ -54,7 +53,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public TraceRealAndOutItemDTO checkItem(String hash1) {
-        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+        ContractTradeService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         ContractStorageService.Item singleItem;
         TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
         try {
@@ -64,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
         } catch (ContractException e) {
             throw new RuntimeException("合约异常");
         }
-        TraceItemPO singleItem1;
+        ItemPO singleItem1;
         try {
             singleItem1 = TraceFactoryDAO.getItemShowDAO().getSingleItem(hash1);
             traceRealAndOutItemDTO.setOutName(singleItem1.getName());
@@ -80,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) {
-        ContractTradeService itemTradeSolidity = TraceInformationSaveDTO.getInstance().getItemTradeSolidity();
+        ContractTradeService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         if (!choice) {
             //申诉判定
             if (result) {
@@ -109,7 +108,7 @@ public class AdminServiceImpl implements AdminService {
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(adminKey);
         ContractTradeService contractTradeService = ContractTradeService.load("0x2a8e6f2d815a4e44de6d5377763228256a3e64d9", client, keyPair);
-        TraceInformationSaveDTO.getInstance().setItemTradeSolidity(contractTradeService);
+        UserSaveDTO.getInstance().setItemTradeSolidity(contractTradeService);
         return Objects.equals(password, content);
     }
 }

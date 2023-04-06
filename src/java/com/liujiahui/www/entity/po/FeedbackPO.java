@@ -6,7 +6,7 @@ package com.liujiahui.www.entity.po;
  * @author 刘家辉
  * @date 2023/03/23
  */
-public class TraceFeedbackPO {
+public class FeedbackPO {
     private String buyer;
     private String comment;
     private String itemHash;

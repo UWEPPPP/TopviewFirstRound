@@ -2,8 +2,8 @@ package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.po.ConsumerPO;
+import com.liujiahui.www.entity.po.UserPO;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -20,7 +20,7 @@ public interface ConsumerAccountDAO {
      * @param userPassword 用户密码
      * @return {@link ConsumerPO}
      */
-    ConsumerPO login(String userAccount, String userPassword);
+    UserPO login(String userAccount, String userPassword);
 
     /**
      * 注册
@@ -36,6 +36,7 @@ public interface ConsumerAccountDAO {
      *
      * @param type   类型
      * @param change 改变
+     * @return {@link Boolean}
      */
     Boolean updatePersonalInformation(String type, String change);
 }

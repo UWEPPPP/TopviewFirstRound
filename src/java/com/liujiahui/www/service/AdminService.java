@@ -1,7 +1,7 @@
 package com.liujiahui.www.service;
 
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public interface AdminService {
     /**
      * 得到所有反馈和投诉
      *
-     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @return {@link List}<{@link FeedbackPO}>
      */
-    List<TraceFeedbackPO> getAllFeedbackAndComplaint();
+    List<FeedbackPO> getAllFeedbackAndComplaint();
 
     /**
      * @param hash1 hash1

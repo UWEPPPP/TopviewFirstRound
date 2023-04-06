@@ -9,12 +9,12 @@ import com.liujiahui.www.service.*;
  * @date 2023/03/25
  */
 public class TraceFactoryService {
-    static public TraceQueryService getTraceQueryService() {
-        return TraceQueryServiceImpl.getInstance();
+    static public QueryByFactorService getTraceQueryService() {
+        return QueryByFactorServiceImpl.getInstance();
     }
 
-    static public TraceRegisterAndLoginService getTraceRegisterAndLoginService() {
-        return TraceRegisterOrLoginServiceImpl.getInstance();
+    static public RegisterOrLoginService getTraceRegisterAndLoginService() {
+        return RegisterOrLoginServiceImpl.getInstance();
     }
 
     public static AdminService getTraceAdminService() {
@@ -33,7 +33,7 @@ public class TraceFactoryService {
         return CommonUsedMarketServiceImpl.getInstance();
     }
 
-    static public TraceContractServiceImpl getTraceContractService() {
-        return new TraceContractServiceImpl();
+    static public ContractInitServiceImpl getTraceContractService() {
+        return new ContractInitServiceImpl();
     }
 }

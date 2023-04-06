@@ -7,6 +7,7 @@ import "TraceStorage.sol";
 
 contract TraceMarket {
     TraceStorage private trace;
+    address public admin;
 
     bool private isProcessing = false;
 
@@ -15,6 +16,12 @@ contract TraceMarket {
 
     constructor(address storageAddress) public {
         trace = TraceStorage(storageAddress);
+        admin = msg.sender;
+    }
+
+    modifier onlyAdmin(){
+        require(msg.sender == admin, "No Right");
+        _;
     }
 
     modifier onlySupplier() {
@@ -165,8 +172,8 @@ contract TraceMarket {
         trace.removeOrRestoreItem(index, msg.sender, choice);
     }
 
-    function handing_feedback(bool chioce, bytes32 hash) external {
-        trace.like_or_report(msg.sender, chioce, hash);
+    function handing_feedback(address seller, bool chioce, bytes32 hash) external {
+        trace.like_or_report(seller, chioce, hash);
     }
 
     function showSupplierToken(address supplier) external view returns (uint256){
@@ -177,9 +184,9 @@ contract TraceMarket {
         return trace.getSingleItem(hash);
     }
 
-    function resolveAppeal(address feedbacker, address supplier, uint256 token) external {
+    function resolveAppeal(address feedbacker, address supplier, uint256 token, bool choice) external onlyAdmin {
         uint256 count = token / 10;
-        trace.appeal(feedbacker, supplier, count);
+        trace.appeal(feedbacker, supplier, count, choice);
     }
 
     function judgeIdentity(address user) private view returns (uint256) {

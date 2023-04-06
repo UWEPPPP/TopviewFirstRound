@@ -11,7 +11,7 @@ import java.math.BigInteger;
  * @author 刘家辉
  * @date 2023/03/19
  */
-public class TraceItemPO {
+public class ItemPO {
     private Integer id;
     private String name;
     private BigInteger price;
@@ -26,7 +26,7 @@ public class TraceItemPO {
     private String seller;
     private int token;
 
-    public TraceItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, String ownerName) {
+    public ItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, String ownerName) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -37,7 +37,7 @@ public class TraceItemPO {
         this.ownerName = ownerName;
     }
 
-    public TraceItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, Boolean isSold) {
+    public ItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, Boolean isSold) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -47,13 +47,13 @@ public class TraceItemPO {
         this.isSold = isSold;
     }
 
-    public TraceItemPO(String name, BigInteger price, String description) {
+    public ItemPO(String name, BigInteger price, String description) {
         this.name = name;
         this.price = price;
         this.description = description;
     }
 
-    public TraceItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, byte[] hashes) {
+    public ItemPO(Integer id, String name, BigInteger price, String description, String owner, BigDecimal index, boolean isSold, byte[] hashes) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -64,7 +64,7 @@ public class TraceItemPO {
         this.hashes = hashes;
     }
 
-    public TraceItemPO() {
+    public ItemPO() {
     }
 
     public String getOwnerName() {

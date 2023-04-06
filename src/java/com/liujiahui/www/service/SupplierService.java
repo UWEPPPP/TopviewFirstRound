@@ -3,8 +3,8 @@ package com.liujiahui.www.service;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 
 import java.util.List;
 import java.util.Map;
@@ -37,9 +37,9 @@ public interface SupplierService {
     /**
      * 显示项
      *
-     * @return {@link Map}<{@link String}, {@link List}<{@link TraceItemPO}>>
+     * @return {@link Map}<{@link String}, {@link List}<{@link ItemPO}>>
      */
-    Map<String, List<TraceItemPO>> showItem();
+    Map<String, List<ItemPO>> showItem();
 
     /**
      * 删除项目
@@ -52,9 +52,9 @@ public interface SupplierService {
     /**
      * 显示反馈
      *
-     * @return {@link List}<{@link TraceFeedbackPO}>
+     * @return {@link List}<{@link FeedbackPO}>
      */
-    List<TraceFeedbackPO> showFeedback();
+    List<FeedbackPO> showFeedback();
 
     /**
      * 展示牌

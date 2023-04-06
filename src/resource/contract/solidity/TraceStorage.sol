@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
-
 import "ERC20.sol";
 
 contract TraceStorage {
     MyToken private erc20;
+    address private logic_address;
 
     struct User {
         uint256 exist;
@@ -60,19 +60,32 @@ contract TraceStorage {
 
     // user_counter 记录每个地址的token质押数量
 
+    modifier onlyLogicContract(){
+        require(msg.sender==logic_address,"No right");
+        _;
+    }
+
     constructor(address erc20Address) public {
         erc20 = MyToken(erc20Address);
     }
 
+    function setLogic(address logicAddress) external {
+        require(logicAddress != address(0),"Invalid address");
+        require(logic_address == address(0), "Logic contract address already set");
+        logic_address=logicAddress;
+    }
+
+
     function getSellerItemsIndex(address owner)
     external
     view
+    onlyLogicContract
     returns (uint256)
     {
         return ItemsBySeller[owner].length;
     }
 
-    function addItem(Item memory items, uint256 counter) external {
+    function addItem(Item memory items, uint256 counter) external onlyLogicContract {
         ItemsBySeller[items.seller].push(items);
         erc20.pledge(items.seller, counter);
         user_counter[items.seller][items.hash] += counter;
@@ -82,6 +95,7 @@ contract TraceStorage {
     function getSingleItem(bytes32 hash)
     external
     view
+    onlyLogicContract
     returns (Item memory item)
     {
         return ItemByHash[hash];
@@ -91,7 +105,7 @@ contract TraceStorage {
         address owner,
         uint256 index,
         uint256 price
-    ) external {
+    ) external onlyLogicContract {
         ItemsBySeller[owner][index].price = price;
         ItemByHash[ItemsBySeller[owner][index].hash].price = price;
     }
@@ -101,7 +115,7 @@ contract TraceStorage {
         uint256 index,
         string memory place,
         uint256 deliver
-    ) external {
+    ) external onlyLogicContract {
         Item storage item = ItemsBySeller[owner][index];
         ItemLifeByHash[item.hash].push(ItemLife(now, place, Status(deliver)));
     }
@@ -109,6 +123,7 @@ contract TraceStorage {
     function getStatus(bytes32 hash)
     external
     view
+    onlyLogicContract
     returns (
         uint256,
         string memory,
@@ -123,6 +138,7 @@ contract TraceStorage {
     function getWholeLife(bytes32 hash)
     external
     view
+    onlyLogicContract
     returns (ItemLife[] memory life)
     {
         return ItemLifeByHash[hash];
@@ -132,13 +148,14 @@ contract TraceStorage {
         uint256 index,
         address owner,
         bool choice
-    ) external {
+    ) external onlyLogicContract {
         ItemsBySeller[owner][index].isRemoved = choice;
     }
 
     function getSellerItem(address seller, uint256 index)
     external
     view
+    onlyLogicContract
     returns (Item memory item)
     {
         return ItemsBySeller[seller][index];
@@ -148,7 +165,7 @@ contract TraceStorage {
         address seller,
         uint256 index,
         bool choice
-    ) external {
+    ) external onlyLogicContract{
         ItemsBySeller[seller][index].isSold = choice;
         ItemByHash[ItemsBySeller[seller][index].hash].isSold = choice;
     }
@@ -156,6 +173,7 @@ contract TraceStorage {
     function getSellerAllItems(address seller)
     external
     view
+    onlyLogicContract
     returns (Item[] memory items)
     {
         return ItemsBySeller[seller];
@@ -164,6 +182,7 @@ contract TraceStorage {
     function getRealItem(bytes32 hash)
     external
     view
+    onlyLogicContract
     returns (
         string memory,
         string memory,
@@ -175,7 +194,7 @@ contract TraceStorage {
     }
 
     //注册初始资产
-    function registerAsset(address userAddress, uint256 chioce) external {
+    function registerAsset(address userAddress, uint256 chioce) external onlyLogicContract{
         address account = userAddress;
         require(UserList[account].exist == 0, "Account already register");
         UserList[account].exist = 1;
@@ -190,15 +209,15 @@ contract TraceStorage {
         Balances[account] = 1000;
     }
 
-    function getBalance(address user) external view returns (uint256) {
+    function getBalance(address user) external view onlyLogicContract returns (uint256) {
         return Balances[user];
     }
 
-    function decreaseBalance(address user, uint256 amount) public {
+    function decreaseBalance(address user, uint256 amount) external onlyLogicContract {
         Balances[user] -= amount;
     }
 
-    function increaseBalance(address user, uint256 amount) public {
+    function increaseBalance(address user, uint256 amount) external onlyLogicContract {
         Balances[user] += amount;
     }
 
@@ -206,7 +225,7 @@ contract TraceStorage {
         address supplier,
         bool choice,
         bytes32 hash
-    ) external {
+    ) external onlyLogicContract {
         uint256 calculate = user_counter[supplier][hash] / 10;
         if (choice) {
             erc20.reward(supplier, calculate);
@@ -221,11 +240,11 @@ contract TraceStorage {
         user_counter[supplier][hash] = 0;
     }
 
-    function getToken(address supplier) external view returns (uint256) {
+    function getToken(address supplier) external view onlyLogicContract returns (uint256) {
         return erc20.balanceOf(supplier);
     }
 
-    function getIdentity(address user) external view returns (uint256) {
+    function getIdentity(address user) external view onlyLogicContract returns (uint256) {
         uint256 identity = UserList[user].identity;
         return identity;
     }
@@ -235,7 +254,7 @@ contract TraceStorage {
         address supplier,
         uint256 calculate,
         bool choice
-    ) external {
+    ) external onlyLogicContract{
         if (choice) {
             erc20.reward(supplier, calculate);
         } else {

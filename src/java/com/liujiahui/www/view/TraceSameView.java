@@ -1,8 +1,8 @@
 package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceEntryController;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public class TraceSameView {
     static Scanner in = new Scanner(System.in);
 
 
-    public static void showItem(List<TraceItemPO> traceItemPos) {
+    public static void showItem(List<ItemPO> itemPos) {
         System.out.println("商品列表");
-        for (TraceItemPO traceItemPo : traceItemPos) {
-            if (traceItemPo.getSold()) {
-                System.out.println("商品种类" + traceItemPo.getType() + "序号" + traceItemPo.getId() + " " + "商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription() + " 已售出 ");
+        for (ItemPO itemPo : itemPos) {
+            if (itemPo.getSold()) {
+                System.out.println("商品种类" + itemPo.getType() + "序号" + itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 已售出 ");
             } else {
-                System.out.println("商品种类" + traceItemPo.getType() + "序号" + traceItemPo.getId() + " " + "商品名称：" + traceItemPo.getName() + " 商品价格：" + traceItemPo.getPrice() + " 商品描述：" + traceItemPo.getDescription() + " 未售出 卖家：" + traceItemPo.getOwnerName());
+                System.out.println("商品种类" + itemPo.getType() + "序号" + itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 未售出 卖家：" + itemPo.getOwnerName());
             }
         }
     }
@@ -76,14 +76,14 @@ public class TraceSameView {
         }
     }
 
-    public static void showHistory(List<TraceFeedbackPO> history) {
+    public static void showHistory(List<FeedbackPO> history) {
         System.out.println("以下为该卖家的历史评价：");
-        for (TraceFeedbackPO traceFeedbackPo : history) {
-            System.out.println("买家：" + traceFeedbackPo.getBuyer());
-            System.out.println("是否推荐：" + traceFeedbackPo.getLikeOrReport());
-            System.out.println("评价：" + traceFeedbackPo.getComment());
-            System.out.println("商品名字： " + traceFeedbackPo.getItemName());
-            System.out.println("商品哈希：" + traceFeedbackPo.getItemHash());
+        for (FeedbackPO feedbackPo : history) {
+            System.out.println("买家：" + feedbackPo.getBuyer());
+            System.out.println("是否推荐：" + feedbackPo.getLikeOrReport());
+            System.out.println("评价：" + feedbackPo.getComment());
+            System.out.println("商品名字： " + feedbackPo.getItemName());
+            System.out.println("商品哈希：" + feedbackPo.getItemHash());
             System.out.println("------------------------------------------------");
         }
     }

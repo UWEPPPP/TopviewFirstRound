@@ -1,12 +1,9 @@
 package com.liujiahui.www.dao.impl;
-
 import com.liujiahui.www.dao.ItemBehindDAO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.FeedbackPO;
+import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.util.ConnectionPool;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
@@ -16,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import static com.liujiahui.www.util.ConnectionPool.close;
 
 /**
@@ -28,7 +24,7 @@ import static com.liujiahui.www.util.ConnectionPool.close;
 public class ItemBehindDAOImpl implements ItemBehindDAO {
 
     @Override
-    public List<TraceItemPO> getAllItem(String accountAddress) throws SQLException {
+    public List<ItemPO> getAllItem(String accountAddress) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "SELECT * FROM user.item_show INNER JOIN user.item_behind" +
                 " ON item_show.hash = item_behind.hash WHERE item_behind.seller_address = ?";
@@ -36,13 +32,14 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceItemPO> list = new ArrayList<>();
+        List<ItemPO> list = new ArrayList<>();
         while (set.next()) {
             BigInteger price = new BigInteger(String.valueOf(set.getBigDecimal("price")));
-            TraceItemPO traceItemPo = new TraceItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_address"), set.getBigDecimal("index"), set.getBoolean("isSold"));
-            traceItemPo.setType(set.getString("type"));
-            list.add(traceItemPo);
+            ItemPO itemPo = new ItemPO(set.getInt("id"), set.getString("name"), price, set.getString("description"), set.getString("owner_address"), set.getBigDecimal("index"), set.getBoolean("isSold"));
+            itemPo.setType(set.getString("type"));
+            list.add(itemPo);
         }
+        close(preparedStatement, set);
         ConnectionPool.getInstance().releaseConnection(connection);
         return list;
     }
@@ -64,24 +61,24 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
     }
 
     @Override
-    public List<TraceFeedbackPO> showAndUpdateFeedback(String accountAddress) throws SQLException {
+    public List<FeedbackPO> showAndUpdateFeedback(String accountAddress) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "SELECT * FROM user.consumer_feedback  WHERE seller_account = ?";
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, accountAddress);
         ResultSet set = preparedStatement.executeQuery();
-        List<TraceFeedbackPO> list = new ArrayList<>();
+        List<FeedbackPO> list = new ArrayList<>();
         while (set.next()) {
-            TraceFeedbackPO traceFeedbackPo = new TraceFeedbackPO();
-            traceFeedbackPo.setBuyer(set.getString("buyer_account"));
-            traceFeedbackPo.setSeller(set.getString("seller_account"));
-            traceFeedbackPo.setLikeOrReport(Objects.equals(set.getString("like_report"), "likes"));
-            traceFeedbackPo.setComment(set.getString("comment"));
-            traceFeedbackPo.setItemName(set.getString("item_name"));
-            traceFeedbackPo.setRead(set.getBoolean("is_read"));
-            traceFeedbackPo.setItemHash(set.getString("item_hash"));
-            list.add(traceFeedbackPo);
+            FeedbackPO feedbackPo = new FeedbackPO();
+            feedbackPo.setBuyer(set.getString("buyer_account"));
+            feedbackPo.setSeller(set.getString("seller_account"));
+            feedbackPo.setLikeOrReport(Objects.equals(set.getString("like_report"), "likes"));
+            feedbackPo.setComment(set.getString("comment"));
+            feedbackPo.setItemName(set.getString("item_name"));
+            feedbackPo.setRead(set.getBoolean("is_read"));
+            feedbackPo.setItemHash(set.getString("item_hash"));
+            list.add(feedbackPo);
         }
         String sql1 = "update user.consumer_feedback set is_read = true where seller_account = ?";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
@@ -118,7 +115,7 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
     }
 
     @Override
-    public TraceItemPO returnItem(String hash) throws SQLException {
+    public ItemPO returnItem(String hash) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "update user.item_behind set isSold = ?,owner_address=seller_address where hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -133,20 +130,20 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
         preparedStatement1.setString(1, hash);
         ResultSet set = preparedStatement1.executeQuery();
         if (set.next()) {
-            TraceItemPO po = new TraceItemPO();
+            ItemPO po = new ItemPO();
             po.setIndex(set.getBigDecimal("index"));
             po.setHashes(hash.getBytes());
             close(preparedStatement, null);
+            ConnectionPool.getInstance().releaseConnection(connection);
             return po;
         }
-        ConnectionPool.getInstance().releaseConnection(connection);
-        return null;
+        throw new RuntimeException("退款失败");
     }
 
     @Override
     public void buyItem(String accountAddress, BigInteger index) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        String account = TraceInformationSaveDTO.getInstance().getContractAccount();
+        String account = UserSaveDTO.getInstance().getContractAccount();
         String sql = "update user.item_behind  set isSold = ?,owner_address = ? where seller_address = ? and `index` = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1, true);

@@ -1,6 +1,6 @@
 package com.liujiahui.www.service;
 
-import com.liujiahui.www.entity.po.TraceItemPO;
+import com.liujiahui.www.entity.po.ItemPO;
 
 import java.util.List;
 
@@ -10,20 +10,20 @@ import java.util.List;
  * @author 刘家辉
  * @date 2023/03/26
  */
-public interface TraceQueryService {
+public interface QueryByFactorService {
     /**
      * 价格区间查询
      *
      * @param max 最大值 min 最小值
      */
-    List<TraceItemPO> queryByPrice(int max, int min, int choice);
+    List<ItemPO> queryByPrice(int max, int min, int choice);
 
     /**
      * 关键字查询
      *
      * @param keyword 关键字
      */
-    List<TraceItemPO> queryByKeyword(String keyword);
+    List<ItemPO> queryByKeyword(String keyword);
 
 
     /**
@@ -31,13 +31,13 @@ public interface TraceQueryService {
      *
      * @param type 类型
      */
-    List<TraceItemPO> queryByType(String type);
+    List<ItemPO> queryByType(String type);
 
     /**
      * 卖家查询
      *
      * @param seller 卖家
      */
-    List<TraceItemPO> queryBySeller(String seller);
+    List<ItemPO> queryBySeller(String seller);
 
 }

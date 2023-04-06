@@ -2,7 +2,7 @@ package com.liujiahui.www.view;
 
 import com.liujiahui.www.controller.TraceAdminController;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
-import com.liujiahui.www.entity.po.TraceFeedbackPO;
+import com.liujiahui.www.entity.po.FeedbackPO;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,8 +19,8 @@ public class TraceAdminView {
     public static void start() {
         System.out.println("你好管理员");
         System.out.println("以下为所有用户的反馈信息");
-        List<TraceFeedbackPO> feedbacks = TraceAdminController.showAllFeedbackAndComplaint();
-        for (TraceFeedbackPO feedback : feedbacks) {
+        List<FeedbackPO> feedbacks = TraceAdminController.showAllFeedbackAndComplaint();
+        for (FeedbackPO feedback : feedbacks) {
             if (feedback.getAppeal()) {
                 System.out.println("------------------------------------");
                 System.out.println("该用户提交的反馈被商家进行了申诉");

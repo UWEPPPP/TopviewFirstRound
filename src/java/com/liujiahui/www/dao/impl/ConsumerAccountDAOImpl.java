@@ -3,12 +3,11 @@ package com.liujiahui.www.dao.impl;
 import com.liujiahui.www.dao.ConsumerAccountDAO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.entity.po.ConsumerPO;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.entity.po.UserPO;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.util.ConnectionPool;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -48,14 +47,14 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
     }
 
     @Override
-    public ConsumerPO login(String userAccount, String userPassword) {
+    public UserPO login(String userAccount, String userPassword) {
         Connection connection;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement preparedStatement;
             preparedStatement = connection.prepareStatement("select * from user.consumer  where user_name=? and password=?");
             ConnectionPool.getInstance().releaseConnection(connection);
-            return entertainUser(userAccount, userPassword, preparedStatement);
+            return  entertainUser(userAccount, userPassword, preparedStatement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -83,7 +82,7 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
     public Boolean updatePersonalInformation(String type, String change) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
-            String name = TraceInformationSaveDTO.getInstance().getUserName();
+            String name = UserSaveDTO.getInstance().getUserName();
             String sql = "update user.consumer set " + type + " = ? where user_name = ?";
             return changeAccount(change, connection, name, sql);
         } catch (SQLException e) {

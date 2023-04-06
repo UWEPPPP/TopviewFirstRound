@@ -1,8 +1,8 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
-import com.liujiahui.www.entity.dto.TraceInformationSaveDTO;
-import com.liujiahui.www.service.TraceContractService;
+import com.liujiahui.www.entity.dto.UserSaveDTO;
+import com.liujiahui.www.service.ContractInitService;
 import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.util.CryptoUtil;
 import org.fisco.bcos.sdk.BcosSDK;
@@ -21,7 +21,7 @@ import java.math.BigInteger;
  * @author 刘家辉
  * @date 2023/03/17
  */
-public class TraceContractServiceImpl implements TraceContractService {
+public class ContractInitServiceImpl implements ContractInitService {
     private static final BcosSDK SDK = BcosSDK.build("config-example.toml");
     private static final Client CLIENT = SDK.getClient(1);
     private static final CryptoSuite CRYPTO_SUITE = CLIENT.getCryptoSuite();
@@ -34,7 +34,7 @@ public class TraceContractServiceImpl implements TraceContractService {
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
         ContractTradeService asset = ContractTradeService.load("0x2a8e6f2d815a4e44de6d5377763228256a3e64d9", CLIENT, keyPair);
-        TraceInformationSaveDTO userInformationSaveDTO = TraceInformationSaveDTO.getInstance();
+        UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
         try {
