@@ -8,8 +8,8 @@ import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.SupplierService;
+import com.liujiahui.www.service.wrapper.ContractProxyService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
-import com.liujiahui.www.service.wrapper.ContractTradeService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
@@ -41,7 +41,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public void addItem(TraceItemBO traceItemBO) {
         UserSaveDTO instance = UserSaveDTO.getInstance();
-        ContractTradeService contractTradeServiceSolidity = instance.getItemTradeSolidity();
+        ContractProxyService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()), traceItemBO.getToken());
         Tuple2<BigInteger, byte[]> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
         contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3));
@@ -104,7 +104,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void removeItem(int index, Boolean choice) {
-        ContractTradeService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
+        ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.removeItem(BigInteger.valueOf(index), choice);
         try {
             new ItemBehindDAOImpl().removeOrRestoredItem(index, choice);

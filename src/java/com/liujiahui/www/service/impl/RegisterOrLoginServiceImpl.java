@@ -33,7 +33,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
         UserPO login;
         String inform = "suppliers";
-        userPassword=CryptoUtil.encryptHexPrivateKey(userPassword,"src/resource/password.txt");
+        userPassword = CryptoUtil.encryptHexPrivateKey(userPassword, "src/resource/password.txt");
         if (!Objects.equals(identity, inform)) {
             login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
         } else {

@@ -1,10 +1,11 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.1;
+
 import "erc20.sol";
 
 contract MyToken is Token {
     // MAX_UINT256 代表最大的 uint256 值
-    uint256 private constant MAX_UINT256 = 2**256 - 1;
+    uint256 private constant MAX_UINT256 = 2 ** 256 - 1;
     // balances 存储每个地址的代币余额
     mapping(address => uint256) public balances;
     // allowed 存储每个地址授权给其他地址的代币数量
@@ -52,14 +53,14 @@ NOTE:
     }
 
     modifier onlyStorage(){
-        require(msg.sender==storage_address,"No right");
+        require(msg.sender == storage_address, "No right");
         _;
     }
 
     function setStorage(address storageAddress) external {
-        require(storageAddress != address(0),"Invalid address");
+        require(storageAddress != address(0), "Invalid address");
         require(storage_address == address(0), "Logic contract address already set");
-        storage_address=storageAddress;
+        storage_address = storageAddress;
     }
 
 
@@ -80,7 +81,8 @@ NOTE:
         balances[admin] -= _value;
         balances[_to] += _value;
         // 触发 Transfer 事件
-        emit Transfer(admin, _to, _value); //solhint-disable-line indent, no-unused-vars
+        emit Transfer(admin, _to, _value);
+        //solhint-disable-line indent, no-unused-vars
         return true;
     }
 
@@ -105,7 +107,8 @@ NOTE:
             allowed[_from][admin] -= _value;
         }
         // 触发 Transfer 事件
-        emit Transfer(_from, _to, _value); //solhint-disable-line indent, no-unused-vars
+        emit Transfer(_from, _to, _value);
+        //solhint-disable-line indent, no-unused-vars
         return true;
     }
 
@@ -136,7 +139,7 @@ NOTE:
     }
 
     //查看被授权的金额
-    function allowance(address _owner,address _spender)
+    function allowance(address _owner, address _spender)
     public
     view
     override
@@ -147,16 +150,16 @@ NOTE:
 
     //注册
     function register(address user) external onlyStorage {
-        approve(user,1000);
+        approve(user, 1000);
         transfer(user, 100);
     }
 
     //质押货币
-    function pledge (address supplier,uint counter) external onlyStorage{
-        transferFrom(supplier,admin,counter);
+    function pledge(address supplier, uint counter) external onlyStorage {
+        transferFrom(supplier, admin, counter);
     }
 
-    function reward(address supplier,uint count) external onlyStorage{
-        transfer(supplier,count);
+    function reward(address supplier, uint count) external onlyStorage {
+        transfer(supplier, count);
     }
 }

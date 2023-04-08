@@ -10,8 +10,8 @@ import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
 import com.liujiahui.www.service.ConsumerService;
 import com.liujiahui.www.service.impl.TraceFactoryService;
-import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.view.TraceConsumeView;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.util.List;
@@ -33,14 +33,14 @@ public class TraceConsumeController {
                 TraceTransactionDTO traceTransactionDTO = CONSUMER_SERVICE.buyItem(item.getOwner(), item.getIndex());
                 if (traceTransactionDTO != null && traceTransactionDTO.getReturnMessage() == null) {
                     String balance = traceTransactionDTO.getBalance();
-                    ContractTradeService.ItemSoldEventResponse itemSoldEventResponse = traceTransactionDTO.getItemSoldEventResponse();
-                    String hash = Numeric.toHexString(itemSoldEventResponse.hash);
+                    Tuple3<String, String, byte[]> itemSoldEventResponse = traceTransactionDTO.getItemSoldEventResponse();
+                    String hash = Numeric.toHexString(itemSoldEventResponse.getValue3());
                     TraceTransactionVO traceTransactionVO = new TraceTransactionVO();
                     traceTransactionVO.setName(item.getName());
                     traceTransactionVO.setHash(hash);
                     traceTransactionVO.setBalance(balance);
-                    traceTransactionVO.setBuyer(itemSoldEventResponse.buyer);
-                    traceTransactionVO.setSeller(itemSoldEventResponse.seller);
+                    traceTransactionVO.setBuyer(itemSoldEventResponse.getValue2());
+                    traceTransactionVO.setSeller(itemSoldEventResponse.getValue1());
                     showResult(traceTransactionVO);
                 }
             }

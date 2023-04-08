@@ -1,11 +1,15 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "ERC20.sol";
 
 contract TraceStorage {
     MyToken private erc20;
     address private logic_address;
+    address private admin;
+    address private proxy;
+    string private password_;
 
     struct User {
         uint256 exist;
@@ -61,19 +65,30 @@ contract TraceStorage {
     // user_counter 记录每个地址的token质押数量
 
     modifier onlyLogicContract(){
-        require(msg.sender==logic_address,"No right");
+        if (logic_address != address(0)) {
+            require(msg.sender == logic_address || msg.sender == proxy, "No right");
+        }
         _;
     }
 
     constructor(address erc20Address) public {
         erc20 = MyToken(erc20Address);
+        admin = msg.sender;
         erc20.setStorage(address(this));
     }
 
-    function setLogic(address logicAddress) external {
-        require(logicAddress != address(0),"Invalid address");
-        require(logic_address == address(0), "Logic contract address already set");
-        logic_address=logicAddress;
+    function setLogic(address logicAddress, string memory password) external {
+        require(logicAddress != address(0), "Invalid");
+        string memory test = password_;
+        if (logic_address == address(0) || proxy == address(0)) {
+            password_ = password;
+            logic_address = logicAddress;
+        } else {
+            if (proxy == address(0)) {
+                proxy = logic_address;
+            }
+            require(keccak256(abi.encodePacked(password)) == keccak256(abi.encodePacked(test)), "No Right");
+        }
     }
 
 
@@ -88,9 +103,9 @@ contract TraceStorage {
 
     function addItem(Item memory items, uint256 counter) external onlyLogicContract {
         ItemsBySeller[items.seller].push(items);
-        erc20.pledge(items.seller, counter);
         user_counter[items.seller][items.hash] += counter;
         ItemByHash[items.hash] = items;
+        erc20.pledge(items.seller, counter);
     }
 
     function getSingleItem(bytes32 hash)
@@ -166,7 +181,7 @@ contract TraceStorage {
         address seller,
         uint256 index,
         bool choice
-    ) external onlyLogicContract{
+    ) external onlyLogicContract {
         ItemsBySeller[seller][index].isSold = choice;
         ItemByHash[ItemsBySeller[seller][index].hash].isSold = choice;
     }
@@ -195,9 +210,10 @@ contract TraceStorage {
     }
 
     //注册初始资产
-    function registerAsset(address userAddress, uint256 chioce) external onlyLogicContract{
+    function registerAsset(address userAddress, uint256 chioce) external onlyLogicContract {
+        require(UserList[userAddress].exist == 0, "Account already register");
         address account = userAddress;
-        require(UserList[account].exist == 0, "Account already register");
+        Balances[account] = 1000;
         UserList[account].exist = 1;
         if (chioce == 1) {
             UserList[account].identity = 1;
@@ -207,7 +223,7 @@ contract TraceStorage {
             UserList[account].identity = 2;
             //消费者
         }
-        Balances[account] = 1000;
+
     }
 
     function getBalance(address user) external view onlyLogicContract returns (uint256) {
@@ -228,17 +244,18 @@ contract TraceStorage {
         bytes32 hash
     ) external onlyLogicContract {
         uint256 calculate = user_counter[supplier][hash] / 10;
+        returnToken(supplier, hash);
         if (choice) {
             erc20.reward(supplier, calculate);
         } else {
             user_counter[supplier][hash] -= calculate;
         }
-        returnToken(supplier, hash);
+
     }
 
     function returnToken(address supplier, bytes32 hash) internal {
-        erc20.reward(supplier, user_counter[supplier][hash]);
         user_counter[supplier][hash] = 0;
+        erc20.reward(supplier, user_counter[supplier][hash]);
     }
 
     function getToken(address supplier) external view onlyLogicContract returns (uint256) {
@@ -255,12 +272,12 @@ contract TraceStorage {
         address supplier,
         uint256 calculate,
         bool choice
-    ) external onlyLogicContract{
+    ) external onlyLogicContract {
+        Balances[feedbacker] -= calculate;
         if (choice) {
             erc20.reward(supplier, calculate);
         } else {
             erc20.pledge(supplier, calculate);
         }
-        Balances[feedbacker] -= calculate;
     }
 }

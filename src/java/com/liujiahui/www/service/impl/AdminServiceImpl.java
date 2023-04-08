@@ -6,13 +6,15 @@ import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.AdminService;
+import com.liujiahui.www.service.wrapper.ContractProxyService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
-import com.liujiahui.www.service.wrapper.ContractTradeService;
 import com.liujiahui.www.util.CryptoUtil;
 import org.fisco.bcos.sdk.BcosSDK;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
+import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
@@ -53,16 +55,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public TraceRealAndOutItemDTO checkItem(String hash1) {
-        ContractTradeService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
+        ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         ContractStorageService.Item singleItem;
         TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
-        try {
-            singleItem = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
-            traceRealAndOutItemDTO.setRealName(singleItem.name);
-            traceRealAndOutItemDTO.setRealDescription(singleItem.description);
-        } catch (ContractException e) {
-            throw new RuntimeException("合约异常");
-        }
+        TransactionReceipt receipt = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
+        Tuple1<ContractStorageService.Item> getSingleItemOutput = itemTradeSolidity.getGetSingleItemOutput(receipt);
+        singleItem = getSingleItemOutput.getValue1();
+        traceRealAndOutItemDTO.setRealName(singleItem.name);
+        traceRealAndOutItemDTO.setRealDescription(singleItem.description);
         ItemPO singleItem1;
         try {
             singleItem1 = TraceFactoryDAO.getItemShowDAO().getSingleItem(hash1);
@@ -79,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice) {
-        ContractTradeService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
+        ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         if (!choice) {
             //申诉判定
             if (result) {
@@ -107,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
         Client client = sdk.getClient(1);
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(adminKey);
-        ContractTradeService contractTradeService = ContractTradeService.load("0xda2e706a91e057e35947abda735736c1f6042b2b", client, keyPair);
+        ContractProxyService contractTradeService = ContractProxyService.load("0xc26871383a3bf14fe2965e3b917c12c433ea3545", client, keyPair);
         UserSaveDTO.getInstance().setItemTradeSolidity(contractTradeService);
         return Objects.equals(password, content);
     }

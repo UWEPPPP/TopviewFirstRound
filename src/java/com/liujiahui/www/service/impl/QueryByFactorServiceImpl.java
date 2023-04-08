@@ -22,7 +22,7 @@ public class QueryByFactorServiceImpl implements QueryByFactorService {
 
     @Override
     public List<ItemPO> queryByPrice(int max, int min, int choice) {
-        return TraceFactoryDAO.getItemShowDAO().queryByPrice(max, min, choice==1?"asc":"desc");
+        return TraceFactoryDAO.getItemShowDAO().queryByPrice(max, min, choice == 1 ? "asc" : "desc");
     }
 
     @Override

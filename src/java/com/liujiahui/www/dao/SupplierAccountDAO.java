@@ -2,7 +2,6 @@ package com.liujiahui.www.dao;
 
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.po.ConsumerPO;
-import com.liujiahui.www.entity.po.SupplierPO;
 import com.liujiahui.www.entity.po.UserPO;
 import com.liujiahui.www.util.ConnectionPool;
 

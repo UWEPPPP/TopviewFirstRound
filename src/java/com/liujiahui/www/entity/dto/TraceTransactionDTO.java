@@ -1,20 +1,20 @@
 package com.liujiahui.www.entity.dto;
 
-import com.liujiahui.www.service.wrapper.ContractTradeService;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
 
 /**
  * @author LiuJiaHui
  */
 public class TraceTransactionDTO {
-    private ContractTradeService.ItemSoldEventResponse itemSoldEventResponse;
+    private Tuple3<String, String, byte[]> itemSoldEventResponse;
     private String balance;
     private String returnMessage;
 
-    public ContractTradeService.ItemSoldEventResponse getItemSoldEventResponse() {
+    public Tuple3<String, String, byte[]> getItemSoldEventResponse() {
         return itemSoldEventResponse;
     }
 
-    public void setItemSoldEventResponse(ContractTradeService.ItemSoldEventResponse itemSoldEventResponse) {
+    public void setItemSoldEventResponse(Tuple3<String, String, byte[]> itemSoldEventResponse) {
         this.itemSoldEventResponse = itemSoldEventResponse;
     }
 

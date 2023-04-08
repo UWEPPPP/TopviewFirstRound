@@ -107,7 +107,7 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
         ConnectionPool.getInstance().releaseConnection(connection);
         close(preparedStatement, null);
         close(preparedStatement1, null);
-        if(result == 0 || result1 == 0){
+        if (result == 0 || result1 == 0) {
             throw new RuntimeException("更新失败");
         }
     }

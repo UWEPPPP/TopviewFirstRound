@@ -4,8 +4,6 @@ import com.liujiahui.www.dao.SupplierAccountDAO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
-import com.liujiahui.www.entity.po.ConsumerPO;
-import com.liujiahui.www.entity.po.SupplierPO;
 import com.liujiahui.www.entity.po.UserPO;
 import com.liujiahui.www.service.impl.TraceFactoryService;
 import com.liujiahui.www.util.ConnectionPool;

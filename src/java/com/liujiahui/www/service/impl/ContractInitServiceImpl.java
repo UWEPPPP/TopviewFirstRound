@@ -3,12 +3,14 @@ package com.liujiahui.www.service.impl;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.service.ContractInitService;
-import com.liujiahui.www.service.wrapper.ContractTradeService;
+import com.liujiahui.www.service.wrapper.ContractProxyService;
 import com.liujiahui.www.util.CryptoUtil;
 import org.fisco.bcos.sdk.BcosSDK;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
+import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderService;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -33,28 +35,25 @@ public class ContractInitServiceImpl implements ContractInitService {
         CryptoKeyPair keyPair = CRYPTO_SUITE.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
-        ContractTradeService asset = ContractTradeService.load("0xda2e706a91e057e35947abda735736c1f6042b2b", CLIENT, keyPair);
+        ContractProxyService asset = ContractProxyService.load("0xc26871383a3bf14fe2965e3b917c12c433ea3545", CLIENT, keyPair);
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
-        try {
-            return asset.getBalance();
-        } catch (ContractException e) {
-            e.printStackTrace();
-            return null;
-        }
+        TransactionReceipt balance = asset.getBalance();
+        Tuple1<BigInteger> getBalanceOutput = asset.getGetBalanceOutput(balance);
+        return getBalanceOutput.getValue1();
     }
 
     @Override
     public TraceAccountOnContractDTO initByContract(String table) {
         CryptoKeyPair cryptoKeyPair = CRYPTO_SUITE.createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractTradeService asset = ContractTradeService.load("0xda2e706a91e057e35947abda735736c1f6042b2b", CLIENT, cryptoKeyPair);
+        ContractProxyService asset = ContractProxyService.load("0xc26871383a3bf14fe2965e3b917c12c433ea3545", CLIENT, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
-            asset.registerAsset(BigInteger.valueOf(1));
+            asset.register(BigInteger.valueOf(1));
         } else {
-            asset.registerAsset(BigInteger.valueOf(2));
+            asset.register(BigInteger.valueOf(2));
         }
         String encryptHexPrivateKey;
         encryptHexPrivateKey = CryptoUtil.encryptHexPrivateKey(cryptoKeyPair.getHexPrivateKey(), "src/resource/password.txt");

@@ -54,7 +54,7 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
             PreparedStatement preparedStatement;
             preparedStatement = connection.prepareStatement("select * from user.consumer  where user_name=? and password=?");
             ConnectionPool.getInstance().releaseConnection(connection);
-            return  entertainUser(userAccount, userPassword, preparedStatement);
+            return entertainUser(userAccount, userPassword, preparedStatement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

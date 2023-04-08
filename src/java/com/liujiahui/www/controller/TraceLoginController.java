@@ -56,7 +56,7 @@ public class TraceLoginController {
      * +
      */
     public void loginOrderByIdentity(int choice1) {
-            new TraceLoginView().login(choice1==1);
+        new TraceLoginView().login(choice1 == 1);
     }
 
 
