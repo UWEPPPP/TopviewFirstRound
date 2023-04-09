@@ -6,7 +6,7 @@ import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.SupplierService;
-import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.factory.TraceFactoryService;
 import com.liujiahui.www.view.TraceSupplyView;
 
 import java.math.BigInteger;
@@ -18,7 +18,7 @@ import java.util.List;
  * @author 刘家辉
  * @date 2023/03/25
  */
-public class TraceSupplyController {
+public class SupplyController {
     private static final SupplierService marketService = TraceFactoryService.getSupplierUsedService();
 
     public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) {

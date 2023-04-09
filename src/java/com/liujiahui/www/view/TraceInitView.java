@@ -1,8 +1,7 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceAdminController;
-import com.liujiahui.www.controller.TraceLoginController;
-import com.liujiahui.www.controller.TraceRegisterController;
+import com.liujiahui.www.controller.AdminController;
+import com.liujiahui.www.controller.LoginAndRegisterController;
 
 import java.util.Scanner;
 
@@ -26,11 +25,11 @@ public class TraceInitView {
                 System.out.println("您是供应商还是消费者？(1 or 2)");
                 int choice1 = in.nextInt();
                 if (choice1 == 1 || choice1 == 2) {
-                    new TraceLoginController().loginOrderByIdentity(choice1);
+                    new LoginAndRegisterController().loginOrderByIdentity(choice1);
                 } else if (choice1 == 369) {
                     System.out.println("请输入管理员密码：");
                     String password = in.next();
-                    if (TraceAdminController.adminLogin(password)) {
+                    if (AdminController.adminLogin(password)) {
                         System.out.println("登录成功");
                         TraceAdminView.start();
                         TraceInitView.start();
@@ -44,7 +43,7 @@ public class TraceInitView {
                 System.out.println("您打算注册供应商账号还是消费者账号？(1 or 2)");
                 int choice2 = in.nextInt();
                 if (choice2 == 1 || choice2 == 2) {
-                    new TraceRegisterController().registerOrderByIdentity(choice2);
+                    new LoginAndRegisterController().registerOrderByIdentity(choice2);
                 } else {
                     System.out.println("输入错误，请重新输入！");
                 }

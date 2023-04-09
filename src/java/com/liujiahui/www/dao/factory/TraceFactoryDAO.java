@@ -1,7 +1,8 @@
-package com.liujiahui.www.dao.impl;
+package com.liujiahui.www.dao.factory;
 
 import com.liujiahui.www.dao.ConsumerAccountDAO;
 import com.liujiahui.www.dao.ConsumerFeedbackDAO;
+import com.liujiahui.www.dao.impl.*;
 
 /**
  * dao工厂

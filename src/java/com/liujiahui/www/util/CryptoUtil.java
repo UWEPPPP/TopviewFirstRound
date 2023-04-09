@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 
 /**
  * 加密工具 用于加密私钥
@@ -18,7 +17,6 @@ import java.util.logging.Logger;
  * @date 2023/03/25
  */
 public class CryptoUtil {
-    private static final Logger logger = Logger.getLogger(CryptoUtil.class.getName());
     private static SecretKey key;
 
     public static SecretKey generateSecretKey(String password) {
@@ -43,23 +41,20 @@ public class CryptoUtil {
      *
      * @param privateKey 私钥
      * @return {@link String}
-     * @throws NoSuchAlgorithmException  没有这样算法异常
-     * @throws NoSuchPaddingException    没有这样填充例外
-     * @throws InvalidKeyException       无效关键例外
-     * @throws IllegalBlockSizeException 非法块大小异常
-     * @throws BadPaddingException       坏填充例外
      */
     public static String encryptHexPrivateKey(String privateKey, String path) {
+        String result;
         SecretKey aes = generateSecretKey(readPassword(path));
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, aes);
             byte[] encryptedBytes = cipher.doFinal(privateKey.getBytes(StandardCharsets.UTF_8));
-            return bytesToHex(encryptedBytes);
+            result = bytesToHex(encryptedBytes);
         } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException |
                  InvalidKeyException e) {
             throw new RuntimeException(e);
         }
+        return result;
     }
 
     public static String decryptHexPrivateKey(String privateKey, String path) {
@@ -77,9 +72,10 @@ public class CryptoUtil {
     }
 
     /**
+     * 字节十六进制
      * 将字节数组转换为十六进制字符串（hex）
      *
-     * @param bytes
+     * @param bytes 字节
      * @return {@link String}
      */
     private static String bytesToHex(byte[] bytes) {
@@ -97,7 +93,7 @@ public class CryptoUtil {
     /**
      * 十六进制转换为字节数组
      *
-     * @param hex
+     * @param hex 十六进制
      * @return {@link byte[]}
      */
     private static byte[] hexToBytes(String hex) {

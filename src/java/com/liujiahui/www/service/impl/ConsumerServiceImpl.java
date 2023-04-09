@@ -2,7 +2,7 @@ package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
 import com.liujiahui.www.dao.impl.ItemBehindDAOImpl;
-import com.liujiahui.www.dao.impl.TraceFactoryDAO;
+import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
@@ -154,9 +154,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public void returnItem(String hash2) {
         try {
-            ItemPO itemPO = new ItemBehindDAOImpl().returnItem(hash2);
+            ItemPO item = new ItemBehindDAOImpl().returnItem(hash2);
             ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
-            itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2), itemPO.getIndex().toBigInteger());
+            itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2), item.getIndex().toBigInteger());
         } catch (SQLException e) {
             e.printStackTrace();
         }

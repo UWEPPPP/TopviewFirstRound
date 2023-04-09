@@ -9,7 +9,7 @@ import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceItemStatusVO;
 import com.liujiahui.www.entity.vo.TraceTransactionVO;
 import com.liujiahui.www.service.ConsumerService;
-import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.factory.TraceFactoryService;
 import com.liujiahui.www.view.TraceConsumeView;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
 import org.fisco.bcos.sdk.utils.Numeric;
@@ -24,7 +24,7 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
  * @author 刘家辉
  * @date 2023/03/19
  */
-public class TraceConsumeController {
+public class ConsumeController {
     private static final ConsumerService CONSUMER_SERVICE = TraceFactoryService.getConsumeUsedService();
 
     public void buy(int id, List<ItemPO> items) {

@@ -1,5 +1,6 @@
 package com.liujiahui.www.service.impl;
 
+import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.dao.impl.*;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
@@ -11,6 +12,7 @@ import com.liujiahui.www.service.SupplierService;
 import com.liujiahui.www.service.wrapper.ContractProxyService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -127,13 +129,9 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public Integer showToken() {
         UserSaveDTO instance = UserSaveDTO.getInstance();
-        String contractAccount = instance.getContractAccount();
-        try {
-            return instance.getItemTradeSolidity().showSupplierToken(contractAccount).intValue();
-        } catch (ContractException e) {
-            e.printStackTrace();
-            return null;
-        }
+        TransactionReceipt transactionReceipt = instance.getItemTradeSolidity().showSupplierToken();
+        Tuple1<BigInteger> getBalanceOutput = instance.getItemTradeSolidity().getGetBalanceOutput(transactionReceipt);
+        return getBalanceOutput.getValue1().intValue();
     }
 
     @Override

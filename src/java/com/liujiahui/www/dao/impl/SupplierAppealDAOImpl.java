@@ -97,7 +97,7 @@ public class SupplierAppealDAOImpl implements SupplierAppealDAO {
     @Override
     public void resolveBadLikeOrAppeal(String hash, Boolean result) {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             String sql = "update user.supplier_appeal set appeal_result = ?,admin_is_read = true where item_hash = ?";

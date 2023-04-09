@@ -1,8 +1,7 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceEntryController;
-import com.liujiahui.www.controller.TraceQueryController;
-import com.liujiahui.www.controller.TraceSupplyController;
+import com.liujiahui.www.controller.CommonUsedController;
+import com.liujiahui.www.controller.SupplyController;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 
@@ -20,8 +19,8 @@ import java.util.Scanner;
  */
 public class TraceSupplyView {
 
-    private static final TraceEntryController USER_ENTRY_CONTROLLER = new TraceEntryController();
-    public static TraceSupplyController traceSupplyController = new TraceSupplyController();
+    private static final CommonUsedController USER_ENTRY_CONTROLLER = new CommonUsedController();
+    public static SupplyController supplyController = new SupplyController();
     static Scanner in = new Scanner(System.in);
 
     public static void registerItem() {
@@ -60,8 +59,8 @@ public class TraceSupplyView {
         String location = in.nextLine();
         System.out.println("请输入生产完后存储地点");
         String storage = in.nextLine();
-        TraceSupplyController traceSupplyController = new TraceSupplyController();
-        traceSupplyController.registerItem(name, price, description, realName, realDescription, type, location, storage, token);
+        SupplyController supplyController = new SupplyController();
+        supplyController.registerItem(name, price, description, realName, realDescription, type, location, storage, token);
         System.out.println("商品上架成功");
     }
 
@@ -84,7 +83,7 @@ public class TraceSupplyView {
                 System.out.println("3:按照商品种类筛选");
                 System.out.println("4:按照商家筛选");
                 int choice1 = in.nextInt();
-                TraceQueryController traceQueryController = new TraceQueryController();
+                CommonUsedController traceQueryController = new CommonUsedController();
                 List<ItemPO> traceItem = new ArrayList<>();
                 traceItem = getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
                 showItem(traceItem);
@@ -93,7 +92,7 @@ public class TraceSupplyView {
         }
     }
 
-    static List<ItemPO> getTraceItemSameWay(Scanner in, int choice1, TraceQueryController traceQueryController, List<ItemPO> traceItem) {
+    static List<ItemPO> getTraceItemSameWay(Scanner in, int choice1, CommonUsedController traceQueryController, List<ItemPO> traceItem) {
         switch (choice1) {
             case 1:
                 System.out.println("请输入你希望的最高价位");
@@ -156,7 +155,7 @@ public class TraceSupplyView {
                 String description = in.nextLine();
                 System.out.println("请输入新价格");
                 String price = in.nextLine();
-                traceSupplyController.updateItem(index, items.get("Outside"), name, description, price);
+                supplyController.updateItem(index, items.get("Outside"), name, description, price);
                 System.out.println("更新成功");
                 break;
             case 2:
@@ -166,7 +165,7 @@ public class TraceSupplyView {
                 String location = in.next();
                 System.out.println("请输入物流状态（未发货=0 运送中=1 已送达=2）");
                 int logistics = in.nextInt();
-                traceSupplyController.updateLogistics(id, location, logistics);
+                supplyController.updateLogistics(id, location, logistics);
                 System.out.println("更新成功");
                 break;
             case 3:
@@ -174,7 +173,7 @@ public class TraceSupplyView {
                 int index1 = in.nextInt();
                 System.out.println("下架还是恢复上架(输入true or false)");
                 boolean status = in.nextBoolean();
-                traceSupplyController.removeItem(index1, status);
+                supplyController.removeItem(index1, status);
                 System.out.println("操作成功");
                 break;
             default:
@@ -213,7 +212,7 @@ public class TraceSupplyView {
             String hash = in.next();
             System.out.println("请输入申诉内容");
             String comment = in.next();
-            traceSupplyController.appealFeedback(hash, comment);
+            supplyController.appealFeedback(hash, comment);
             System.out.println("已经申诉，等待管理员处理");
         }
     }

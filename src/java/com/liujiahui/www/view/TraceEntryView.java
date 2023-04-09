@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceEntryController;
+import com.liujiahui.www.controller.CommonUsedController;
 import com.liujiahui.www.entity.vo.TraceAfterLoginVO;
 
 import java.util.Scanner;
@@ -37,8 +37,8 @@ public class TraceEntryView {
         System.out.println("0.退出登录");
         int choice = in.nextInt();
         if (choice != 0) {
-            TraceEntryController traceEntryController = new TraceEntryController();
-            traceEntryController.entry(choice);
+            CommonUsedController commonUsedController = new CommonUsedController();
+            commonUsedController.entry(choice);
         } else {
             System.out.println("退出登录成功");
             System.out.println("即将返回登录界面");

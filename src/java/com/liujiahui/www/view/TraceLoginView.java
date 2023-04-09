@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceLoginController;
+import com.liujiahui.www.controller.LoginAndRegisterController;
 
 import java.util.Scanner;
 
@@ -30,7 +30,7 @@ public class TraceLoginView {
         System.out.println("请输入您的密码：");
         String password = in.next();
         String paddedStr = String.format("%-32s", password).replace(' ', '0');
-        TraceLoginController traceLoginController = new TraceLoginController();
-        traceLoginController.login(account, paddedStr, choice);
+        LoginAndRegisterController loginAndRegisterController = new LoginAndRegisterController();
+        loginAndRegisterController.login(account, paddedStr, choice);
     }
 }

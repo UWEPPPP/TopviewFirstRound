@@ -20,8 +20,10 @@ public interface AdminService {
     List<FeedbackPO> getAllFeedbackAndComplaint();
 
     /**
+     * 检查项目
+     *
      * @param hash1 hash1
-     * @return
+     * @return {@link TraceRealAndOutItemDTO}
      */
     TraceRealAndOutItemDTO checkItem(String hash1);
 
@@ -29,13 +31,15 @@ public interface AdminService {
      * 解决上诉
      *
      * @param hash1  hash1
-     * @param result
-     * @param choice
+     * @param result 结果
+     * @param choice 选择
      */
     void resolveBadLikeOrAppeal(String hash1, Boolean result, Boolean choice);
 
     /**
-     * @param password
+     * 登录
+     *
+     * @param password 密码
      * @return {@link Boolean}
      */
     Boolean login(String password);

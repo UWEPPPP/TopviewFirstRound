@@ -9,6 +9,12 @@ import com.liujiahui.www.entity.po.ItemPO;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 供应商服务
+ *
+ * @author 刘家辉
+ * @date 2023/04/09
+ */
 public interface SupplierService {
 
     /**

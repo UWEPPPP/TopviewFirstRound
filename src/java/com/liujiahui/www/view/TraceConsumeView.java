@@ -1,8 +1,7 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceConsumeController;
-import com.liujiahui.www.controller.TraceEntryController;
-import com.liujiahui.www.controller.TraceQueryController;
+import com.liujiahui.www.controller.ConsumeController;
+import com.liujiahui.www.controller.CommonUsedController;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
@@ -33,13 +32,13 @@ public class TraceConsumeView {
         System.out.println("3.查看产品的生命周期");
         System.out.println("4.商品退货");
         Scanner in = new Scanner(System.in);
-        TraceConsumeController traceConsumeController = new TraceConsumeController();
+        ConsumeController consumeController = new ConsumeController();
         int choice = in.nextInt();
         switch (choice) {
             case 1:
                 System.out.println("请输入商品hash");
                 String hash = in.next();
-                TraceTransactionVO check = traceConsumeController.checkByHash(hash);
+                TraceTransactionVO check = consumeController.checkByHash(hash);
                 System.out.println("根据hash " + check.getHash() + "查到的产品信息是");
                 System.out.println("名字" + check.getName());
                 System.out.println("详情" + check.getDescription());
@@ -57,7 +56,7 @@ public class TraceConsumeView {
                             case 1:
                                 System.out.println("说几句简短的话鼓励商家吧~");
                                 String comment = in.next();
-                                traceConsumeController.feedback(1, check.getSeller(), comment, check.getHash());
+                                consumeController.feedback(1, check.getSeller(), comment, check.getHash());
                                 System.out.println("感谢您的好评");
                                 break;
                             case 2:
@@ -70,7 +69,7 @@ public class TraceConsumeView {
                         System.out.println("鉴定为假品，进行举报");
                         System.out.println("请描述情况");
                         String description = in.next();
-                        traceConsumeController.feedback(2, check.getSeller(), description, check.getHash());
+                        consumeController.feedback(2, check.getSeller(), description, check.getHash());
                         System.out.println("感谢您的举报");
                         System.out.println("管理员会尽快处理");
                         break;
@@ -80,7 +79,7 @@ public class TraceConsumeView {
             case 2:
                 System.out.println("请输入商品hash");
                 String hash1 = in.next();
-                TraceItemStatusVO traceItemStatusVO = traceConsumeController.checkStatus(hash1);
+                TraceItemStatusVO traceItemStatusVO = consumeController.checkStatus(hash1);
                 System.out.println("产品状态如下");
                 System.out.println("时间:" + traceItemStatusVO.getDate());
                 System.out.println("状态:" + traceItemStatusVO.getStatus());
@@ -89,7 +88,7 @@ public class TraceConsumeView {
             case 3:
                 System.out.println("请输入商品hash");
                 String hash3 = in.next();
-                List<TraceItemStatusDTO> life = traceConsumeController.checkLife(hash3);
+                List<TraceItemStatusDTO> life = consumeController.checkLife(hash3);
                 System.out.println("产品生命周期如下");
                 for (TraceItemStatusDTO vo : life) {
                     System.out.println("时间:" + vo.getDate());
@@ -102,7 +101,7 @@ public class TraceConsumeView {
                 System.out.println("退货最晚时间为购买的7天后");
                 System.out.println("请输入商品hash");
                 String hash2 = in.next();
-                traceConsumeController.returnItem(hash2);
+                consumeController.returnItem(hash2);
                 System.out.println("退货成功");
                 break;
             default:
@@ -122,7 +121,7 @@ public class TraceConsumeView {
 
     public static void showAndBuyItemByConsumer(List<ItemPO> traceItems) {
         showItem(traceItems);
-        TraceEntryController traceEntryController = new TraceEntryController();
+        CommonUsedController commonUsedController = new CommonUsedController();
         System.out.println("1:购买产品");
         System.out.println("2:查看卖家的历史");
         System.out.println("3:按照条件筛选产品");
@@ -133,13 +132,13 @@ public class TraceConsumeView {
             case 1:
                 System.out.println("请输入商品id");
                 int id = in.nextInt();
-                TraceConsumeController traceConsumeController = new TraceConsumeController();
-                traceConsumeController.buy(id, traceItems);
+                ConsumeController consumeController = new ConsumeController();
+                consumeController.buy(id, traceItems);
                 break;
             case 2:
                 System.out.println("请输入卖家的名字");
                 String name = in.next();
-                traceEntryController.showHistory(name);
+                commonUsedController.showHistory(name);
                 break;
             case 3:
                 System.out.println("1:按照价格筛选");
@@ -147,7 +146,7 @@ public class TraceConsumeView {
                 System.out.println("3:按照商品种类筛选");
                 System.out.println("4:按照商家筛选");
                 int choice1 = in.nextInt();
-                TraceQueryController traceQueryController = new TraceQueryController();
+                CommonUsedController traceQueryController = new CommonUsedController();
                 List<ItemPO> traceItem = new ArrayList<>();
                 traceItem = TraceSupplyView.getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
                 showItem(traceItem);

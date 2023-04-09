@@ -5,7 +5,7 @@ import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.UserPO;
-import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.factory.TraceFactoryService;
 import com.liujiahui.www.util.ConnectionPool;
 
 import java.sql.Connection;
@@ -61,7 +61,7 @@ public class SupplierAccountDAOImpl implements SupplierAccountDAO {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             SupplierAccountDAO.getaExist("suppliers", traceRegisterBO.getName(), connection);
-            TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceContractService().initByContract("suppliers");
+            TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceRegisterAndLoginService().initByContract("suppliers");
             String sql = "insert into user.suppliers(user_name, gender, phone_number, `password`,private_key,account_address,address,likes,reports) values(?,?,?,?,?,?,?,?,?)";
             PreparedStatement preparedStatement = ConsumerAccountDAOImpl.setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
             preparedStatement.setString(7, traceRegisterBO.getAddress());

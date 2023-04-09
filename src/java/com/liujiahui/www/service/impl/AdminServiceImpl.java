@@ -1,6 +1,6 @@
 package com.liujiahui.www.service.impl;
 
-import com.liujiahui.www.dao.impl.TraceFactoryDAO;
+import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
@@ -15,7 +15,6 @@ import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
-import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.math.BigInteger;

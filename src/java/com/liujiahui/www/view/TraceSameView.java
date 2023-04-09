@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceEntryController;
+import com.liujiahui.www.controller.CommonUsedController;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
@@ -15,7 +15,7 @@ import java.util.Scanner;
  * @date 2023/03/25
  */
 public class TraceSameView {
-    private static final TraceEntryController USER_ENTRY_CONTROLLER = new TraceEntryController();
+    private static final CommonUsedController USER_ENTRY_CONTROLLER = new CommonUsedController();
     static Scanner in = new Scanner(System.in);
 
 
@@ -59,8 +59,8 @@ public class TraceSameView {
         }
         if (choice != 4) {
             String change = in.next();
-            TraceEntryController traceEntryController = new TraceEntryController();
-            traceEntryController.changeUser(choice, change);
+            CommonUsedController commonUsedController = new CommonUsedController();
+            commonUsedController.changeUser(choice, change);
         }
         System.out.println("修改结束,是否继续修改？");
         System.out.println("1.是");

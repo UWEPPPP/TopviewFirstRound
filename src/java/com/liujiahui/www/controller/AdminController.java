@@ -3,7 +3,7 @@ package com.liujiahui.www.controller;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.service.AdminService;
-import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.factory.TraceFactoryService;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author 刘家辉
  * @date 2023/03/31
  */
-public class TraceAdminController {
+public class AdminController {
     private static final AdminService ADMIN_SERVICE = TraceFactoryService.getTraceAdminService();
 
     public static Boolean adminLogin(String password) {

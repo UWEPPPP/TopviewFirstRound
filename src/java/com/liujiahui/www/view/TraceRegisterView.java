@@ -1,6 +1,6 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.TraceRegisterController;
+import com.liujiahui.www.controller.LoginAndRegisterController;
 import com.liujiahui.www.entity.dto.TraceRegisterDTO;
 
 import java.util.Scanner;
@@ -36,8 +36,7 @@ public class TraceRegisterView {
         String phone = in.next();
         TraceRegisterDTO traceRegisterDTO = showRegister(name, gender, phone);
         traceRegisterDTO.setChoice(false);
-        TraceRegisterController traceRegisterController = new TraceRegisterController();
-        traceRegisterController.register(traceRegisterDTO);
+        new LoginAndRegisterController().register(traceRegisterDTO);
     }
 
     private TraceRegisterDTO showRegister(String name, String gender, String phone) {
@@ -66,7 +65,6 @@ public class TraceRegisterView {
         TraceRegisterDTO traceRegisterDTO = showRegister(name, gender, phone);
         traceRegisterDTO.setAddress(address);
         traceRegisterDTO.setChoice(true);
-        TraceRegisterController traceRegisterController = new TraceRegisterController();
-        traceRegisterController.register(traceRegisterDTO);
+        new LoginAndRegisterController().register(traceRegisterDTO);
     }
 }

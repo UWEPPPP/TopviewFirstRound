@@ -5,7 +5,7 @@ import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.UserPO;
-import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.factory.TraceFactoryService;
 import com.liujiahui.www.util.ConnectionPool;
 
 import java.sql.Connection;
@@ -69,7 +69,7 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
         if (getaExist(check, traceRegisterBO.getName(), connection)) {
             throw new RuntimeException("用户已存在");
         }
-        TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceContractService().initByContract("consumer");
+        TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceRegisterAndLoginService().initByContract("consumer");
         String sql = "insert into user.suppliers(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
         preparedStatement = setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
         int result = preparedStatement.executeUpdate();

@@ -1,6 +1,7 @@
-package com.liujiahui.www.service.impl;
+package com.liujiahui.www.service.factory;
 
 import com.liujiahui.www.service.*;
+import com.liujiahui.www.service.impl.*;
 
 /**
  * 跟踪工厂impl
@@ -9,9 +10,6 @@ import com.liujiahui.www.service.*;
  * @date 2023/03/25
  */
 public class TraceFactoryService {
-    static public QueryByFactorService getTraceQueryService() {
-        return QueryByFactorServiceImpl.getInstance();
-    }
 
     static public RegisterOrLoginService getTraceRegisterAndLoginService() {
         return RegisterOrLoginServiceImpl.getInstance();
@@ -33,7 +31,4 @@ public class TraceFactoryService {
         return CommonUsedMarketServiceImpl.getInstance();
     }
 
-    static public ContractInitServiceImpl getTraceContractService() {
-        return new ContractInitServiceImpl();
-    }
 }

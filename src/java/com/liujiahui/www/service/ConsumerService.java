@@ -27,8 +27,8 @@ public interface ConsumerService {
     /**
      * 购买物品
      *
-     * @param seller
      * @param index  指数
+     * @param seller 卖方
      * @return {@link TraceTransactionDTO}
      */
     TraceTransactionDTO buyItem(String seller, BigDecimal index);
@@ -36,7 +36,7 @@ public interface ConsumerService {
     /**
      * 检查通过散列
      *
-     * @param hash
+     * @param hash 哈希
      * @return {@link TraceRealAndOutItemDTO}
      */
     TraceRealAndOutItemDTO checkByHash(String hash);
@@ -44,7 +44,7 @@ public interface ConsumerService {
     /**
      * 检查状态
      *
-     * @param hash1
+     * @param hash1 hash1
      * @return {@link TraceItemStatusDTO}
      */
     TraceItemStatusDTO checkStatus(String hash1);

@@ -6,7 +6,7 @@ import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.entity.vo.TraceDetailedVO;
 import com.liujiahui.www.service.CommonUsedMarketService;
-import com.liujiahui.www.service.impl.TraceFactoryService;
+import com.liujiahui.www.service.factory.TraceFactoryService;
 import com.liujiahui.www.view.TraceConsumeView;
 import com.liujiahui.www.view.TraceSameView;
 import com.liujiahui.www.view.TraceSupplyView;
@@ -19,8 +19,26 @@ import java.util.List;
  * @author 刘家辉
  * @date 2023/03/18
  */
-public class TraceEntryController {
+public class CommonUsedController {
     private static final CommonUsedMarketService CommonUsedMarketService = TraceFactoryService.getCommonUsedService();
+
+
+    public List<ItemPO> queryByPrice(int max, int min, int choice) {
+        return CommonUsedMarketService.queryByPrice(max, min, choice);
+    }
+
+    public List<ItemPO> queryByKeyword(String keyword) {
+        return CommonUsedMarketService.queryByKeyword(keyword);
+    }
+
+
+    public List<ItemPO> queryByType(String type) {
+        return CommonUsedMarketService.queryByType(type);
+    }
+
+    public List<ItemPO> queryBySeller(String seller) {
+        return CommonUsedMarketService.queryBySeller(seller);
+    }
 
     /**
      * 条目
@@ -36,7 +54,7 @@ public class TraceEntryController {
     }
 
     public void consumerEntry(int choice) {
-        TraceConsumeController traceConsumeController = new TraceConsumeController();
+        ConsumeController consumeController = new ConsumeController();
         switch (choice) {
             case 1:
                 showItemList();
@@ -45,7 +63,7 @@ public class TraceEntryController {
                 showUser();
                 break;
             case 3:
-                traceConsumeController.showUserItem();
+                consumeController.showUserItem();
                 break;
             case 4:
                 TraceConsumeView.showAppealResult(showAppealResult());
@@ -56,7 +74,7 @@ public class TraceEntryController {
 
 
     public void supplierEntry(int choice) {
-        TraceSupplyController traceSupplyController = new TraceSupplyController();
+        SupplyController supplyController = new SupplyController();
         switch (choice) {
             case 1:
                 showItemList();
@@ -68,13 +86,13 @@ public class TraceEntryController {
                 TraceSupplyView.registerItem();
                 break;
             case 4:
-                traceSupplyController.showSupplierItem();
+                supplyController.showSupplierItem();
                 break;
             case 5:
-                TraceSupplyView.showAllFeedback(traceSupplyController.showSupplierFeedback());
+                TraceSupplyView.showAllFeedback(supplyController.showSupplierFeedback());
                 break;
             case 6:
-                traceSupplyController.showToken();
+                supplyController.showToken();
                 break;
             case 7:
                 TraceSupplyView.showAppealResult(showAppealResult());
