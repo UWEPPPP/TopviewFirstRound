@@ -21,24 +21,6 @@ public class LoginAndRegisterController {
     private static String identity;
     private final RegisterOrLoginService registerOrLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
 
-    public void register(TraceRegisterDTO traceRegisterDTO) {
-        TraceRegisterBO traceRegisterBO = new TraceRegisterBO();
-        traceRegisterBO.setName(traceRegisterDTO.getName());
-        traceRegisterBO.setGender(traceRegisterDTO.getGender());
-        traceRegisterBO.setPhone(traceRegisterDTO.getPhone());
-        traceRegisterBO.setPassword(traceRegisterDTO.getPassword());
-        traceRegisterBO.setAddress(traceRegisterDTO.getAddress());
-        RegisterOrLoginService registerOrLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
-        TraceRegisterView.returnInterface(registerOrLoginService.register(traceRegisterBO));
-    }
-
-    public void registerOrderByIdentity(int choice2) {
-        if (choice2 == 1) {
-            new TraceRegisterView().registerBySupplier();
-        } else {
-            new TraceRegisterView().registerByConsumer();
-        }
-    }
     public static void loginBackView(UserSaveDTO userInformationDTO) {
         if (userInformationDTO == null) {
             TraceLoginView.loginReturnInterface();
@@ -55,6 +37,25 @@ public class LoginAndRegisterController {
             TraceEntryView.viewConsumer(traceAfterLoginVO);
         } else {
             TraceEntryView.viewSupplier(traceAfterLoginVO);
+        }
+    }
+
+    public void register(TraceRegisterDTO traceRegisterDTO) {
+        TraceRegisterBO traceRegisterBO = new TraceRegisterBO();
+        traceRegisterBO.setName(traceRegisterDTO.getName());
+        traceRegisterBO.setGender(traceRegisterDTO.getGender());
+        traceRegisterBO.setPhone(traceRegisterDTO.getPhone());
+        traceRegisterBO.setPassword(traceRegisterDTO.getPassword());
+        traceRegisterBO.setAddress(traceRegisterDTO.getAddress());
+        RegisterOrLoginService registerOrLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
+        TraceRegisterView.returnInterface(registerOrLoginService.register(traceRegisterBO));
+    }
+
+    public void registerOrderByIdentity(int choice2) {
+        if (choice2 == 1) {
+            new TraceRegisterView().registerBySupplier();
+        } else {
+            new TraceRegisterView().registerByConsumer();
         }
     }
 

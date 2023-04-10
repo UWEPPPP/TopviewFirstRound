@@ -1,16 +1,8 @@
 package com.liujiahui.www.service.wrapper;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.fisco.bcos.sdk.abi.FunctionReturnDecoder;
 import org.fisco.bcos.sdk.abi.TypeReference;
-import org.fisco.bcos.sdk.abi.datatypes.Address;
-import org.fisco.bcos.sdk.abi.datatypes.Bool;
-import org.fisco.bcos.sdk.abi.datatypes.Function;
-import org.fisco.bcos.sdk.abi.datatypes.Type;
-import org.fisco.bcos.sdk.abi.datatypes.Utf8String;
+import org.fisco.bcos.sdk.abi.datatypes.*;
 import org.fisco.bcos.sdk.abi.datatypes.generated.Uint256;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
@@ -22,6 +14,11 @@ import org.fisco.bcos.sdk.model.CryptoType;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.model.callback.TransactionCallback;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ContractVerifierService extends Contract {
@@ -65,17 +62,27 @@ public class ContractVerifierService extends Contract {
         return (cryptoSuite.getCryptoTypeConfig() == CryptoType.ECDSA_TYPE ? BINARY : SM_BINARY);
     }
 
+    public static ContractVerifierService load(String contractAddress, Client client, CryptoKeyPair credential) {
+        return new ContractVerifierService(contractAddress, client, credential);
+    }
+
+    public static ContractVerifierService deploy(Client client, CryptoKeyPair credential) throws ContractException {
+        return deploy(ContractVerifierService.class, client, credential, getBinary(client.getCryptoSuite()), "");
+    }
+
     public BigInteger MarketRight(String param0) throws ContractException {
         final Function function = new Function(FUNC_MARKETRIGHT,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(param0)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
     public BigInteger Market_right_check(String user) throws ContractException {
         final Function function = new Function(FUNC_MARKET_RIGHT_CHECK,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(user)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }));
         return executeCallWithSingleValueReturn(function, BigInteger.class);
     }
 
@@ -113,7 +120,10 @@ public class ContractVerifierService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_MARKET_RIGHT_SET,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Uint256>() {
+                }, new TypeReference<Address>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple3<String, BigInteger, String>(
 
@@ -126,14 +136,16 @@ public class ContractVerifierService extends Contract {
     public Boolean ProxyRight(String param0) throws ContractException {
         final Function function = new Function(FUNC_PROXYRIGHT,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(param0)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                }));
         return executeCallWithSingleValueReturn(function, Boolean.class);
     }
 
     public Boolean Proxy_right_check(String user) throws ContractException {
         final Function function = new Function(FUNC_PROXY_RIGHT_CHECK,
                 Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(user)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                }));
         return executeCallWithSingleValueReturn(function, Boolean.class);
     }
 
@@ -168,7 +180,9 @@ public class ContractVerifierService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_PROXY_RIGHT_SET,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Address>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, String>(
 
@@ -180,7 +194,8 @@ public class ContractVerifierService extends Contract {
     public String market_address() throws ContractException {
         final Function function = new Function(FUNC_MARKET_ADDRESS,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }));
         return executeCallWithSingleValueReturn(function, String.class);
     }
 
@@ -215,7 +230,9 @@ public class ContractVerifierService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_MARKET_ADDRESS_SET,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Utf8String>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, String>(
 
@@ -227,7 +244,8 @@ public class ContractVerifierService extends Contract {
     public String proxy_address() throws ContractException {
         final Function function = new Function(FUNC_PROXY_ADDRESS,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }));
         return executeCallWithSingleValueReturn(function, String.class);
     }
 
@@ -262,20 +280,14 @@ public class ContractVerifierService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_PROXY_ADDRESS_SET,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }, new TypeReference<Utf8String>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple2<String, String>(
 
                 (String) results.get(0).getValue(),
                 (String) results.get(1).getValue()
         );
-    }
-
-    public static ContractVerifierService load(String contractAddress, Client client, CryptoKeyPair credential) {
-        return new ContractVerifierService(contractAddress, client, credential);
-    }
-
-    public static ContractVerifierService deploy(Client client, CryptoKeyPair credential) throws ContractException {
-        return deploy(ContractVerifierService.class, client, credential, getBinary(client.getCryptoSuite()), "");
     }
 }

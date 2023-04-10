@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.1;
+pragma experimental ABIEncoderV2;
 
 import "erc20.sol";
 
@@ -16,7 +17,6 @@ contract MyToken is Token {
 
     //storage合约的地址
     address private storage_address;
-
     /*
 NOTE:
 下面的变量是可选的，它们不影响核心功能，仅仅为了美观和自定义。
@@ -33,15 +33,14 @@ NOTE:
 
     // 构造函数，初始化代币的总发行量、名称、小数位数和符号
     constructor(
-        uint256 _initialAmount,
         string memory _tokenName,
         uint8 _decimalUnits,
         string memory _tokenSymbol
     ) public {
         // 将所有代币都分配给合约创建者
-        balances[msg.sender] = _initialAmount;
+        balances[msg.sender] = 200;
         // 更新总发行量
-        totalSupply = _initialAmount;
+        totalSupply = 200;
         // 设置代币名称
         name = _tokenName;
         // 设置代币小数位数
@@ -77,6 +76,8 @@ NOTE:
             balances[admin] >= _value,
             "token balance is lower than the value requested"
         );
+        //铸造一点货币
+        mint();
         // 更新发送方地址和接收方地址的余额
         balances[admin] -= _value;
         balances[_to] += _value;
@@ -84,6 +85,11 @@ NOTE:
         emit Transfer(admin, _to, _value);
         //solhint-disable-line indent, no-unused-vars
         return true;
+    }
+
+    function mint() internal {
+        totalSupply += 100;
+        balances[admin] += 100;
     }
 
     // 授权转账函数，将指定数量的代币从发送方地址转移到接收方地址，并减少发送方地址授权的代币数量

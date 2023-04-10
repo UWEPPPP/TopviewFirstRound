@@ -74,14 +74,12 @@ public class ContractTokenService extends Contract {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Uint256>() {
             }));
-    ;
 
     public static final Event TRANSFER_EVENT = new Event("Transfer",
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Uint256>() {
             }));
-    ;
 
     protected ContractTokenService(String contractAddress, Client client, CryptoKeyPair credential) {
         super(getBinary(client.getCryptoSuite()), contractAddress, client, credential);

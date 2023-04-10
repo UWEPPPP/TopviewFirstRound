@@ -48,8 +48,8 @@ public class SupplierServiceImpl implements SupplierService {
         ContractMarketService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()), traceItemBO.getToken());
         Tuple2<BigInteger, byte[]> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
-        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3),instance.getContractAccount());
-        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4),instance.getContractAccount());
+        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3), instance.getContractAccount());
+        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4), instance.getContractAccount());
         String hash = Numeric.toHexString(addItemOutput.getValue2());
         try {
             new ItemShowDAOImpl().insert(traceItemBO.getName(), traceItemBO.getPrice(), traceItemBO.getDescription(), instance.getUserName(), traceItemBO.getType(), hash);
@@ -75,7 +75,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void updateLogistics(int index, String logistics, int status) {
-        UserSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status),UserSaveDTO.getInstance().getContractAccount());
+        UserSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status), UserSaveDTO.getInstance().getContractAccount());
     }
 
     @Override

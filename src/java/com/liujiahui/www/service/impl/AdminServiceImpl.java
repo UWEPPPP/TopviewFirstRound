@@ -57,11 +57,11 @@ public class AdminServiceImpl implements AdminService {
         TraceRealAndOutItemDTO traceRealAndOutItemDTO = new TraceRealAndOutItemDTO();
         ContractStorageService.Item singleItem;
         try {
-             singleItem = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
+            singleItem = itemTradeSolidity.getSingleItem(Numeric.hexStringToByteArray(hash1));
         } catch (ContractException e) {
             throw new RuntimeException(e);
         }
-       traceRealAndOutItemDTO.setRealName(singleItem.name);
+        traceRealAndOutItemDTO.setRealName(singleItem.name);
         traceRealAndOutItemDTO.setRealDescription(singleItem.description);
         ItemPO singleItem1;
         try {

@@ -102,7 +102,7 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
         preparedStatement1.setString(4, type);
         preparedStatement1.setString(5, itemHash);
         preparedStatement1.setBoolean(6, false);
-        preparedStatement1.setString(7,itemName);
+        preparedStatement1.setString(7, itemName);
         int result1 = preparedStatement1.executeUpdate();
         ConnectionPool.getInstance().releaseConnection(connection);
         close(preparedStatement, null);

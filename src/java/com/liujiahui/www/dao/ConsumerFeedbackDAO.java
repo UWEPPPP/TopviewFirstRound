@@ -10,7 +10,7 @@ public interface ConsumerFeedbackDAO {
      * @param address 地址
      * @return int
      */
-    int getFeedbackNumber(String address) throws SQLException;
+    int getFeedbackNumber(String address);
 
     /**
      * @param accountAddress 账户地址
@@ -23,9 +23,8 @@ public interface ConsumerFeedbackDAO {
      * 更新反馈
      *
      * @param hash 哈希
-     * @throws SQLException sqlexception异常
      */
-    void updateFeedback(String hash) throws SQLException;
+    void updateFeedback(String hash);
 
     /**
      * 写下来

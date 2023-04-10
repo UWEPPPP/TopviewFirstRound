@@ -31,15 +31,15 @@ import java.util.Objects;
  */
 public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
 
+    private static final BcosSDK SDK = BcosSDK.build("config-example.toml");
+    private static final Client CLIENT = SDK.getClient(1);
+    private static final CryptoSuite CRYPTO_SUITE = CLIENT.getCryptoSuite();
     private RegisterOrLoginServiceImpl() {
     }
 
     public static RegisterOrLoginService getInstance() {
         return RegisterOrLoginInstance.INSTANCE;
     }
-    private static final BcosSDK SDK = BcosSDK.build("config-example.toml");
-    private static final Client CLIENT = SDK.getClient(1);
-    private static final CryptoSuite CRYPTO_SUITE = CLIENT.getCryptoSuite();
 
     @Override
     public BigInteger loadByContract(String privateKey) {
@@ -52,7 +52,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
-        BigInteger balance = null;
+        BigInteger balance;
         try {
             balance = asset.getBalance();
         } catch (ContractException e) {
@@ -82,8 +82,6 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
     }
 
 
-
-
     @Override
     public UserSaveDTO login(TraceLoginBO traceLoginBO) {
         String userAccount = traceLoginBO.getAccount();
@@ -100,21 +98,21 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
             login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
         }
         if (login != null) {
-        UserSaveDTO user = UserSaveDTO.getInstance();
-        String balance;
-        balance = String.valueOf(loadByContract(login.getPrivateKey()));
-        user.setUserName(login.getName());
-        user.setBalance(balance);
-        user.setGender(login.getGender());
-        user.setPhone(login.getPhoneNumber());
-        user.setIdentity(identity);
-        user.setContractAccount(login.getAddress());
-        if (identity.equals(inform)) {
-            user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
+            UserSaveDTO user = UserSaveDTO.getInstance();
+            String balance;
+            balance = String.valueOf(loadByContract(login.getPrivateKey()));
+            user.setUserName(login.getName());
+            user.setBalance(balance);
+            user.setGender(login.getGender());
+            user.setPhone(login.getPhoneNumber());
+            user.setIdentity(identity);
+            user.setContractAccount(login.getAddress());
+            if (identity.equals(inform)) {
+                user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
+            }
+            user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
+            return user;
         }
-        user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
-        return user;
-    }
         return null;
     }
 

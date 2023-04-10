@@ -1,9 +1,9 @@
 package com.liujiahui.www.service.impl;
 
+import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
 import com.liujiahui.www.dao.impl.ItemShowDAOImpl;
 import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
-import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
@@ -100,10 +100,6 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
         }
     }
 
-    private static class CommonUsedMarketServiceImplHolder {
-        private static final CommonUsedMarketServiceImpl INSTANCE = new CommonUsedMarketServiceImpl();
-    }
-
     @Override
     public List<ItemPO> queryByPrice(int max, int min, int choice) {
         return TraceFactoryDAO.getItemShowDAO().queryByPrice(max, min, choice == 1 ? "asc" : "desc");
@@ -122,6 +118,10 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
     @Override
     public List<ItemPO> queryBySeller(String seller) {
         return TraceFactoryDAO.getItemShowDAO().queryBySeller(seller);
+    }
+
+    private static class CommonUsedMarketServiceImplHolder {
+        private static final CommonUsedMarketServiceImpl INSTANCE = new CommonUsedMarketServiceImpl();
     }
 
 

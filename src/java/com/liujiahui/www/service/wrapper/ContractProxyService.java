@@ -1,8 +1,5 @@
 package com.liujiahui.www.service.wrapper;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.fisco.bcos.sdk.abi.FunctionEncoder;
 import org.fisco.bcos.sdk.abi.FunctionReturnDecoder;
 import org.fisco.bcos.sdk.abi.TypeReference;
@@ -18,6 +15,10 @@ import org.fisco.bcos.sdk.model.CryptoType;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.model.callback.TransactionCallback;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ContractProxyService extends Contract {
@@ -47,17 +48,30 @@ public class ContractProxyService extends Contract {
         return (cryptoSuite.getCryptoTypeConfig() == CryptoType.ECDSA_TYPE ? BINARY : SM_BINARY);
     }
 
+    public static ContractProxyService load(String contractAddress, Client client, CryptoKeyPair credential) {
+        return new ContractProxyService(contractAddress, client, credential);
+    }
+
+    public static ContractProxyService deploy(Client client, CryptoKeyPair credential, String implementation_, String addr, String veri_Address) throws ContractException {
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(implementation_),
+                new org.fisco.bcos.sdk.abi.datatypes.Address(addr),
+                new org.fisco.bcos.sdk.abi.datatypes.Address(veri_Address)));
+        return deploy(ContractProxyService.class, client, credential, getBinary(client.getCryptoSuite()), encodedConstructor);
+    }
+
     public String _implementation() throws ContractException {
         final Function function = new Function(FUNC__IMPLEMENTATION,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }));
         return executeCallWithSingleValueReturn(function, String.class);
     }
 
     public String admin() throws ContractException {
         final Function function = new Function(FUNC_ADMIN,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }));
         return executeCallWithSingleValueReturn(function, String.class);
     }
 
@@ -89,22 +103,12 @@ public class ContractProxyService extends Contract {
         String data = transactionReceipt.getInput().substring(10);
         final Function function = new Function(FUNC_UPGRADE,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                }));
         List<Type> results = FunctionReturnDecoder.decode(data, function.getOutputParameters());
         return new Tuple1<String>(
 
                 (String) results.get(0).getValue()
         );
-    }
-
-    public static ContractProxyService load(String contractAddress, Client client, CryptoKeyPair credential) {
-        return new ContractProxyService(contractAddress, client, credential);
-    }
-
-    public static ContractProxyService deploy(Client client, CryptoKeyPair credential, String implementation_, String addr, String veri_Address) throws ContractException {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.fisco.bcos.sdk.abi.datatypes.Address(implementation_),
-                new org.fisco.bcos.sdk.abi.datatypes.Address(addr),
-                new org.fisco.bcos.sdk.abi.datatypes.Address(veri_Address)));
-        return deploy(ContractProxyService.class, client, credential, getBinary(client.getCryptoSuite()), encodedConstructor);
     }
 }

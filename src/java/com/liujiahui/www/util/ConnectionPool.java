@@ -12,12 +12,11 @@ import java.util.concurrent.BlockingQueue;
  * @date 2023/04/06
  */
 public class ConnectionPool {
+    private static ConnectionPool instance;
     private final String url;
     private final String username;
     private final String password;
-
-    private static ConnectionPool instance;
-    private final Integer maxConnections ;
+    private final Integer maxConnections;
     private final Integer initConnections;
     private Integer allConnections;
     private BlockingQueue<Connection> connectionPool;
@@ -26,9 +25,9 @@ public class ConnectionPool {
         try (FileReader fre = new FileReader("src/resource/properties")) {
             Properties properties = new Properties();
             properties.load(fre);
-            maxConnections= Integer.parseInt(properties.getProperty("maxConnections"));
+            maxConnections = Integer.parseInt(properties.getProperty("maxConnections"));
             initConnections = Integer.parseInt(properties.getProperty("initConnections"));
-            allConnections=initConnections;
+            allConnections = initConnections;
             url = properties.getProperty("URL");
             username = properties.getProperty("username");
             password = properties.getProperty("password");
@@ -70,8 +69,8 @@ public class ConnectionPool {
     public synchronized Connection getConnection() throws SQLException {
         if (!connectionPool.isEmpty()) {
             return connectionPool.remove();
-        }else {
-            if(allConnections<=maxConnections){
+        } else {
+            if (allConnections <= maxConnections) {
                 Connection connection = DriverManager.getConnection(url, username, password);
                 allConnections++;
                 return connection;

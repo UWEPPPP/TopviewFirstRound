@@ -75,7 +75,7 @@ public class ConsumerServiceImpl implements ConsumerService {
             e.printStackTrace();
         }
 
-        BigInteger balance = null;
+        BigInteger balance;
         try {
             balance = contractTradeServiceSolidity.getBalance();
         } catch (ContractException e) {
@@ -149,7 +149,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.handing_feedback(seller, choice == 1, Numeric.hexStringToByteArray(itemHash));
         try {
-            new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash,itemName);
+            new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash, itemName);
         } catch (SQLException e) {
             e.printStackTrace();
         }

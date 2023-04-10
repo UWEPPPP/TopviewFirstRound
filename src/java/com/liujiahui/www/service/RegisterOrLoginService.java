@@ -30,6 +30,7 @@ public interface RegisterOrLoginService {
      * @return {@link TraceAccountOnContractDTO}
      */
     TraceAccountOnContractDTO initByContract(String table);
+
     /**
      * 登录
      *

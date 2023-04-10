@@ -1,7 +1,7 @@
 package com.liujiahui.www.view;
 
-import com.liujiahui.www.controller.ConsumeController;
 import com.liujiahui.www.controller.CommonUsedController;
+import com.liujiahui.www.controller.ConsumeController;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
@@ -56,7 +56,7 @@ public class TraceConsumeView {
                             case 1:
                                 System.out.println("说几句简短的话鼓励商家吧~");
                                 String comment = in.next();
-                                consumeController.feedback(1, check.getSeller(), comment, check.getHash(),check.getName());
+                                consumeController.feedback(1, check.getSeller(), comment, check.getHash(), check.getName());
                                 System.out.println("感谢您的好评");
                                 break;
                             case 2:
@@ -69,7 +69,7 @@ public class TraceConsumeView {
                         System.out.println("鉴定为假品，进行举报");
                         System.out.println("请描述情况");
                         String description = in.next();
-                        consumeController.feedback(2, check.getSeller(), description, check.getHash(),check.getName());
+                        consumeController.feedback(2, check.getSeller(), description, check.getHash(), check.getName());
                         System.out.println("感谢您的举报");
                         System.out.println("管理员会尽快处理");
                         break;

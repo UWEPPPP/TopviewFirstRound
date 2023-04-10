@@ -42,7 +42,7 @@ public interface SupplierAccountDAO {
     /**
      * 登录
      *
-     * @param userAccount  用户帐户
+     * @param userAccount  用户账户
      * @param userPassword 用户密码
      * @return {@link ConsumerPO}
      */
@@ -66,7 +66,7 @@ public interface SupplierAccountDAO {
     Boolean updatePersonalInformation(String type, String change);
 
     /**
-     * 得到供应商帐户
+     * 得到供应商账户
      *
      * @param name 名字
      * @return {@link String}

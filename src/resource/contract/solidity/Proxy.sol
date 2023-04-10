@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "TraceStorage.sol";
 import "Verifier.sol";
 
@@ -29,9 +30,9 @@ contract Proxy {
         trace = TraceStorage(addr);
         trace.setLogic(address(this), "liujiahui1Y");
         veri = Verifier(veri_Address);
-        test=address(this);
-        veri.proxy_address_set(test,"liujiahui1Y");
-        veri.Proxy_right_set(msg.sender,test);
+        test = address(this);
+        veri.proxy_address_set(test, "liujiahui1Y");
+        veri.Proxy_right_set(msg.sender, test);
     }
 
 
@@ -73,7 +74,7 @@ contract Proxy {
                 revert(0, returndatasize())
             }
             default {
-                return(0, returndatasize())
+                return (0, returndatasize())
             }
         }
     }
@@ -97,7 +98,7 @@ contract Proxy {
      * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if no other
      * function in the contract matches the call data.
      */
-    fallback() external  virtual {
+    fallback() external virtual {
         _fallback();
     }
 

@@ -2,20 +2,10 @@ package com.liujiahui.www;
 
 import com.liujiahui.www.service.wrapper.*;
 import org.fisco.bcos.sdk.BcosSDK;
-import org.fisco.bcos.sdk.abi.ABICodec;
-import org.fisco.bcos.sdk.abi.FunctionReturnDecoder;
-import org.fisco.bcos.sdk.abi.TypeReference;
-import org.fisco.bcos.sdk.abi.datatypes.Type;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.client.Client;
-import org.fisco.bcos.sdk.client.protocol.request.Transaction;
-import org.fisco.bcos.sdk.client.protocol.response.Call;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
-import org.fisco.bcos.sdk.model.TransactionReceipt;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws Exception {
