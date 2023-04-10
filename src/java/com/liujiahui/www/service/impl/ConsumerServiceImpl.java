@@ -1,8 +1,8 @@
 package com.liujiahui.www.service.impl;
 
+import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
 import com.liujiahui.www.dao.impl.ItemBehindDAOImpl;
-import com.liujiahui.www.dao.factory.TraceFactoryDAO;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
@@ -10,10 +10,9 @@ import com.liujiahui.www.entity.dto.TraceTransactionDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.ConsumerService;
-import com.liujiahui.www.service.wrapper.ContractProxyService;
+import com.liujiahui.www.service.wrapper.ContractMarketService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple3;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
@@ -57,7 +56,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public TraceTransactionDTO buyItem(String seller, BigDecimal index) {
         UserSaveDTO instance = UserSaveDTO.getInstance();
-        ContractProxyService contractTradeServiceSolidity = instance.getItemTradeSolidity();
+        ContractMarketService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         BigInteger bigInteger = index.toBigInteger();
         TransactionReceipt transactionReceipt = contractTradeServiceSolidity.buyItem(seller, bigInteger);
         TransactionResponse transactionResponse = instance.getDecoder().decodeReceiptStatus(transactionReceipt);
@@ -75,10 +74,14 @@ public class ConsumerServiceImpl implements ConsumerService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        BigInteger balance;
-        TransactionReceipt balance1 = contractTradeServiceSolidity.getBalance();
-        Tuple1<BigInteger> getBalanceOutput = contractTradeServiceSolidity.getGetBalanceOutput(balance1);
-        balance = getBalanceOutput.getValue1();
+
+        BigInteger balance = null;
+        try {
+            balance = contractTradeServiceSolidity.getBalance();
+        } catch (ContractException e) {
+            throw new RuntimeException(e);
+        }
+
         instance.setBalance(String.valueOf(balance));
         traceTransactionDTO.setItemSoldEventResponse(buyItemOutput);
         traceTransactionDTO.setBalance(String.valueOf(balance));
@@ -141,11 +144,12 @@ public class ConsumerServiceImpl implements ConsumerService {
         String seller = traceFeedbackBO.getSeller();
         String itemHash = traceFeedbackBO.getItemHash();
         String comment = traceFeedbackBO.getComment();
+        String itemName = traceFeedbackBO.getItemName();
         int choice = traceFeedbackBO.getChoice();
-        ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
+        ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.handing_feedback(seller, choice == 1, Numeric.hexStringToByteArray(itemHash));
         try {
-            new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash);
+            new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash,itemName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -155,7 +159,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     public void returnItem(String hash2) {
         try {
             ItemPO item = new ItemBehindDAOImpl().returnItem(hash2);
-            ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
+            ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
             itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2), item.getIndex().toBigInteger());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -165,7 +169,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public List<TraceItemStatusDTO> checkLife(String hash3) {
         UserSaveDTO instance = UserSaveDTO.getInstance();
-        ContractProxyService contractTradeServiceSolidity = instance.getItemTradeSolidity();
+        ContractMarketService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         byte[] bytes = Numeric.hexStringToByteArray(hash3);
         try {
             DynamicArray<ContractStorageService.ItemLife> itemLifeDynamicArray = contractTradeServiceSolidity.showWholeLife(bytes);

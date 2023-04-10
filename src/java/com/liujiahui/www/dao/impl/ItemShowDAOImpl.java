@@ -219,8 +219,8 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             itemPo.setId(resultSet.getInt("id"));
             itemPo.setName(resultSet.getString("name"));
             itemPo.setDescription(resultSet.getString("description"));
-            itemPo.setOwner(resultSet.getString("owner_account"));
-            itemPo.setSeller(resultSet.getString("seller_account"));
+            itemPo.setOwner(resultSet.getString("owner_address"));
+            itemPo.setSeller(resultSet.getString("seller_address"));
             itemPo.setToken(resultSet.getInt("token"));
         }
         close(preparedStatement, resultSet);

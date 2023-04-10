@@ -70,7 +70,7 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
             throw new RuntimeException("用户已存在");
         }
         TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceRegisterAndLoginService().initByContract("consumer");
-        String sql = "insert into user.suppliers(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
+        String sql = "insert into user.consumer(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
         preparedStatement = setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
         int result = preparedStatement.executeUpdate();
         close(preparedStatement, null);

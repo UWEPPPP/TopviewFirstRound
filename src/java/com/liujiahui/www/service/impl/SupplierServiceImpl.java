@@ -1,7 +1,10 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.dao.factory.TraceFactoryDAO;
-import com.liujiahui.www.dao.impl.*;
+import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
+import com.liujiahui.www.dao.impl.ItemBehindDAOImpl;
+import com.liujiahui.www.dao.impl.ItemShowDAOImpl;
+import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
@@ -9,10 +12,9 @@ import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.service.SupplierService;
-import com.liujiahui.www.service.wrapper.ContractProxyService;
+import com.liujiahui.www.service.wrapper.ContractMarketService;
 import com.liujiahui.www.service.wrapper.ContractStorageService;
 import org.fisco.bcos.sdk.abi.datatypes.DynamicArray;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
@@ -43,11 +45,11 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public void addItem(TraceItemBO traceItemBO) {
         UserSaveDTO instance = UserSaveDTO.getInstance();
-        ContractProxyService contractTradeServiceSolidity = instance.getItemTradeSolidity();
+        ContractMarketService contractTradeServiceSolidity = instance.getItemTradeSolidity();
         TransactionReceipt transactionReceipt = contractTradeServiceSolidity.addItem(traceItemBO.getRealName(), traceItemBO.getPrice(), traceItemBO.getRealDescription(), BigInteger.valueOf(traceItemBO.getType()), traceItemBO.getToken());
         Tuple2<BigInteger, byte[]> addItemOutput = contractTradeServiceSolidity.getAddItemOutput(transactionReceipt);
-        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3));
-        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4));
+        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getLocation(), BigInteger.valueOf(3),instance.getContractAccount());
+        contractTradeServiceSolidity.updateStatus(addItemOutput.getValue1(), traceItemBO.getStorage(), BigInteger.valueOf(4),instance.getContractAccount());
         String hash = Numeric.toHexString(addItemOutput.getValue2());
         try {
             new ItemShowDAOImpl().insert(traceItemBO.getName(), traceItemBO.getPrice(), traceItemBO.getDescription(), instance.getUserName(), traceItemBO.getType(), hash);
@@ -73,7 +75,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void updateLogistics(int index, String logistics, int status) {
-        UserSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status));
+        UserSaveDTO.getInstance().getItemTradeSolidity().updateStatus(BigInteger.valueOf(index), logistics, BigInteger.valueOf(status),UserSaveDTO.getInstance().getContractAccount());
     }
 
     @Override
@@ -106,7 +108,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void removeItem(int index, Boolean choice) {
-        ContractProxyService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
+        ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.removeItem(BigInteger.valueOf(index), choice);
         try {
             new ItemBehindDAOImpl().removeOrRestoredItem(index, choice);
@@ -129,9 +131,12 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public Integer showToken() {
         UserSaveDTO instance = UserSaveDTO.getInstance();
-        TransactionReceipt transactionReceipt = instance.getItemTradeSolidity().showSupplierToken();
-        Tuple1<BigInteger> getBalanceOutput = instance.getItemTradeSolidity().getGetBalanceOutput(transactionReceipt);
-        return getBalanceOutput.getValue1().intValue();
+        try {
+            BigInteger bigInteger = instance.getItemTradeSolidity().showSupplierToken();
+            return bigInteger.intValue();
+        } catch (ContractException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

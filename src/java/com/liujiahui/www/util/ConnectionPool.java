@@ -12,19 +12,31 @@ import java.util.concurrent.BlockingQueue;
  * @date 2023/04/06
  */
 public class ConnectionPool {
+    private static String url;
+    private static String username;
+    private static String password;
     private static ConnectionPool instance;
     private final int maxConnections = 10;
     private BlockingQueue<Connection> connectionPool;
 
     private ConnectionPool() {
-        connectionPool = new ArrayBlockingQueue<>(maxConnections);
-        for (int i = 0; i < maxConnections; i++) {
-            try {
-                Connection connection = getInitialConnection();
-                connectionPool.add(connection);
-            } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
+        try (FileReader fre = new FileReader("src/resource/properties")) {
+            Properties properties = new Properties();
+            properties.load(fre);
+            url = properties.getProperty("URL");
+            username = properties.getProperty("username");
+            password = properties.getProperty("password");
+            connectionPool = new ArrayBlockingQueue<>(maxConnections);
+            for (int i = 0; i < maxConnections; i++) {
+                try {
+                    Connection connection = DriverManager.getConnection(url, username, password);
+                    connectionPool.add(connection);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -64,15 +76,6 @@ public class ConnectionPool {
         }
     }
 
-    private Connection getInitialConnection() throws SQLException, IOException {
-        try (FileReader fre = new FileReader("src/resource/properties")) {
-            Properties properties = new Properties();
-            properties.load(fre);
-            String url = properties.getProperty("URL");
-            String username = properties.getProperty("username");
-            String password = properties.getProperty("password");
-            return DriverManager.getConnection(url, username, password);
-        }
-    }
+
 }
 

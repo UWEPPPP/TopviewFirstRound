@@ -71,13 +71,14 @@ public class ConsumeController {
         TraceConsumeView.showMyItem(items);
     }
 
-    public void feedback(int score, String seller, String comment, String itemHash) {
+    public void feedback(int score, String seller, String comment, String itemHash, String name) {
         TraceFeedbackBO traceFeedbackBO = new TraceFeedbackBO();
         traceFeedbackBO.setSeller(seller);
         traceFeedbackBO.setComment(comment);
         traceFeedbackBO.setItemHash(itemHash);
         traceFeedbackBO.setChoice(score);
         traceFeedbackBO.setBuyer(UserSaveDTO.getInstance().getContractAccount());
+        traceFeedbackBO.setItemName(name);
         CONSUMER_SERVICE.supplierWriteDownService(traceFeedbackBO);
     }
 

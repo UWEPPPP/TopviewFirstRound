@@ -81,7 +81,6 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
             String sql1 = "update user.consumer_feedback set is_appeal = true where item_hash = ?";
-            ConnectionPool.getInstance().releaseConnection(connection);
             sameUpdate(hash, connection, sql1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -89,13 +88,13 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
     }
 
     @Override
-    public void writeDown(String seller, String buyer, String comment, String type, String itemHash) throws SQLException {
+    public void writeDown(String seller, String buyer, String comment, String type, String itemHash, String itemName) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         String sql = "update user.suppliers set " + type + " = " + type + " + 1 where account_address = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, seller);
         int result = preparedStatement.executeUpdate();
-        String sql1 = "insert into user.consumer_feedback (seller_account,buyer_account,comment,like_report,item_hash,is_read) values (?,?,?,?,?,?)";
+        String sql1 = "insert into user.consumer_feedback (seller_account,buyer_account,comment,like_report,item_hash,is_read,item_name) values (?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
         preparedStatement1.setString(1, seller);
         preparedStatement1.setString(2, buyer);
@@ -103,6 +102,7 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
         preparedStatement1.setString(4, type);
         preparedStatement1.setString(5, itemHash);
         preparedStatement1.setBoolean(6, false);
+        preparedStatement1.setString(7,itemName);
         int result1 = preparedStatement1.executeUpdate();
         ConnectionPool.getInstance().releaseConnection(connection);
         close(preparedStatement, null);

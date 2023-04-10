@@ -12,6 +12,7 @@ public class TraceFeedbackBO {
     private String comment;
     private Integer choice;
     private String itemHash;
+    private String itemName;
 
     public String getSeller() {
         return seller;
@@ -62,5 +63,13 @@ public class TraceFeedbackBO {
                 ", choice=" + choice +
                 ", itemHash='" + itemHash + '\'' +
                 '}';
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getItemName() {
+        return itemName;
     }
 }

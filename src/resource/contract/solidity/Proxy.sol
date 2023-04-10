@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import "TraceStorage.sol";
 import "Verifier.sol";
 
+
 contract Proxy {
     TraceStorage private trace;
     address public admin;
@@ -38,246 +39,7 @@ contract Proxy {
         _implementation = newCont;
     }
 
-    function register(uint256 choice) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "registerAsset(uint256,address)",
-                choice,
-                msg.sender
-            )
-        );
-        require(success, "test");
-    }
 
-    function getBalance() external returns (uint256) {
-        (bool success, bytes memory bt) = address(this).call(
-            abi.encodeWithSignature("getBalance(address)", msg.sender)
-        );
-        require(success, "test");
-        return abi.decode(bt, (uint256));
-    }
-
-    function addItem(
-        string memory name,
-        uint256 price,
-        string memory description,
-        uint256 typeSet,
-        uint256 counter
-    ) external returns (uint256, bytes32) {
-        (bool success, bytes memory bt) = address(this).call(
-            abi.encodeWithSignature(
-                "addItem(string,uint256,string,uint256,uint256,address)",
-                name,
-                price,
-                description,
-                typeSet,
-                counter,
-                msg.sender
-            )
-        );
-        require(success, "addItem failed");
-        return abi.decode(bt, (uint256, bytes32));
-    }
-
-    function buyItem(address seller, uint256 index)
-    external
-    returns (
-        address,
-        address,
-        bytes32
-    )
-    {
-        (bool success, bytes memory bt) = address(this).call(
-            abi.encodeWithSignature(
-                "buyItem(address,address,uint256)",
-                seller,
-                msg.sender,
-                index
-            )
-        );
-        require(success, "buyItem failed");
-        return abi.decode(bt, (address, address, bytes32));
-    }
-
-    function getSoldItems()
-    external
-    view
-    returns (TraceStorage.Item[] memory items)
-    {
-        (bool success, bytes memory bt) = address(this).staticcall(
-            abi.encodeWithSignature("getSoldItems(address)", msg.sender)
-        );
-        require(success, "getSoldItems failed");
-        return abi.decode(bt, (TraceStorage.Item[]));
-    }
-
-    function getRealItem(bytes32 hash)
-    external
-    view
-    returns (
-        string memory,
-        string memory,
-        address
-    )
-    {
-        (bool success, bytes memory bt) = address(this).staticcall(
-            abi.encodeWithSignature(
-                "getRealItem(bytes32,address)",
-                hash,
-                msg.sender
-            )
-        );
-        require(success, "getRealItem failed");
-        return abi.decode(bt, (string, string, address));
-    }
-
-    function updateItem(uint256 index, uint256 price) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "updateItem(uint256,uint256,address)",
-                index,
-                price,
-                msg.sender
-            )
-        );
-        require(success, "updateItem failed");
-    }
-
-    function updateStatus(
-        uint256 index,
-        string memory place,
-        uint256 deliver
-    ) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "updateStatus(uint256,string,uint256,address)",
-                index,
-                place,
-                deliver,
-                msg.sender
-            )
-        );
-        require(success, "updateStatus failed");
-    }
-
-    function getStatus(bytes32 hash)
-    external
-    view
-    returns (
-        uint256,
-        string memory,
-        uint256
-    )
-    {
-        (bool success, bytes memory bt) = address(this).staticcall(
-            abi.encodeWithSignature(
-                "getStatus(bytes32,address)",
-                hash,
-                msg.sender
-            )
-        );
-        require(success, "getStatus failed");
-        return abi.decode(bt, (uint256, string, uint256));
-    }
-
-    function showWholeLife(bytes32 hash)
-    external
-    view
-    returns (TraceStorage.ItemLife[] memory life)
-    {
-        (bool success, bytes memory bt) = address(this).staticcall(
-            abi.encodeWithSignature(
-                "showWholeLife(bytes32,address)",
-                hash,
-                msg.sender
-            )
-        );
-        require(success, "showWholeLife failed");
-        return abi.decode(bt, (TraceStorage.ItemLife[]));
-    }
-
-    function refundItem(bytes32 hash, uint256 index) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "refundItem(bytes32,uint256,address)",
-                hash,
-                index,
-                msg.sender
-            )
-        );
-        require(success, "refundItem failed");
-    }
-
-    function removeItem(uint256 index, bool choice) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "removeItem(uint256,bool,address)",
-                index,
-                choice,
-                msg.sender
-            )
-        );
-        require(success, "removeItem failed");
-    }
-
-    function handing_feedback(
-        address seller,
-        bool choice,
-        bytes32 hash
-    ) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "handing_feedback(address,bool,bytes32,address)",
-                seller,
-                choice,
-                hash,
-                msg.sender
-            )
-        );
-        require(success, "handing_feedback failed");
-    }
-
-    function showSupplierToken(address supplier)
-    external
-    view
-    returns (uint256)
-    {
-        (bool success, bytes memory bt) = address(this).staticcall(
-            abi.encodeWithSignature("showSupplierToken(address)", supplier)
-        );
-        require(success, "showSupplierToken failed");
-        return abi.decode(bt, (uint256));
-    }
-
-    function getSingleItem(bytes32 hash)
-    external
-    returns (TraceStorage.Item memory item)
-    {
-        (bool success, bytes memory bt) = address(this).call(
-            abi.encodeWithSignature("getSingleItem(bytes32)", hash)
-        );
-        require(success, "getSingleItem failed");
-        return abi.decode(bt, (TraceStorage.Item));
-    }
-
-    function resolveAppeal(
-        address feedbacker,
-        address supplier,
-        uint256 token,
-        bool choice
-    ) external {
-        (bool success, ) = address(this).call(
-            abi.encodeWithSignature(
-                "resolveAppeal(address,address,uint256,bool,address)",
-                feedbacker,
-                supplier,
-                token,
-                choice,
-                msg.sender
-            )
-        );
-        require(success, "resolveAppeal failed");
-    }
 
     /**
      * @dev Delegates the current call to `implementation`.
@@ -316,6 +78,7 @@ contract Proxy {
         }
     }
 
+
     /**
      * @dev This is a virtual function that should be overridden so it returns the address to which the fallback function
      * and {_fallback} should delegate.
@@ -334,7 +97,7 @@ contract Proxy {
      * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if no other
      * function in the contract matches the call data.
      */
-    fallback() external payable virtual {
+    fallback() external  virtual {
         _fallback();
     }
 

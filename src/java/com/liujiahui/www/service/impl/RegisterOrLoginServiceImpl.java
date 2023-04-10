@@ -1,23 +1,25 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.dao.factory.TraceFactoryDAO;
-import com.liujiahui.www.dao.impl.*;
+import com.liujiahui.www.dao.impl.ConsumerAccountDAOImpl;
+import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
+import com.liujiahui.www.dao.impl.SupplierAccountDAOImpl;
+import com.liujiahui.www.dao.impl.SupplierAppealDAOImpl;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceAccountOnContractDTO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.UserPO;
 import com.liujiahui.www.service.RegisterOrLoginService;
-import com.liujiahui.www.service.wrapper.ContractProxyService;
+import com.liujiahui.www.service.wrapper.ContractMarketService;
 import com.liujiahui.www.util.CryptoUtil;
 import org.fisco.bcos.sdk.BcosSDK;
-import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple1;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
-import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderService;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
@@ -46,25 +48,29 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         CryptoKeyPair keyPair = CRYPTO_SUITE.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
-        ContractProxyService asset = ContractProxyService.load("0xfe8c9734c6132566558ea403dfc96437ec1f0fd0", CLIENT, keyPair);
+        ContractMarketService asset = ContractMarketService.load("0xf4a6ef1eba899f288fe555bdf98e7f9bf675183c", CLIENT, keyPair);
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
-        TransactionReceipt balance = asset.getBalance();
-        Tuple1<BigInteger> getBalanceOutput = asset.getGetBalanceOutput(balance);
-        return getBalanceOutput.getValue1();
+        BigInteger balance = null;
+        try {
+            balance = asset.getBalance();
+        } catch (ContractException e) {
+            throw new RuntimeException(e);
+        }
+        return balance;
     }
 
     @Override
     public TraceAccountOnContractDTO initByContract(String table) {
         CryptoKeyPair cryptoKeyPair = CRYPTO_SUITE.createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractProxyService asset = ContractProxyService.load("0xfe8c9734c6132566558ea403dfc96437ec1f0fd0", CLIENT, cryptoKeyPair);
+        ContractMarketService asset = ContractMarketService.load("0xf4a6ef1eba899f288fe555bdf98e7f9bf675183c", CLIENT, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
-            asset.register(BigInteger.valueOf(1));
+            asset.registerAsset(BigInteger.valueOf(1));
         } else {
-            asset.register(BigInteger.valueOf(2));
+            asset.registerAsset(BigInteger.valueOf(2));
         }
         String encryptHexPrivateKey;
         encryptHexPrivateKey = CryptoUtil.encryptHexPrivateKey(cryptoKeyPair.getHexPrivateKey(), "src/resource/password.txt");
@@ -116,6 +122,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
     public Boolean register(TraceRegisterBO traceRegisterBO) {
         String password = traceRegisterBO.getPassword();
         traceRegisterBO.setPassword(CryptoUtil.encryptHexPrivateKey(password, "src/resource/password.txt"));
+        System.out.println(traceRegisterBO.getAddress());
         if (traceRegisterBO.getAddress() != null) {
             return new SupplierAccountDAOImpl().register(traceRegisterBO);
         } else {

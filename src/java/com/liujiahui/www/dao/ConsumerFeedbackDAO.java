@@ -35,9 +35,10 @@ public interface ConsumerFeedbackDAO {
      * @param comment  评论
      * @param type     类型
      * @param itemHash 项哈希
+     * @param itemName
      * @throws SQLException sqlexception异常
      */
-    void writeDown(String seller, String buyer, String comment, String type, String itemHash) throws SQLException;
+    void writeDown(String seller, String buyer, String comment, String type, String itemHash, String itemName) throws SQLException;
 
     /**
      * 得到所有反馈和投诉

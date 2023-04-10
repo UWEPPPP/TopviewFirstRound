@@ -1,7 +1,7 @@
 package com.liujiahui.www.entity.dto;
 
 
-import com.liujiahui.www.service.wrapper.ContractProxyService;
+import com.liujiahui.www.service.wrapper.ContractMarketService;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderInterface;
 
 /**
@@ -19,7 +19,7 @@ public class UserSaveDTO {
     private String balance;
     private String userAddress;
     private String identity;
-    private ContractProxyService contractTradeServiceSolidity;
+    private ContractMarketService contractTradeServiceSolidity;
     private String contractAccount;
     private TransactionDecoderInterface decoder;
     private Integer informationSize;
@@ -32,11 +32,11 @@ public class UserSaveDTO {
         return INSTANCE;
     }
 
-    public ContractProxyService getItemTradeSolidity() {
+    public ContractMarketService getItemTradeSolidity() {
         return contractTradeServiceSolidity;
     }
 
-    public void setItemTradeSolidity(ContractProxyService contractTradeServiceSolidity) {
+    public void setItemTradeSolidity(ContractMarketService contractTradeServiceSolidity) {
         this.contractTradeServiceSolidity = contractTradeServiceSolidity;
     }
 

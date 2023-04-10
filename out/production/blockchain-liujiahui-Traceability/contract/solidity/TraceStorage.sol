@@ -1,283 +1,216 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+import "Verifier.sol";
+import "TraceStorage.sol";
 
-import "ERC20.sol";
+contract TraceMarket {
+    TraceStorage private trace;
+    address public admin;
+    bool private isProcessing = false;
+    address public test;
+    address public implementation; // 逻辑合约地址。implementation合约同一个位置的状态变量类型必须和Proxy合约的相同，不然会报错。
+    Verifier private veri;
 
-contract TraceStorage {
-    MyToken private erc20;
-    address private logic_address;
-    address private admin;
-    address private proxy;
-    string private password_;
+    event NewItemAdd(address indexed seller, string name, uint256 price);
+    event ItemSold(address indexed seller, address buyer, bytes32 hash);
 
-    struct User {
-        uint256 exist;
-        uint256 identity;
-        uint256 token;
+    constructor(address storageAddress, address veri_Address) public {
+        trace = TraceStorage(storageAddress);
+        admin = msg.sender;
+        trace.setLogic(address(this), "liujiahui1Y");
+        veri = Verifier(veri_Address);
+        test = address(this);
+        veri.market_address_set(test, "liujiahui1Y");
+        veri.Market_right_set(msg.sender, 3, test);
     }
 
-    struct Item {
-        uint256 id;
-        string name;
-        Type itemType;
-        uint256 price;
-        string description;
-        bool isSold;
-        bool isRemoved;
-        address seller;
-        bytes32 hash;
-    }
-
-    struct ItemLife {
-        uint256 date;
-        string place;
-        Status status;
-    }
-
-    enum Type {
-        Food,
-        Apparel,
-        Electronic,
-        Furniture,
-        Others
-    }
-
-    enum Status {
-        NotDelivered,
-        InDelivering,
-        Delivered,
-        producing,
-        inStorage
-    }
-
-    mapping(address => uint256) public Balances;
-    // Balances 记录每个地址的余额
-    mapping(address => User) public UserList;
-    // UserList 记录每个账户
-    mapping(address => Item[]) private ItemsBySeller;
-    // ItemBySeller 记录每个地址的物品
-    mapping(bytes32 => Item) private ItemByHash;
-    mapping(bytes32 => ItemLife[]) private ItemLifeByHash;
-    // 分别是通过hash获取物品数据和生命周期
-    mapping(address => mapping(bytes32 => uint256)) public user_counter;
-
-    // user_counter 记录每个地址的token质押数量
-
-    modifier onlyLogicContract(){
-        if (logic_address != address(0)) {
-            require(msg.sender == logic_address || msg.sender == proxy, "No right");
-        }
+    modifier onlyAdmin() {
+        require(veri.Market_right_check(msg.sender) == 3, "No Right");
         _;
     }
 
-    constructor(address erc20Address) public {
-        erc20 = MyToken(erc20Address);
-        admin = msg.sender;
-        erc20.setStorage(address(this));
+    modifier onlySupplier() {
+        require(
+            veri.Market_right_check(msg.sender) == 1,
+            "You are not a supplier"
+        );
+        _;
     }
 
-    function setLogic(address logicAddress, string memory password) external {
-        require(logicAddress != address(0), "Invalid");
-        string memory test = password_;
-        if (logic_address == address(0) || proxy == address(0)) {
-            password_ = password;
-            logic_address = logicAddress;
-        } else {
-            if (proxy == address(0)) {
-                proxy = logic_address;
-            }
-            require(keccak256(abi.encodePacked(password)) == keccak256(abi.encodePacked(test)), "No Right");
-        }
+    modifier onlyConsumer() {
+        require(
+            veri.Market_right_check(msg.sender) == 2,
+            "You are not a consumer"
+        );
+        _;
     }
 
+    modifier noReentrant() {
+        require(!isProcessing, "Reentrant call");
+        isProcessing = true;
+        _;
+        isProcessing = false;
+    }
 
-    function getSellerItemsIndex(address owner)
+    function addItem(
+        string memory name,
+        uint256 price,
+        string memory description,
+        uint256 typeSet,
+        uint256 counter
+    ) external onlySupplier returns (uint256, bytes32) {
+        uint256 id = trace.getSellerItemsIndex(msg.sender);
+        bytes32 hash = keccak256(
+            abi.encodePacked(id, name, price, description, msg.sender)
+        );
+        TraceStorage.Item memory item = TraceStorage.Item(
+            id,
+            name,
+            TraceStorage.Type(typeSet),
+            price,
+            description,
+            false,
+            false,
+            msg.sender,
+            hash
+        );
+        trace.addItem(item, counter);
+        emit NewItemAdd(msg.sender, name, price);
+        return (id, hash);
+    }
+
+    function buyItem(address seller, uint256 index)
     external
-    view
-    onlyLogicContract
-    returns (uint256)
-    {
-        return ItemsBySeller[owner].length;
-    }
-
-    function addItem(Item memory items, uint256 counter) external onlyLogicContract {
-        ItemsBySeller[items.seller].push(items);
-        user_counter[items.seller][items.hash] += counter;
-        ItemByHash[items.hash] = items;
-        erc20.pledge(items.seller, counter);
-    }
-
-    function getSingleItem(bytes32 hash)
-    external
-    view
-    onlyLogicContract
-    returns (Item memory item)
-    {
-        return ItemByHash[hash];
-    }
-
-    function updateItem(
-        address owner,
-        uint256 index,
-        uint256 price
-    ) external onlyLogicContract {
-        ItemsBySeller[owner][index].price = price;
-        ItemByHash[ItemsBySeller[owner][index].hash].price = price;
-    }
-
-    function updateStatus(
-        address owner,
-        uint256 index,
-        string memory place,
-        uint256 deliver
-    ) external onlyLogicContract {
-        Item storage item = ItemsBySeller[owner][index];
-        ItemLifeByHash[item.hash].push(ItemLife(now, place, Status(deliver)));
-    }
-
-    function getStatus(bytes32 hash)
-    external
-    view
-    onlyLogicContract
+    noReentrant
+    onlyConsumer
     returns (
-        uint256,
-        string memory,
-        uint256
+        address,
+        address,
+        bytes32
     )
     {
-        uint256 max = ItemLifeByHash[hash].length;
-        ItemLife storage itemStatus = ItemLifeByHash[hash][max - 1];
-        return (itemStatus.date, itemStatus.place, uint256(itemStatus.status));
+        TraceStorage.Item memory item = trace.getSellerItem(seller, index);
+        require(!item.isSold, "Item is sold");
+        require(item.price <= getBalance(msg.sender), "Not enough money");
+        trace.itemIsSold(seller, index, true);
+        trace.decreaseBalance(msg.sender, item.price);
+        trace.increaseBalance(seller, item.price);
+        trace.updateStatus(seller, index, "preparing", 0);
+        emit ItemSold(seller, msg.sender, item.hash);
+        return (seller, msg.sender, item.hash);
     }
 
-    function getWholeLife(bytes32 hash)
+    function getSoldItems()
     external
     view
-    onlyLogicContract
-    returns (ItemLife[] memory life)
+    onlySupplier
+    returns (TraceStorage.Item[] memory items)
     {
-        return ItemLifeByHash[hash];
-    }
-
-    function removeOrRestoreItem(
-        uint256 index,
-        address owner,
-        bool choice
-    ) external onlyLogicContract {
-        ItemsBySeller[owner][index].isRemoved = choice;
-    }
-
-    function getSellerItem(address seller, uint256 index)
-    external
-    view
-    onlyLogicContract
-    returns (Item memory item)
-    {
-        return ItemsBySeller[seller][index];
-    }
-
-    function itemIsSold(
-        address seller,
-        uint256 index,
-        bool choice
-    ) external onlyLogicContract {
-        ItemsBySeller[seller][index].isSold = choice;
-        ItemByHash[ItemsBySeller[seller][index].hash].isSold = choice;
-    }
-
-    function getSellerAllItems(address seller)
-    external
-    view
-    onlyLogicContract
-    returns (Item[] memory items)
-    {
-        return ItemsBySeller[seller];
+        return trace.getSellerAllItems(msg.sender);
     }
 
     function getRealItem(bytes32 hash)
     external
     view
-    onlyLogicContract
+    onlyConsumer
     returns (
         string memory,
         string memory,
         address
     )
     {
-        Item storage item = ItemByHash[hash];
-        return (item.name, item.description, item.seller);
+        return trace.getRealItem(hash);
     }
 
-    //注册初始资产
-    function registerAsset(address userAddress, uint256 chioce) external onlyLogicContract {
-        require(UserList[userAddress].exist == 0, "Account already register");
-        address account = userAddress;
-        Balances[account] = 1000;
-        UserList[account].exist = 1;
-        if (chioce == 1) {
-            UserList[account].identity = 1;
-            erc20.register(userAddress);
-            //供应商
-        } else {
-            UserList[account].identity = 2;
-            //消费者
-        }
-
+    function registerAsset(uint256 choice) external {
+        trace.registerAsset(msg.sender, choice);
+        veri.Market_right_set(msg.sender, choice, test);
     }
 
-    function getBalance(address user) external view onlyLogicContract returns (uint256) {
-        return Balances[user];
+    function getBalance() public view returns (uint256) {
+        return trace.getBalance(msg.sender);
     }
 
-    function decreaseBalance(address user, uint256 amount) external onlyLogicContract {
-        Balances[user] -= amount;
+    function updateItem(uint256 index, uint256 price) external onlySupplier {
+        trace.updateItem(msg.sender, index, price);
     }
 
-    function increaseBalance(address user, uint256 amount) external onlyLogicContract {
-        Balances[user] += amount;
+    function updateStatus(
+        uint256 index,
+        string memory place,
+        uint256 deliver,
+        address seller
+    ) external {
+        trace.updateStatus(seller, index, place, deliver);
     }
 
-    function like_or_report(
-        address supplier,
-        bool choice,
+    function getStatus(bytes32 hash)
+    external
+    view
+    onlyConsumer
+    returns (
+        uint256,
+        string memory,
+        uint256
+    )
+    {
+        (uint256 date, string memory place, uint256 status) = trace.getStatus(
+            hash
+        );
+        return (date, place, status);
+    }
+
+    function showWholeLife(bytes32 hash)
+    external
+    view
+    onlyConsumer
+    returns (TraceStorage.ItemLife[] memory life)
+    {
+        return trace.getWholeLife(hash);
+    }
+
+    function refundItem(bytes32 hash, uint256 index) external onlyConsumer {
+        TraceStorage.Item memory item = trace.getSingleItem(hash);
+        (uint256 date, , ) = trace.getStatus(hash);
+        require(item.isSold, "Item is not sold yet");
+        require(now < (date + 7 days), "Out of date");
+        trace.increaseBalance(msg.sender, item.price);
+        trace.decreaseBalance(item.seller, item.price);
+        trace.itemIsSold(item.seller, index, false);
+    }
+
+    function removeItem(uint256 index, bool choice) external onlySupplier {
+        trace.removeOrRestoreItem(index, msg.sender, choice);
+    }
+
+    function handing_feedback(
+        address seller,
+        bool chioce,
         bytes32 hash
-    ) external onlyLogicContract {
-        uint256 calculate = user_counter[supplier][hash] / 10;
-        returnToken(supplier, hash);
-        if (choice) {
-            erc20.reward(supplier, calculate);
-        } else {
-            user_counter[supplier][hash] -= calculate;
-        }
-
+    ) external onlyConsumer {
+        trace.like_or_report(seller, chioce, hash);
     }
 
-    function returnToken(address supplier, bytes32 hash) internal {
-        user_counter[supplier][hash] = 0;
-        erc20.reward(supplier, user_counter[supplier][hash]);
+    function showSupplierToken() external view onlySupplier returns (uint256) {
+        return trace.getToken(msg.sender);
     }
 
-    function getToken(address supplier) external view onlyLogicContract returns (uint256) {
-        return erc20.balanceOf(supplier);
+    function getSingleItem(bytes32 hash)
+    external
+    view
+    returns (TraceStorage.Item memory item)
+    {
+        return trace.getSingleItem(hash);
     }
 
-    function getIdentity(address user) external view onlyLogicContract returns (uint256) {
-        uint256 identity = UserList[user].identity;
-        return identity;
-    }
-
-    function appeal(
+    function resolveAppeal(
         address feedbacker,
         address supplier,
-        uint256 calculate,
+        uint256 token,
         bool choice
-    ) external onlyLogicContract {
-        Balances[feedbacker] -= calculate;
-        if (choice) {
-            erc20.reward(supplier, calculate);
-        } else {
-            erc20.pledge(supplier, calculate);
-        }
+    ) external onlyAdmin {
+        uint256 count = token / 10;
+        trace.appeal(feedbacker, supplier, count, choice);
     }
 }
