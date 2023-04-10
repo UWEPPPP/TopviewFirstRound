@@ -12,22 +12,28 @@ import java.util.concurrent.BlockingQueue;
  * @date 2023/04/06
  */
 public class ConnectionPool {
-    private static String url;
-    private static String username;
-    private static String password;
+    private final String url;
+    private final String username;
+    private final String password;
+
     private static ConnectionPool instance;
-    private final int maxConnections = 10;
+    private final Integer maxConnections ;
+    private final Integer initConnections;
+    private Integer allConnections;
     private BlockingQueue<Connection> connectionPool;
 
     private ConnectionPool() {
         try (FileReader fre = new FileReader("src/resource/properties")) {
             Properties properties = new Properties();
             properties.load(fre);
+            maxConnections= Integer.parseInt(properties.getProperty("maxConnections"));
+            initConnections = Integer.parseInt(properties.getProperty("initConnections"));
+            allConnections=initConnections;
             url = properties.getProperty("URL");
             username = properties.getProperty("username");
             password = properties.getProperty("password");
             connectionPool = new ArrayBlockingQueue<>(maxConnections);
-            for (int i = 0; i < maxConnections; i++) {
+            for (int i = 0; i < initConnections; i++) {
                 try {
                     Connection connection = DriverManager.getConnection(url, username, password);
                     connectionPool.add(connection);
@@ -64,6 +70,12 @@ public class ConnectionPool {
     public synchronized Connection getConnection() throws SQLException {
         if (!connectionPool.isEmpty()) {
             return connectionPool.remove();
+        }else {
+            if(allConnections<=maxConnections){
+                Connection connection = DriverManager.getConnection(url, username, password);
+                allConnections++;
+                return connection;
+            }
         }
         throw new SQLException("Connection limit exceeded");
     }
