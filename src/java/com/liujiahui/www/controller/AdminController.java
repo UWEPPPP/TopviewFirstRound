@@ -1,5 +1,6 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.controller.proxy.ProxyFactory;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.service.AdminService;
@@ -14,7 +15,7 @@ import java.util.List;
  * @date 2023/03/31
  */
 public class AdminController {
-    private static final AdminService ADMIN_SERVICE = TraceFactoryService.getTraceAdminService();
+    private static final AdminService ADMIN_SERVICE = (AdminService) ProxyFactory.createProxy(TraceFactoryService.getTraceAdminService());
 
     public static Boolean adminLogin(String password) {
         return ADMIN_SERVICE.login(password);

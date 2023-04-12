@@ -34,6 +34,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
     private static final BcosSDK SDK = BcosSDK.build("config-example.toml");
     private static final Client CLIENT = SDK.getClient(1);
     private static final CryptoSuite CRYPTO_SUITE = CLIENT.getCryptoSuite();
+
     private RegisterOrLoginServiceImpl() {
     }
 
@@ -48,7 +49,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         CryptoKeyPair keyPair = CRYPTO_SUITE.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
-        ContractMarketService asset = ContractMarketService.load("0xf4a6ef1eba899f288fe555bdf98e7f9bf675183c", CLIENT, keyPair);
+        ContractMarketService asset = ContractMarketService.load("0x3bb3c01d40dd2989d05e9865cc87a53773181a23", CLIENT, keyPair);
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
@@ -65,7 +66,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
     public TraceAccountOnContractDTO initByContract(String table) {
         CryptoKeyPair cryptoKeyPair = CRYPTO_SUITE.createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractMarketService asset = ContractMarketService.load("0xf4a6ef1eba899f288fe555bdf98e7f9bf675183c", CLIENT, cryptoKeyPair);
+        ContractMarketService asset = ContractMarketService.load("0x3bb3c01d40dd2989d05e9865cc87a53773181a23", CLIENT, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));
@@ -94,6 +95,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         userPassword = CryptoUtil.encryptHexPrivateKey(userPassword, "src/resource/password.txt");
         if (!Objects.equals(identity, inform)) {
             login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
+
         } else {
             login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
         }
@@ -108,7 +110,11 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
             user.setIdentity(identity);
             user.setContractAccount(login.getAddress());
             if (identity.equals(inform)) {
-                user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
+                try {
+                    user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
             user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
             return user;
@@ -124,12 +130,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         if (traceRegisterBO.getAddress() != null) {
             return new SupplierAccountDAOImpl().register(traceRegisterBO);
         } else {
-            try {
-                return new ConsumerAccountDAOImpl().register(traceRegisterBO);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return new ConsumerAccountDAOImpl().register(traceRegisterBO);
         }
     }
 

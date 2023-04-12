@@ -1,5 +1,6 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.controller.proxy.ProxyFactory;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;
 import com.liujiahui.www.entity.dto.TraceRealAndOutItemDTO;
@@ -25,7 +26,7 @@ import static com.liujiahui.www.view.TraceConsumeView.showResult;
  * @date 2023/03/19
  */
 public class ConsumeController {
-    private static final ConsumerService CONSUMER_SERVICE = TraceFactoryService.getConsumeUsedService();
+    private static final ConsumerService CONSUMER_SERVICE = (ConsumerService) ProxyFactory.createProxy(TraceFactoryService.getConsumeUsedService());
 
     public void buy(int id, List<ItemPO> items) {
         for (ItemPO item : items) {

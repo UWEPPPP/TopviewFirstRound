@@ -61,32 +61,31 @@ public class ConsumerAccountDAOImpl implements ConsumerAccountDAO {
     }
 
     @Override
-    public Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException {
-
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        PreparedStatement preparedStatement;
-        String check = "consumer";
-        if (getaExist(check, traceRegisterBO.getName(), connection)) {
-            throw new RuntimeException("用户已存在");
-        }
-        TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceRegisterAndLoginService().initByContract("consumer");
-        String sql = "insert into user.consumer(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
-        preparedStatement = setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
-        int result = preparedStatement.executeUpdate();
-        close(preparedStatement, null);
-        ConnectionPool.getInstance().releaseConnection(connection);
-        return result > 0;
-    }
-
-    @Override
-    public Boolean updatePersonalInformation(String type, String change) {
+    public Boolean register(TraceRegisterBO traceRegisterBO) {
         try {
             Connection connection = ConnectionPool.getInstance().getConnection();
-            String name = UserSaveDTO.getInstance().getUserName();
-            String sql = "update user.consumer set " + type + " = ? where user_name = ?";
-            return changeAccount(change, connection, name, sql);
+            PreparedStatement preparedStatement;
+            String check = "consumer";
+            if (getaExist(check, traceRegisterBO.getName(), connection)) {
+                throw new RuntimeException("用户已存在");
+            }
+            TraceAccountOnContractDTO traceAccountOnContractDTO = TraceFactoryService.getTraceRegisterAndLoginService().initByContract("consumer");
+            String sql = "insert into user.consumer(user_name, gender, phone_number, `password`,private_key,account_address) values(?,?,?,?,?,?)";
+            preparedStatement = setUser(traceRegisterBO, connection, traceAccountOnContractDTO, sql);
+            int result = preparedStatement.executeUpdate();
+            close(preparedStatement, null);
+            ConnectionPool.getInstance().releaseConnection(connection);
+            return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Boolean updatePersonalInformation(String type, String change) throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        String name = UserSaveDTO.getInstance().getUserName();
+        String sql = "update user.consumer set " + type + " = ? where user_name = ?";
+        return changeAccount(change, connection, name, sql);
     }
 }

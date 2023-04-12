@@ -5,12 +5,18 @@ import com.liujiahui.www.entity.po.FeedbackPO;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * 消费者反馈刀
+ *
+ * @author 刘家辉
+ * @date 2023/04/13
+ */
 public interface ConsumerFeedbackDAO {
     /**
      * @param address 地址
      * @return int
      */
-    int getFeedbackNumber(String address);
+    int getFeedbackNumber(String address) throws SQLException;
 
     /**
      * @param accountAddress 账户地址

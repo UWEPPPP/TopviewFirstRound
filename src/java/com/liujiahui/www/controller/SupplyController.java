@@ -1,5 +1,6 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.controller.proxy.ProxyFactory;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.bo.TraceItemBO;
 import com.liujiahui.www.entity.bo.TraceItemUpdateBO;
@@ -19,7 +20,7 @@ import java.util.List;
  * @date 2023/03/25
  */
 public class SupplyController {
-    private static final SupplierService marketService = TraceFactoryService.getSupplierUsedService();
+    private static final SupplierService marketService = (SupplierService) ProxyFactory.createProxy(TraceFactoryService.getSupplierUsedService());
 
     public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) {
         TraceItemBO traceItemBO = new TraceItemBO();

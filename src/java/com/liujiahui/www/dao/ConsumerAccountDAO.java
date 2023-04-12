@@ -27,9 +27,8 @@ public interface ConsumerAccountDAO {
      *
      * @param traceRegisterBO 跟踪登记薄
      * @return {@link Boolean}
-     * @throws SQLException sqlexception异常
      */
-    Boolean register(TraceRegisterBO traceRegisterBO) throws SQLException;
+    Boolean register(TraceRegisterBO traceRegisterBO);
 
     /**
      * 更新个人信息
@@ -38,5 +37,5 @@ public interface ConsumerAccountDAO {
      * @param change 改变
      * @return {@link Boolean}
      */
-    Boolean updatePersonalInformation(String type, String change);
+    Boolean updatePersonalInformation(String type, String change) throws SQLException;
 }

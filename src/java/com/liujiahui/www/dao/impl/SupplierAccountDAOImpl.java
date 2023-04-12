@@ -78,15 +78,13 @@ public class SupplierAccountDAOImpl implements SupplierAccountDAO {
     }
 
     @Override
-    public Boolean updatePersonalInformation(String type, String change) {
-        try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            String name = UserSaveDTO.getInstance().getUserName();
-            String sql = "update user.suppliers set " + type + " = ? where user_name = ?";
-            return changeAccount(change, connection, name, sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public Boolean updatePersonalInformation(String type, String change) throws SQLException {
+
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        String name = UserSaveDTO.getInstance().getUserName();
+        String sql = "update user.suppliers set " + type + " = ? where user_name = ?";
+        return changeAccount(change, connection, name, sql);
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.controller.proxy.ProxyFactory;
 import com.liujiahui.www.entity.bo.TraceChangePersonalBO;
 import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
@@ -20,7 +21,7 @@ import java.util.List;
  * @date 2023/03/18
  */
 public class CommonUsedController {
-    private static final CommonUsedMarketService CommonUsedMarketService = TraceFactoryService.getCommonUsedService();
+    private static final CommonUsedMarketService CommonUsedMarketService = (CommonUsedMarketService) ProxyFactory.createProxy(TraceFactoryService.getCommonUsedService());
 
 
     public List<ItemPO> queryByPrice(int max, int min, int choice) {

@@ -33,14 +33,10 @@ public class ConnectionPool {
             password = properties.getProperty("password");
             connectionPool = new ArrayBlockingQueue<>(maxConnections);
             for (int i = 0; i < initConnections; i++) {
-                try {
-                    Connection connection = DriverManager.getConnection(url, username, password);
-                    connectionPool.add(connection);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+                Connection connection = DriverManager.getConnection(url, username, password);
+                connectionPool.add(connection);
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
     }

@@ -14,7 +14,7 @@ public class Test {
         CryptoKeyPair cryptoKeyPair = client.getCryptoSuite().createKeyPair();
         String hexPrivateKey = cryptoKeyPair.getHexPrivateKey();
         ContractVerifierService deploy4 = ContractVerifierService.deploy(client, cryptoKeyPair);
-        ContractTokenService deploy2 = ContractTokenService.deploy(client, cryptoKeyPair, BigInteger.valueOf(100000), "topview", BigInteger.valueOf(1), "TV");
+        ContractTokenService deploy2 = ContractTokenService.deploy(client, cryptoKeyPair, "topview", BigInteger.valueOf(1), "TV");
         System.out.println(cryptoKeyPair.getAddress());
         System.out.println("hexPrivateKey = " + hexPrivateKey);
         ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair, deploy2.getContractAddress());

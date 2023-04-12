@@ -63,7 +63,7 @@ public interface SupplierAccountDAO {
      * @param change 改变
      * @return {@link Boolean}
      */
-    Boolean updatePersonalInformation(String type, String change);
+    Boolean updatePersonalInformation(String type, String change) throws SQLException;
 
     /**
      * 得到供应商账户

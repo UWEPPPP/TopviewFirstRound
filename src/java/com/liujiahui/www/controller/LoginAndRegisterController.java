@@ -1,5 +1,6 @@
 package com.liujiahui.www.controller;
 
+import com.liujiahui.www.controller.proxy.ProxyFactory;
 import com.liujiahui.www.entity.bo.TraceLoginBO;
 import com.liujiahui.www.entity.bo.TraceRegisterBO;
 import com.liujiahui.www.entity.dto.TraceRegisterDTO;
@@ -19,7 +20,7 @@ import com.liujiahui.www.view.TraceRegisterView;
  */
 public class LoginAndRegisterController {
     private static String identity;
-    private final RegisterOrLoginService registerOrLoginService = TraceFactoryService.getTraceRegisterAndLoginService();
+    private final RegisterOrLoginService registerOrLoginService = (RegisterOrLoginService) ProxyFactory.createProxy(TraceFactoryService.getTraceRegisterAndLoginService());
 
     public static void loginBackView(UserSaveDTO userInformationDTO) {
         if (userInformationDTO == null) {

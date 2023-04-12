@@ -31,24 +31,20 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
     }
 
     @Override
-    public int getFeedbackNumber(String address) {
+    public int getFeedbackNumber(String address) throws SQLException {
         Connection connection;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            String sql1 = "select count(*) from user.consumer_feedback where seller_account=? and is_read=false";
-            PreparedStatement preparedStatement1;
-            preparedStatement1 = connection.prepareStatement(sql1);
-            preparedStatement1.setString(1, address);
-            ResultSet set1;
-            set1 = preparedStatement1.executeQuery();
-            ConnectionPool.getInstance().releaseConnection(connection);
-            if (set1.next()) {
-                int result = set1.getInt(1);
-                close(preparedStatement1, set1);
-                return result;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        connection = ConnectionPool.getInstance().getConnection();
+        String sql1 = "select count(*) from user.consumer_feedback where seller_account=? and is_read=false";
+        PreparedStatement preparedStatement1;
+        preparedStatement1 = connection.prepareStatement(sql1);
+        preparedStatement1.setString(1, address);
+        ResultSet set1;
+        set1 = preparedStatement1.executeQuery();
+        ConnectionPool.getInstance().releaseConnection(connection);
+        if (set1.next()) {
+            int result = set1.getInt(1);
+            close(preparedStatement1, set1);
+            return result;
         }
         return 0;
     }

@@ -62,10 +62,14 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
         }
         String judge = "suppliers";
         Boolean result;
-        if (judge.equals(identity)) {
-            result = TraceFactoryDAO.getSupplierDAO().updatePersonalInformation(type, change);
-        } else {
-            result = TraceFactoryDAO.getConsumerDAO().updatePersonalInformation(type, change);
+        try {
+            if (judge.equals(identity)) {
+                result = TraceFactoryDAO.getSupplierDAO().updatePersonalInformation(type, change);
+            } else {
+                result = TraceFactoryDAO.getConsumerDAO().updatePersonalInformation(type, change);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         if (!result) {
             throw new RuntimeException("更新失败");
@@ -95,8 +99,7 @@ public class CommonUsedMarketServiceImpl implements CommonUsedMarketService {
         try {
             return new SupplierAppealDAOImpl().showReportAndAppealResult(contractAccount);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
