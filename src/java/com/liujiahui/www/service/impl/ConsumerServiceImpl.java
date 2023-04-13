@@ -64,7 +64,6 @@ public class ConsumerServiceImpl implements ConsumerService {
         String checkError = "Success";
         if (!Objects.equals(transactionResponse.getReturnMessage(), checkError)) {
             System.out.println("交易失败");
-            traceTransactionDTO.setReturnMessage(transactionResponse.getReturnMessage());
             return null;
         }
         Tuple3<String, String, byte[]> buyItemOutput = contractTradeServiceSolidity.getBuyItemOutput(transactionReceipt);
@@ -151,7 +150,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         try {
             new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash, itemName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("写入数据库异常");
         }
     }
 
@@ -161,8 +160,11 @@ public class ConsumerServiceImpl implements ConsumerService {
             ItemPO item = new ItemBehindDAOImpl().returnItem(hash2);
             ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
             itemTradeSolidity.refundItem(Numeric.hexStringToByteArray(hash2), item.getIndex().toBigInteger());
+            UserSaveDTO.getInstance().setBalance(String.valueOf(itemTradeSolidity.getBalance()));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("退货异常");
+        } catch (ContractException e) {
+            throw new RuntimeException("合约异常");
         }
     }
 

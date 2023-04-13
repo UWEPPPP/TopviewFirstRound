@@ -7,7 +7,13 @@ import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 
 import java.math.BigInteger;
 
-public class Test {
+/**
+ * 部署
+ *
+ * @author 刘家辉
+ * @date 2023/04/13
+ */
+public class Deploy {
     public static void main(String[] args) throws Exception {
         BcosSDK sdk = BcosSDK.build("config-example.toml");
         Client client = sdk.getClient(1);
@@ -21,7 +27,5 @@ public class Test {
         ContractMarketService deploy1 = ContractMarketService.deploy(client, cryptoKeyPair, deploy.getContractAddress(), deploy4.getContractAddress());
         ContractProxyService deploy3 = ContractProxyService.deploy(client, cryptoKeyPair, deploy1.getContractAddress(), deploy.getContractAddress(), deploy4.getContractAddress());
         System.out.println("deploy3.getContractAddress() = " + deploy3.getContractAddress());
-
-
     }
 }

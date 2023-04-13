@@ -31,6 +31,34 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
     }
 
     @Override
+    public void resolveBadLike(String hash) {
+        Connection connection = null;
+        PreparedStatement preparedStatement;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            String sql = "update user.consumer_feedback set is_appeal = ? where item_hash = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setBoolean(1, false);
+            preparedStatement.setString(2, hash);
+            int results = preparedStatement.executeUpdate();
+            close(preparedStatement, null);
+            if(results==0){
+                throw new RuntimeException("更新失败");
+            }
+            ConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public int getFeedbackNumber(String address) throws SQLException {
         Connection connection;
         connection = ConnectionPool.getInstance().getConnection();
@@ -61,7 +89,7 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
             FeedbackPO feedbackPo = new FeedbackPO();
             feedbackPo.setBuyer(set1.getString("buyer_account"));
             feedbackPo.setSeller(set1.getString("seller_account"));
-            feedbackPo.setLikeOrReport("like".equals(set1.getString("like_report")));
+            feedbackPo.setLikeOrReport("likes".equals(set1.getString("like_report")));
             feedbackPo.setItemHash(set1.getString("item_hash"));
             feedbackPo.setComment(set1.getString("comment"));
             feedbackPo.setItemName(set1.getString("Name"));

@@ -13,12 +13,24 @@ import java.util.List;
  */
 public interface ConsumerFeedbackDAO {
     /**
+     * 解决恶意点赞
+     *
+     * @param hash 哈希
+     */
+    void resolveBadLike(String hash);
+
+    /**
+     * 得到反馈数量
+     *
      * @param address 地址
      * @return int
+     * @throws SQLException sqlexception异常
      */
     int getFeedbackNumber(String address) throws SQLException;
 
     /**
+     * 得到供应商历史
+     *
      * @param accountAddress 账户地址
      * @return {@link List}<{@link FeedbackPO}>
      * @throws SQLException sqlexception异常
@@ -40,7 +52,7 @@ public interface ConsumerFeedbackDAO {
      * @param comment  评论
      * @param type     类型
      * @param itemHash 项哈希
-     * @param itemName
+     * @param itemName 物品名称
      * @throws SQLException sqlexception异常
      */
     void writeDown(String seller, String buyer, String comment, String type, String itemHash, String itemName) throws SQLException;

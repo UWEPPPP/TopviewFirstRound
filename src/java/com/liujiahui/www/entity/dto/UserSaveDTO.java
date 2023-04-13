@@ -17,7 +17,7 @@ public class UserSaveDTO {
     private String gender;
     private String phone;
     private String balance;
-    private String userAddress;
+    private String locationAddress;
     private String identity;
     private ContractMarketService contractTradeServiceSolidity;
     private String contractAccount;
@@ -80,12 +80,12 @@ public class UserSaveDTO {
         this.phone = phone;
     }
 
-    public String getUserAddress() {
-        return userAddress;
+    public String getLocationAddress() {
+        return locationAddress;
     }
 
-    public void setUserAddress(String userAddress) {
-        this.userAddress = userAddress;
+    public void setLocationAddress(String locationAddress) {
+        this.locationAddress = locationAddress;
     }
 
 
@@ -96,7 +96,7 @@ public class UserSaveDTO {
                 ", gender='" + gender + '\'' +
                 ", phone='" + phone + '\'' +
                 ", balance='" + balance + '\'' +
-                ", address='" + userAddress + '\'' +
+                ", address='" + locationAddress + '\'' +
                 ", identity='" + identity + '\'';
     }
 

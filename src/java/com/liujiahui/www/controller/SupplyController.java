@@ -10,6 +10,7 @@ import com.liujiahui.www.service.SupplierService;
 import com.liujiahui.www.service.factory.TraceFactoryService;
 import com.liujiahui.www.view.TraceSupplyView;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -22,7 +23,12 @@ import java.util.List;
 public class SupplyController {
     private static final SupplierService marketService = (SupplierService) ProxyFactory.createProxy(TraceFactoryService.getSupplierUsedService());
 
-    public void registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) {
+    public Boolean registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) {
+        Integer integer = marketService.showToken();
+        int min = 10;
+        if(integer <=min|| integer <token.intValue()){
+            return false;
+        }
         TraceItemBO traceItemBO = new TraceItemBO();
         traceItemBO.setName(name);
         traceItemBO.setPrice(price);
@@ -34,6 +40,7 @@ public class SupplyController {
         traceItemBO.setStorage(storage);
         traceItemBO.setToken(token);
         marketService.addItem(traceItemBO);
+        return true;
     }
 
 
@@ -41,19 +48,25 @@ public class SupplyController {
         marketService.updateLogistics(id, logistics, status);
     }
 
-    public void updateItem(int index, List<ItemPO> itemPos, String name, String description, String price) {
+    public void updateItem(int id, List<ItemPO> itemPos, String name, String description, String price) {
         String oldName = null;
+        BigDecimal index = null;
         for (ItemPO itemPoOne : itemPos) {
-            if (itemPoOne.getIndex().intValue() == index) {
+            if (itemPoOne.getId() == id) {
                 oldName = itemPoOne.getName();
+                index=itemPoOne.getIndex();
+                break;
             }
         }
         TraceItemUpdateBO updateBO = new TraceItemUpdateBO();
-        updateBO.setIndex(index);
+        updateBO.setIndex(id);
         updateBO.setOldName(oldName);
         updateBO.setName(name);
         updateBO.setDescription(description);
         updateBO.setPrice(price);
+        if (index != null) {
+            updateBO.setIndex(index.intValue());
+        }
         marketService.updateItem(updateBO);
     }
 

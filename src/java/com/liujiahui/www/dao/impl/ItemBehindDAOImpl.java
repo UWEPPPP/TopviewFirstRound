@@ -5,6 +5,7 @@ import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.util.ConnectionPool;
+import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -48,13 +49,14 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
     }
 
     @Override
-    public void removeOrRestoredItem(int index, Boolean choice) throws SQLException {
+    public void removeOrRestoredItem(int index, Boolean choice, String contractAccount) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        String sql = "update user.item_behind set isRemoved = ?  where `index`=?";
+        String sql = "update user.item_behind set isRemoved = ?  where `index`=? and seller_address = ?";
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1, choice);
         preparedStatement.setInt(2, index);
+        preparedStatement.setString(3,contractAccount);
         int result = preparedStatement.executeUpdate();
         close(preparedStatement, null);
         ConnectionPool.getInstance().releaseConnection(connection);
@@ -135,8 +137,7 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
         if (set.next()) {
             ItemPO po = new ItemPO();
             po.setIndex(set.getBigDecimal("index"));
-            po.setHashes(hash.getBytes());
-            close(preparedStatement, null);
+            close(preparedStatement, set);
             ConnectionPool.getInstance().releaseConnection(connection);
             return po;
         }

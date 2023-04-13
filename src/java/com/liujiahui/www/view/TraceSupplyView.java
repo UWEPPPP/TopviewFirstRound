@@ -60,8 +60,13 @@ public class TraceSupplyView {
         System.out.println("请输入生产完后存储地点");
         String storage = in.nextLine();
         SupplyController supplyController = new SupplyController();
-        supplyController.registerItem(name, price, description, realName, realDescription, type, location, storage, token);
-        System.out.println("商品上架成功");
+        Boolean aBoolean = supplyController.registerItem(name, price, description, realName, realDescription, type, location, storage, token);
+        if (aBoolean) {
+            System.out.println("商品上架成功");
+        } else {
+            System.out.println("token不足,商品上架失败");
+        }
+
     }
 
     public static void showAndBuyItemBySupplier(List<ItemPO> pos) {
@@ -135,19 +140,19 @@ public class TraceSupplyView {
 
     public static void showSupplierItem(Map<String, List<ItemPO>> items) {
         System.out.println("对外公布商品列表");
-        showItem(items.get("Outside"));
+        showOutItem(items.get("Outside"));
         System.out.println("真实信息列表");
         showRealItem(items.get("real"));
         System.out.println("1.更新未售出产品的信息");
         System.out.println("2.更新已售出产品的状态");
-        System.out.println("3.下架or恢复商品");
+        System.out.println("3.下架or恢复未售出的商品");
         System.out.println("4.返回列表");
 
         int choice = in.nextInt();
         switch (choice) {
             case 1:
                 System.out.println("请输入商品序号");
-                int index = in.nextInt();
+                int id = in.nextInt();
                 System.out.println("请输入新名称");
                 String name = in.next();
                 in.nextLine();
@@ -155,17 +160,17 @@ public class TraceSupplyView {
                 String description = in.nextLine();
                 System.out.println("请输入新价格");
                 String price = in.nextLine();
-                supplyController.updateItem(index, items.get("Outside"), name, description, price);
+                supplyController.updateItem(id, items.get("Outside"), name, description, price);
                 System.out.println("更新成功");
                 break;
             case 2:
                 System.out.println("请输入商品序号");
-                int id = in.nextInt();
+                int id1 = in.nextInt();
                 System.out.println("请输入目前产品所在地");
                 String location = in.next();
                 System.out.println("请输入物流状态（未发货=0 运送中=1 已送达=2）");
                 int logistics = in.nextInt();
-                supplyController.updateLogistics(id, location, logistics);
+                supplyController.updateLogistics(id1, location, logistics);
                 System.out.println("更新成功");
                 break;
             case 3:
@@ -180,15 +185,22 @@ public class TraceSupplyView {
         }
     }
 
+
+
     public static void showItem(List<ItemPO> pos) {
         for (ItemPO itemPo : pos) {
             if (itemPo.getSold()) {
-                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 已售出 ");
+                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+ " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 已售出 ");
             } else {
-                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + "index" + itemPo.getIndex() + " 未售出 ");
+                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+" 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " index:" + itemPo.getIndex() + " 未售出 卖家 "+itemPo.getOwnerName());
             }
         }
     }
+    public static void showOutItem(List<ItemPO> pos) {
+        for (ItemPO itemPo : pos) {
+                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+ " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() +" 下标："+ itemPo.getIndex()+(itemPo.getSold()?" 已售出 ":"未售出"));
+            }
+        }
 
     public static void showRealItem(List<ItemPO> pos) {
         for (ItemPO po : pos) {

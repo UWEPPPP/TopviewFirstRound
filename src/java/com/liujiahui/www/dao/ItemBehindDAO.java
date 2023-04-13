@@ -7,6 +7,10 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * @author 刘家辉
+ * @date 2023/04/14
+ */
 public interface ItemBehindDAO {
     /**
      * 把所有项目
@@ -20,11 +24,12 @@ public interface ItemBehindDAO {
     /**
      * 删除或恢复项目
      *
-     * @param index  指数
-     * @param choice 选择
+     * @param index           指数
+     * @param choice          选择
+     * @param contractAccount
      * @throws SQLException sqlexception异常
      */
-    void removeOrRestoredItem(int index, Boolean choice) throws SQLException;
+    void removeOrRestoredItem(int index, Boolean choice, String contractAccount) throws SQLException;
 
     /**
      * 显示和更新反馈

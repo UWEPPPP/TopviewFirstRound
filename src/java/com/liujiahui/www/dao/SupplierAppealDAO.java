@@ -50,10 +50,10 @@ public interface SupplierAppealDAO {
     void insert(String hash, String comment) throws SQLException;
 
     /**
-     * 解决不好喜欢或上诉
+     * 解决恶意上诉
      *
      * @param hash   哈希
      * @param result 结果
      */
-    void resolveBadLikeOrAppeal(String hash, Boolean result);
+    void resolveBadAppeal(String hash, Boolean result);
 }

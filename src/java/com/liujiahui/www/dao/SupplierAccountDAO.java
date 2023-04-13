@@ -62,6 +62,7 @@ public interface SupplierAccountDAO {
      * @param type   类型
      * @param change 改变
      * @return {@link Boolean}
+     * @throws SQLException
      */
     Boolean updatePersonalInformation(String type, String change) throws SQLException;
 

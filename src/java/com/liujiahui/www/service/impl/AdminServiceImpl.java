@@ -87,6 +87,7 @@ public class AdminServiceImpl implements AdminService {
                 itemTradeSolidity.resolveAppeal(buyer, seller, token, true);
                 // 商家获补偿，用户扣除余额
             }
+            TraceFactoryDAO.getSupplierAppealDAO().resolveBadAppeal(hash1, result);
             //商家申诉失败 维护原样
         } else {
             //恶意点赞判定
@@ -95,8 +96,8 @@ public class AdminServiceImpl implements AdminService {
                 itemTradeSolidity.resolveAppeal(buyer, seller, token, false);
                 //商家扣除获得的token，用户扣除余额
             }
+            TraceFactoryDAO.getConsumerFeedbackDAO().resolveBadLike(hash1);
         }
-        TraceFactoryDAO.getSupplierAppealDAO().resolveBadLikeOrAppeal(hash1, result);
     }
 
     @Override
@@ -107,7 +108,7 @@ public class AdminServiceImpl implements AdminService {
         Client client = sdk.getClient(1);
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(adminKey);
-        ContractMarketService contractTradeService = ContractMarketService.load("0x3bb3c01d40dd2989d05e9865cc87a53773181a23", client, keyPair);
+        ContractMarketService contractTradeService = ContractMarketService.load("0x7c8fae799a68e8c6183b134fe3387f7a794f8592", client, keyPair);
         UserSaveDTO.getInstance().setItemTradeSolidity(contractTradeService);
         return Objects.equals(password, content);
     }

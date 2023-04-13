@@ -65,12 +65,13 @@ public class SupplierServiceImpl implements SupplierService {
         String name = traceItemUpdateBO.getName();
         String description = traceItemUpdateBO.getDescription();
         String price = traceItemUpdateBO.getPrice();
+        Integer index = traceItemUpdateBO.getIndex();
         try {
             TraceFactoryDAO.getItemShowDAO().updateItem(oldName, name, description, price);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("数据库异常");
         }
-        UserSaveDTO.getInstance().getItemTradeSolidity().updateItem(new BigInteger(String.valueOf(traceItemUpdateBO.getIndex())), new BigInteger(price));
+        UserSaveDTO.getInstance().getItemTradeSolidity().updateItem(BigInteger.valueOf(index), new BigInteger(price));
     }
 
     @Override
@@ -82,10 +83,10 @@ public class SupplierServiceImpl implements SupplierService {
     public Map<String, List<ItemPO>> showItem() {
         Map<String, List<ItemPO>> allItems = new HashMap<>(2);
         try {
-            List<ItemPO> allItem = TraceFactoryDAO.getItemBehindDAO().getAllItem(UserSaveDTO.getInstance().getUserAddress());
-            allItems.put("outside", allItem);
+            List<ItemPO> allItem = TraceFactoryDAO.getItemBehindDAO().getAllItem(UserSaveDTO.getInstance().getContractAccount());
+            allItems.put("Outside", allItem);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("数据库异常");
         }
         UserSaveDTO instance = UserSaveDTO.getInstance();
         try {
@@ -111,7 +112,8 @@ public class SupplierServiceImpl implements SupplierService {
         ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.removeItem(BigInteger.valueOf(index), choice);
         try {
-            new ItemBehindDAOImpl().removeOrRestoredItem(index, choice);
+            new ItemBehindDAOImpl().removeOrRestoredItem(index, choice,
+                    UserSaveDTO .getInstance().getContractAccount());
         } catch (SQLException e) {
             e.printStackTrace();
         }

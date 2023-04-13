@@ -49,7 +49,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         CryptoKeyPair keyPair = CRYPTO_SUITE.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
-        ContractMarketService asset = ContractMarketService.load("0x3bb3c01d40dd2989d05e9865cc87a53773181a23", CLIENT, keyPair);
+        ContractMarketService asset = ContractMarketService.load("0x7c8fae799a68e8c6183b134fe3387f7a794f8592", CLIENT, keyPair);
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
@@ -66,7 +66,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
     public TraceAccountOnContractDTO initByContract(String table) {
         CryptoKeyPair cryptoKeyPair = CRYPTO_SUITE.createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractMarketService asset = ContractMarketService.load("0x3bb3c01d40dd2989d05e9865cc87a53773181a23", CLIENT, cryptoKeyPair);
+        ContractMarketService asset = ContractMarketService.load("0x7c8fae799a68e8c6183b134fe3387f7a794f8592", CLIENT, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));
@@ -85,42 +85,41 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
 
     @Override
     public UserSaveDTO login(TraceLoginBO traceLoginBO) {
-        throw new RuntimeException("不支持的操作");
-//        String userAccount = traceLoginBO.getAccount();
-//        String userPassword = traceLoginBO.getPassword();
-//        String identity = traceLoginBO.getIdentity();
-//        String identityCheck = Objects.equals(identity, "consumer") ? "buyer_account" : "seller_account";
-//        String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
-//        UserPO login;
-//        String inform = "suppliers";
-//        userPassword = CryptoUtil.encryptHexPrivateKey(userPassword, "src/resource/password.txt");
-//        if (!Objects.equals(identity, inform)) {
-//            login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
-//
-//        } else {
-//            login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
-//        }
-//        if (login != null) {
-//            UserSaveDTO user = UserSaveDTO.getInstance();
-//            String balance;
-//            balance = String.valueOf(loadByContract(login.getPrivateKey()));
-//            user.setUserName(login.getName());
-//            user.setBalance(balance);
-//            user.setGender(login.getGender());
-//            user.setPhone(login.getPhoneNumber());
-//            user.setIdentity(identity);
-//            user.setContractAccount(login.getAddress());
-//            if (identity.equals(inform)) {
-//                try {
-//                    user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
-//                } catch (SQLException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
-//            return user;
-//        }
-//        return null;
+        String userAccount = traceLoginBO.getAccount();
+        String userPassword = traceLoginBO.getPassword();
+        String identity = traceLoginBO.getIdentity();
+        String identityCheck = Objects.equals(identity, "consumer") ? "buyer_account" : "seller_account";
+        String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
+        UserPO login;
+        String inform = "suppliers";
+        userPassword = CryptoUtil.encryptHexPrivateKey(userPassword, "src/resource/password.txt");
+        if (!Objects.equals(identity, inform)) {
+            login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
+
+        } else {
+            login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
+        }
+        if (login != null) {
+            UserSaveDTO user = UserSaveDTO.getInstance();
+            String balance;
+            balance = String.valueOf(loadByContract(login.getPrivateKey()));
+            user.setUserName(login.getName());
+            user.setBalance(balance);
+            user.setGender(login.getGender());
+            user.setPhone(login.getPhoneNumber());
+            user.setIdentity(identity);
+            user.setContractAccount(login.getAddress());
+            if (identity.equals(inform)) {
+                try {
+                    user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
+            return user;
+        }
+        return null;
     }
 
     @Override
