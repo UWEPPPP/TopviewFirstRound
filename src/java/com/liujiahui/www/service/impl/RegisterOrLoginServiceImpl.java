@@ -85,48 +85,48 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
 
     @Override
     public UserSaveDTO login(TraceLoginBO traceLoginBO) {
-        String userAccount = traceLoginBO.getAccount();
-        String userPassword = traceLoginBO.getPassword();
-        String identity = traceLoginBO.getIdentity();
-        String identityCheck = Objects.equals(identity, "consumer") ? "buyer_account" : "seller_account";
-        String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
-        UserPO login;
-        String inform = "suppliers";
-        userPassword = CryptoUtil.encryptHexPrivateKey(userPassword, "src/resource/password.txt");
-        if (!Objects.equals(identity, inform)) {
-            login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
-
-        } else {
-            login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
-        }
-        if (login != null) {
-            UserSaveDTO user = UserSaveDTO.getInstance();
-            String balance;
-            balance = String.valueOf(loadByContract(login.getPrivateKey()));
-            user.setUserName(login.getName());
-            user.setBalance(balance);
-            user.setGender(login.getGender());
-            user.setPhone(login.getPhoneNumber());
-            user.setIdentity(identity);
-            user.setContractAccount(login.getAddress());
-            if (identity.equals(inform)) {
-                try {
-                    user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
-            return user;
-        }
-        return null;
+        throw new RuntimeException("不支持的操作");
+//        String userAccount = traceLoginBO.getAccount();
+//        String userPassword = traceLoginBO.getPassword();
+//        String identity = traceLoginBO.getIdentity();
+//        String identityCheck = Objects.equals(identity, "consumer") ? "buyer_account" : "seller_account";
+//        String judge = "buyer_account".equals(identityCheck) ? "consumer_is_read" : "supplier_is_read";
+//        UserPO login;
+//        String inform = "suppliers";
+//        userPassword = CryptoUtil.encryptHexPrivateKey(userPassword, "src/resource/password.txt");
+//        if (!Objects.equals(identity, inform)) {
+//            login = TraceFactoryDAO.getConsumerDAO().login(userAccount, userPassword);
+//
+//        } else {
+//            login = TraceFactoryDAO.getSupplierDAO().login(userAccount, userPassword);
+//        }
+//        if (login != null) {
+//            UserSaveDTO user = UserSaveDTO.getInstance();
+//            String balance;
+//            balance = String.valueOf(loadByContract(login.getPrivateKey()));
+//            user.setUserName(login.getName());
+//            user.setBalance(balance);
+//            user.setGender(login.getGender());
+//            user.setPhone(login.getPhoneNumber());
+//            user.setIdentity(identity);
+//            user.setContractAccount(login.getAddress());
+//            if (identity.equals(inform)) {
+//                try {
+//                    user.setInformationSize(new ConsumerFeedbackDAOImpl().getFeedbackNumber(login.getAddress()));
+//                } catch (SQLException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//            user.setAppealResultSize(new SupplierAppealDAOImpl().getResultAppealSize(login.getAddress(), identityCheck, judge));
+//            return user;
+//        }
+//        return null;
     }
 
     @Override
     public Boolean register(TraceRegisterBO traceRegisterBO) {
         String password = traceRegisterBO.getPassword();
         traceRegisterBO.setPassword(CryptoUtil.encryptHexPrivateKey(password, "src/resource/password.txt"));
-        System.out.println(traceRegisterBO.getAddress());
         if (traceRegisterBO.getAddress() != null) {
             return new SupplierAccountDAOImpl().register(traceRegisterBO);
         } else {

@@ -1,6 +1,8 @@
 package com.liujiahui.www.controller.proxy;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -8,7 +10,7 @@ import java.util.logging.Logger;
  * @date 2023/04/13
  */
 public class ProxyFactory {
-    private static final Logger LOGGER = Logger.getLogger("ProxyController");
+    private static final Logger LOGGER = Logger.getLogger("ProxyFactory");
 
     /**
      * 创建代理
@@ -22,8 +24,8 @@ public class ProxyFactory {
         return Proxy.newProxyInstance(classLoader, interfaces, (proxy, method, args) -> {
             try {
                 return method.invoke(target, args);
-            } catch (RuntimeException e) {
-                LOGGER.log(java.util.logging.Level.WARNING, "服务层抛出异常", e);
+            }catch (InvocationTargetException e){
+                LOGGER.log(Level.INFO, "服务层抛出异常", e);
                 return null;
             }
         });

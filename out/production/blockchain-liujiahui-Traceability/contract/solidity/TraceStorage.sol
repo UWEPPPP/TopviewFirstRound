@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "Verifier.sol";
 import "TraceStorage.sol";
 
@@ -172,7 +173,7 @@ contract TraceMarket {
 
     function refundItem(bytes32 hash, uint256 index) external onlyConsumer {
         TraceStorage.Item memory item = trace.getSingleItem(hash);
-        (uint256 date, , ) = trace.getStatus(hash);
+        (uint256 date, ,) = trace.getStatus(hash);
         require(item.isSold, "Item is not sold yet");
         require(now < (date + 7 days), "Out of date");
         trace.increaseBalance(msg.sender, item.price);
