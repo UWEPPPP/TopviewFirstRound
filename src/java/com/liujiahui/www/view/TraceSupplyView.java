@@ -189,7 +189,7 @@ public class TraceSupplyView {
     public static void showUnSoldItem(List<ItemPO> pos) {
         for (ItemPO itemPo : pos) {
             if (!itemPo.getSold()) {
-                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+ " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 已售出 ");
+                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+ " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription());
             }
         }
     }

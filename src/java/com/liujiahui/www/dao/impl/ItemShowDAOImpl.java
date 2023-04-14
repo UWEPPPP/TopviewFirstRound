@@ -211,7 +211,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
     @Override
     public ItemPO getSingleItem(String hash) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash  where item_show.hash = ?";
+        String sql = "select * from user.item_show INNER JOIN user.item_behind ON item_show.hash=item_behind.hash INNER JOIN user.consumer_feedback on item_hash=item_show.hash   where item_show.hash = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, hash);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -220,7 +220,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
             itemPo.setId(resultSet.getInt("id"));
             itemPo.setName(resultSet.getString("name"));
             itemPo.setDescription(resultSet.getString("description"));
-            itemPo.setOwner(resultSet.getString("owner_address"));
+            itemPo.setOwner(resultSet.getString("buyer_account"));
             itemPo.setSeller(resultSet.getString("seller_address"));
             itemPo.setToken(resultSet.getInt("token"));
         }

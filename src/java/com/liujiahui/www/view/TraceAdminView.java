@@ -20,6 +20,9 @@ public class TraceAdminView {
         System.out.println("你好管理员");
         do {
             System.out.println("以下为所有用户的反馈信息");
+            System.out.println("对于用户点赞的信息你需要辨别是否恶意点赞");
+            System.out.println("对于商家的申诉你需要进行处理");
+            System.out.println("---------------------------------");
             List<FeedbackPO> feedbacks = AdminController.showAllFeedbackAndComplaint();
             for (FeedbackPO feedback : feedbacks) {
                 if (feedback.getAppeal()) {
@@ -33,9 +36,6 @@ public class TraceAdminView {
                     System.out.println(feedback);
                 }
             }
-            System.out.println("对于用户点赞的信息你需要辨别是否恶意点赞");
-            System.out.println("对于商家的申诉你需要进行处理");
-            System.out.println("---------------------------------");
             System.out.println("1.辨别是否恶意点赞");
             System.out.println("2.处理商家申诉");
             System.out.println("3.退出");

@@ -70,8 +70,8 @@ public class TraceConsumeView {
                         System.out.println("请描述情况");
                         String description = in.next();consumeController.feedback(2, check.getSeller(), description, check.getHash(), check.getName());
                         consumeController.returnItem(check.getHash());
-                        System.out.println("感谢您的举报,已为您进行退款");
-                        System.out.println("管理员会尽快处理");
+                        System.out.println("感谢您的举报,管理员将尽快处理");
+                        System.out.println("已进行自动退款");
                         break;
                     default:
                 }
