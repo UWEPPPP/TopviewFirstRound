@@ -108,7 +108,7 @@ public class AdminServiceImpl implements AdminService {
         Client client = sdk.getClient(1);
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         CryptoKeyPair keyPair = cryptoSuite.createKeyPair(adminKey);
-        ContractMarketService contractTradeService = ContractMarketService.load("0x7c8fae799a68e8c6183b134fe3387f7a794f8592", client, keyPair);
+        ContractMarketService contractTradeService = ContractMarketService.load("0x46bac9f10afa3acca5fe8aa676540b121ee1d276", client, keyPair);
         UserSaveDTO.getInstance().setItemTradeSolidity(contractTradeService);
         return Objects.equals(password, content);
     }

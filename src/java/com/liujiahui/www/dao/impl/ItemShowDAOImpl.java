@@ -129,7 +129,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
     @Override
     public void updateItem(String oldName, String name, String description, String price) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        String sql = "update user.item_show Inner join user.item_behind on item_show.hash=item_behind.hash INNER JOIN user.consumer_feedback on item_hash=item_show.hash set name = ?,description = ?,price = ?,consumer_feedback.item_name=?,item_behind.item_name=? where name = ?";
+        String sql = "update user.item_show Inner join user.item_behind on item_show.hash=item_behind.hash  set name = ?,description = ?,price = ?,item_behind.item_name=? where name = ?";
         PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, name);
@@ -137,8 +137,7 @@ public class ItemShowDAOImpl implements ItemShowDAO {
         BigDecimal bigDecimal = new BigDecimal(price);
         preparedStatement.setBigDecimal(3, bigDecimal);
         preparedStatement.setString(4, name);
-        preparedStatement.setString(5, name);
-        preparedStatement.setString(6, oldName);
+        preparedStatement.setString(5, oldName);
         int result = preparedStatement.executeUpdate();
         close(preparedStatement, null);
         ConnectionPool.getInstance().releaseConnection(connection);

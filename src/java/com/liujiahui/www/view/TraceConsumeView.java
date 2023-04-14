@@ -30,6 +30,7 @@ public class TraceConsumeView {
         System.out.println("1.通过产品购买时给予的hash值验伪");
         System.out.println("2.查看产品运送状态");
         System.out.println("3.查看产品的生命周期");
+        System.out.println("4.返回上一级");
         Scanner in = new Scanner(System.in);
         ConsumeController consumeController = new ConsumeController();
         int choice = in.nextInt();
@@ -38,9 +39,9 @@ public class TraceConsumeView {
                 System.out.println("请输入商品hash");
                 String hash = in.next();
                 TraceTransactionVO check = consumeController.checkByHash(hash);
-                System.out.println("根据hash " + check.getHash() + "查到的产品信息是");
-                System.out.println("名字" + check.getName());
-                System.out.println("详情" + check.getDescription());
+                System.out.println("根据hash 查到的真实信息是");
+                System.out.println("真实名字" + check.getName());
+                System.out.println("真实属性" + check.getDescription());
                 System.out.println("信息是否如购买时商家所给？");
                 System.out.println("1.是");
                 System.out.println("2.否");
@@ -67,8 +68,7 @@ public class TraceConsumeView {
                     case 2:
                         System.out.println("鉴定为假品，进行举报");
                         System.out.println("请描述情况");
-                        String description = in.next();
-                        consumeController.feedback(2, check.getSeller(), description, check.getHash(), check.getName());
+                        String description = in.next();consumeController.feedback(2, check.getSeller(), description, check.getHash(), check.getName());
                         consumeController.returnItem(check.getHash());
                         System.out.println("感谢您的举报,已为您进行退款");
                         System.out.println("管理员会尽快处理");
@@ -151,9 +151,9 @@ public class TraceConsumeView {
     public static void showAppealResult(List<FeedbackPO> list) {
         for (FeedbackPO feedbacks : list) {
             if (feedbacks.isAppealResult()) {
-                System.out.println("被举报人：" + feedbacks.getSeller() + " 举报物品" + feedbacks.getItemName() + " 举报结果：被鉴定为恶意举报 将进行一定资产的没收");
+                System.out.println("被举报人：" + feedbacks.getSeller()  + " 举报结果：被鉴定为恶意举报 将进行一定资产的没收");
             } else {
-                System.out.println("被举报人：" + feedbacks.getSeller() + " 举报物品" + feedbacks.getItemName() + " 举报结果：被鉴定为真实举报 将对商家进行处罚");
+                System.out.println("被举报人：" + feedbacks.getSeller()  + " 举报结果：被鉴定为真实举报 将对商家进行处罚");
             }
         }
     }

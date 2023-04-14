@@ -148,8 +148,9 @@ public class ConsumerServiceImpl implements ConsumerService {
         ContractMarketService itemTradeSolidity = UserSaveDTO.getInstance().getItemTradeSolidity();
         itemTradeSolidity.handing_feedback(seller, choice == 1, Numeric.hexStringToByteArray(itemHash));
         try {
-            new ConsumerFeedbackDAOImpl().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash, itemName);
+            TraceFactoryDAO.getConsumerFeedbackDAO().writeDown(seller, buyer, comment, choice == 1 ? "likes" : "reports", itemHash, itemName);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException("写入数据库异常");
         }
     }

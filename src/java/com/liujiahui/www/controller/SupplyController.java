@@ -44,8 +44,8 @@ public class SupplyController {
     }
 
 
-    public void updateLogistics(int id, String logistics, int status) {
-        marketService.updateLogistics(id, logistics, status);
+    public void updateLogistics(int index, String logistics, int status) {
+        marketService.updateLogistics(index, logistics, status);
     }
 
     public void updateItem(int id, List<ItemPO> itemPos, String name, String description, String price) {
@@ -59,14 +59,13 @@ public class SupplyController {
             }
         }
         TraceItemUpdateBO updateBO = new TraceItemUpdateBO();
-        updateBO.setIndex(id);
+        if (index != null) {
+            updateBO.setIndex(index.intValue());
+        }
         updateBO.setOldName(oldName);
         updateBO.setName(name);
         updateBO.setDescription(description);
         updateBO.setPrice(price);
-        if (index != null) {
-            updateBO.setIndex(index.intValue());
-        }
         marketService.updateItem(updateBO);
     }
 

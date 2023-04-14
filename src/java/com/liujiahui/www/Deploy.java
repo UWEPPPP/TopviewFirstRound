@@ -21,11 +21,14 @@ public class Deploy {
         String hexPrivateKey = cryptoKeyPair.getHexPrivateKey();
         ContractVerifierService deploy4 = ContractVerifierService.deploy(client, cryptoKeyPair);
         ContractTokenService deploy2 = ContractTokenService.deploy(client, cryptoKeyPair, "topview", BigInteger.valueOf(1), "TV");
-        System.out.println(cryptoKeyPair.getAddress());
         System.out.println("hexPrivateKey = " + hexPrivateKey);
-        ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair, deploy2.getContractAddress());
-        ContractMarketService deploy1 = ContractMarketService.deploy(client, cryptoKeyPair, deploy.getContractAddress(), deploy4.getContractAddress());
-        ContractProxyService deploy3 = ContractProxyService.deploy(client, cryptoKeyPair, deploy1.getContractAddress(), deploy.getContractAddress(), deploy4.getContractAddress());
-        System.out.println("deploy3.getContractAddress() = " + deploy3.getContractAddress());
+        ContractStorageService deploy = ContractStorageService.deploy(client, cryptoKeyPair);
+        ContractMarketService deploy1 = ContractMarketService.deploy(client, cryptoKeyPair, deploy.getContractAddress(), deploy4.getContractAddress(),deploy2.getContractAddress());
+        ContractProxyService deploy3 = ContractProxyService.deploy(client, cryptoKeyPair, deploy1.getContractAddress(), deploy.getContractAddress(), deploy4.getContractAddress(),deploy2.getContractAddress());
+        System.out.println("Token合约地址 = " + deploy2.getContractAddress());
+        System.out.println("Storage合约地址 = " + deploy.getContractAddress());
+        System.out.println("Verifier合约地址 = " + deploy4.getContractAddress());
+        System.out.println("Market合约地址 = " + deploy1.getContractAddress());
+        System.out.println("Proxy合约地址 = " + deploy3.getContractAddress());
     }
 }

@@ -11,10 +11,26 @@ contract Verifier {
     mapping(address => bool) public ProxyRight;
     mapping(address => uint256) public MarketRight;
 
+    modifier onlyAdmin()  {
+        require(Market_right_check(msg.sender) == 3, "No Right");
+        _;
+    }
 
+    modifier onlySupplier( ) {
+        require(Market_right_check(msg.sender) == 1, "You are not a supplier");
+        _;
+    }
 
-    modifier onlyContract(address usedContract){
-        require(usedContract == proxy_address || usedContract == market_address, "No right");
+    modifier onlyConsumer() {
+        require(Market_right_check(msg.sender) == 2, "You are not a consumer");
+        _;
+    }
+
+    modifier onlyContract(address usedContract) {
+        require(
+            usedContract == proxy_address || usedContract == market_address,
+            "No right"
+        );
         _;
     }
 
@@ -24,13 +40,14 @@ contract Verifier {
             proxy_key = key;
             firstY = true;
         } else {
-            if (keccak256(abi.encodePacked(key)) == (keccak256(abi.encodePacked(proxy_key)))) {
+            if (
+                keccak256(abi.encodePacked(key)) ==
+                (keccak256(abi.encodePacked(proxy_key)))
+            ) {
                 proxy_address = addr;
             }
         }
-
     }
-
 
     function market_address_set(address addr, string memory key) external {
         if (!firstM) {
@@ -38,25 +55,35 @@ contract Verifier {
             market_key = key;
             firstM = true;
         } else {
-            if (keccak256(abi.encodePacked(key)) == (keccak256(abi.encodePacked(market_key)))) {
+            if (
+                keccak256(abi.encodePacked(key)) ==
+                (keccak256(abi.encodePacked(market_key)))
+            ) {
                 market_address = addr;
             }
         }
     }
 
-    function Proxy_right_check(address user) external view returns (bool){
+    function Proxy_right_check(address user) public view returns (bool) {
         return ProxyRight[user];
     }
 
-    function Proxy_right_set(address admin, address used_contract) external onlyContract(used_contract) {
+    function Proxy_right_set(address admin, address used_contract)
+    external
+    onlyContract(used_contract)
+    {
         ProxyRight[admin] = true;
     }
 
-    function Market_right_set(address user, uint256 choice, address used_contract) external onlyContract(used_contract) {
+    function Market_right_set(
+        address user,
+        uint256 choice,
+        address used_contract
+    ) external onlyContract(used_contract) {
         MarketRight[user] = choice;
     }
 
-    function Market_right_check(address user) external view returns (uint256){
+    function Market_right_check(address user) public view returns (uint256) {
         return MarketRight[user];
     }
 }

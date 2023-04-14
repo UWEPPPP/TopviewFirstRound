@@ -49,7 +49,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
         CryptoKeyPair keyPair = CRYPTO_SUITE.createKeyPair(hexPrivateKey);
         //解密
         TransactionDecoderInterface decoder = new TransactionDecoderService(CRYPTO_SUITE);
-        ContractMarketService asset = ContractMarketService.load("0x7c8fae799a68e8c6183b134fe3387f7a794f8592", CLIENT, keyPair);
+        ContractMarketService asset = ContractMarketService.load("0x46bac9f10afa3acca5fe8aa676540b121ee1d276", CLIENT, keyPair);
         UserSaveDTO userInformationSaveDTO = UserSaveDTO.getInstance();
         userInformationSaveDTO.setDecoder(decoder);
         userInformationSaveDTO.setItemTradeSolidity(asset);
@@ -66,7 +66,7 @@ public class RegisterOrLoginServiceImpl implements RegisterOrLoginService {
     public TraceAccountOnContractDTO initByContract(String table) {
         CryptoKeyPair cryptoKeyPair = CRYPTO_SUITE.createKeyPair();
         String accountAddress = cryptoKeyPair.getAddress();
-        ContractMarketService asset = ContractMarketService.load("0x7c8fae799a68e8c6183b134fe3387f7a794f8592", CLIENT, cryptoKeyPair);
+        ContractMarketService asset = ContractMarketService.load("0x46bac9f10afa3acca5fe8aa676540b121ee1d276", CLIENT, cryptoKeyPair);
         String identity = "suppliers";
         if (table.equals(identity)) {
             asset.registerAsset(BigInteger.valueOf(1));

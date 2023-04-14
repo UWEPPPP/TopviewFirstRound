@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
-
 import "Verifier.sol";
 import "TraceStorage.sol";
+import "ERC20.sol";
 
 contract TraceMarket {
     TraceStorage private trace;
@@ -12,11 +12,12 @@ contract TraceMarket {
     address public test;
     address public implementation; // 逻辑合约地址。implementation合约同一个位置的状态变量类型必须和Proxy合约的相同，不然会报错。
     Verifier private veri;
+    MyToken private erc20;
 
     event NewItemAdd(address indexed seller, string name, uint256 price);
     event ItemSold(address indexed seller, address buyer, bytes32 hash);
 
-    constructor(address storageAddress, address veri_Address) public {
+    constructor(address storageAddress, address veri_Address,address token) public {
         trace = TraceStorage(storageAddress);
         admin = msg.sender;
         trace.setLogic(address(this), "liujiahui1Y");
@@ -24,6 +25,8 @@ contract TraceMarket {
         test = address(this);
         veri.market_address_set(test, "liujiahui1Y");
         veri.Market_right_set(msg.sender, 3, test);
+        erc20=MyToken(token);
+        erc20.setLogic(address(this), "liujiahui1Y");
     }
 
     modifier onlyAdmin() {
@@ -77,6 +80,7 @@ contract TraceMarket {
             hash
         );
         trace.addItem(item, counter);
+        erc20.pledge(item.seller, counter);
         emit NewItemAdd(msg.sender, name, price);
         return (id, hash);
     }
@@ -93,7 +97,7 @@ contract TraceMarket {
     {
         TraceStorage.Item memory item = trace.getSellerItem(seller, index);
         require(!item.isSold, "Item is sold");
-        require(item.price <= getBalance(msg.sender), "Not enough money");
+        require(item.price <= getBalance(), "Not enough money");
         trace.itemIsSold(seller, index, true);
         trace.decreaseBalance(msg.sender, item.price);
         trace.increaseBalance(seller, item.price);
@@ -126,6 +130,9 @@ contract TraceMarket {
 
     function registerAsset(uint256 choice) external {
         trace.registerAsset(msg.sender, choice);
+        if(choice==1){
+            erc20.register(msg.sender);
+        }
         veri.Market_right_set(msg.sender, choice, test);
     }
 
@@ -190,11 +197,18 @@ contract TraceMarket {
         bool chioce,
         bytes32 hash
     ) external onlyConsumer {
-        trace.like_or_report(seller, chioce, hash);
+        uint256 calculate=trace.calculateToken(seller, hash);
+        if(!chioce){
+            trace.report(seller,hash,calculate);
+        }else{
+            erc20.reward(seller, calculate);
+        }
+        uint256 pledge= trace.returnToken(seller,hash);
+        erc20.reward(seller,pledge);
     }
 
     function showSupplierToken() external view onlySupplier returns (uint256) {
-        return trace.getToken(msg.sender);
+        return erc20.balanceOf(msg.sender);
     }
 
     function getSingleItem(bytes32 hash)
@@ -212,6 +226,11 @@ contract TraceMarket {
         bool choice
     ) external onlyAdmin {
         uint256 count = token / 10;
-        trace.appeal(feedbacker, supplier, count, choice);
+        trace.appealYes(feedbacker, count);
+        if(choice){
+            erc20.reward(supplier, count);
+        }else{
+            erc20.pledge(supplier, count);
+        }
     }
 }

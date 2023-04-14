@@ -128,10 +128,10 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
         preparedStatement1.setBoolean(6, false);
         preparedStatement1.setString(7, itemName);
         int result1 = preparedStatement1.executeUpdate();
-        ConnectionPool.getInstance().releaseConnection(connection);
         close(preparedStatement, null);
         close(preparedStatement1, null);
-        if (result == 0 || result1 == 0) {
+        ConnectionPool.getInstance().releaseConnection(connection);
+       if (result == 0 || result1 == 0) {
             throw new RuntimeException("更新失败");
         }
     }

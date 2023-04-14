@@ -70,7 +70,7 @@ public class TraceSupplyView {
     }
 
     public static void showAndBuyItemBySupplier(List<ItemPO> pos) {
-        showItem(pos);
+        showUnSoldItem(pos);
         System.out.println("1:查看卖家的历史");
         System.out.println("2:按照条件筛选商品");
         System.out.println("3:返回列表");
@@ -91,7 +91,7 @@ public class TraceSupplyView {
                 CommonUsedController traceQueryController = new CommonUsedController();
                 List<ItemPO> traceItem = new ArrayList<>();
                 traceItem = getTraceItemSameWay(in, choice1, traceQueryController, traceItem);
-                showItem(traceItem);
+                showUnSoldItem(traceItem);
             default:
 
         }
@@ -147,7 +147,6 @@ public class TraceSupplyView {
         System.out.println("2.更新已售出产品的状态");
         System.out.println("3.下架or恢复未售出的商品");
         System.out.println("4.返回列表");
-
         int choice = in.nextInt();
         switch (choice) {
             case 1:
@@ -164,13 +163,13 @@ public class TraceSupplyView {
                 System.out.println("更新成功");
                 break;
             case 2:
-                System.out.println("请输入商品序号");
-                int id1 = in.nextInt();
+                System.out.println("请输入商品下标");
+                int index = in.nextInt();
                 System.out.println("请输入目前产品所在地");
                 String location = in.next();
                 System.out.println("请输入物流状态（未发货=0 运送中=1 已送达=2）");
                 int logistics = in.nextInt();
-                supplyController.updateLogistics(id1, location, logistics);
+                supplyController.updateLogistics(index, location, logistics);
                 System.out.println("更新成功");
                 break;
             case 3:
@@ -187,12 +186,10 @@ public class TraceSupplyView {
 
 
 
-    public static void showItem(List<ItemPO> pos) {
+    public static void showUnSoldItem(List<ItemPO> pos) {
         for (ItemPO itemPo : pos) {
-            if (itemPo.getSold()) {
+            if (!itemPo.getSold()) {
                 System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+ " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 已售出 ");
-            } else {
-                System.out.println(itemPo.getId() + " " + "商品名称：" + itemPo.getName() +" 商品类型:"+itemPo.getType()+" 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " index:" + itemPo.getIndex() + " 未售出 卖家 "+itemPo.getOwnerName());
             }
         }
     }
