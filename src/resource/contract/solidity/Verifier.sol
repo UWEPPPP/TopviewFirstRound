@@ -16,7 +16,7 @@ contract Verifier {
         _;
     }
 
-    modifier onlySupplier( ) {
+    modifier onlySupplier() {
         require(Market_right_check(msg.sender) == 1, "You are not a supplier");
         _;
     }

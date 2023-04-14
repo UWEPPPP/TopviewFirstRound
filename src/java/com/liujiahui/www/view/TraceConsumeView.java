@@ -68,7 +68,8 @@ public class TraceConsumeView {
                     case 2:
                         System.out.println("鉴定为假品，进行举报");
                         System.out.println("请描述情况");
-                        String description = in.next();consumeController.feedback(2, check.getSeller(), description, check.getHash(), check.getName());
+                        String description = in.next();
+                        consumeController.feedback(2, check.getSeller(), description, check.getHash(), check.getName());
                         consumeController.returnItem(check.getHash());
                         System.out.println("感谢您的举报,管理员将尽快处理");
                         System.out.println("已进行自动退款");
@@ -151,9 +152,9 @@ public class TraceConsumeView {
     public static void showAppealResult(List<FeedbackPO> list) {
         for (FeedbackPO feedbacks : list) {
             if (feedbacks.isAppealResult()) {
-                System.out.println("被举报人：" + feedbacks.getSeller()  + " 举报结果：被鉴定为恶意举报 将进行一定资产的没收");
+                System.out.println("被举报人：" + feedbacks.getSeller() + " 举报结果：被鉴定为恶意举报 将进行一定资产的没收");
             } else {
-                System.out.println("被举报人：" + feedbacks.getSeller()  + " 举报结果：被鉴定为真实举报 将对商家进行处罚");
+                System.out.println("被举报人：" + feedbacks.getSeller() + " 举报结果：被鉴定为真实举报 将对商家进行处罚");
             }
         }
     }

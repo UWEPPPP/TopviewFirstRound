@@ -4,8 +4,6 @@ import com.liujiahui.www.entity.po.ItemPO;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ItemShowDAOImplTest {
 
     @org.junit.jupiter.api.Test

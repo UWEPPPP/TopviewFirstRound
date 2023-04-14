@@ -5,7 +5,6 @@ import com.liujiahui.www.entity.dto.UserSaveDTO;
 import com.liujiahui.www.entity.po.FeedbackPO;
 import com.liujiahui.www.entity.po.ItemPO;
 import com.liujiahui.www.util.ConnectionPool;
-import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -56,7 +55,7 @@ public class ItemBehindDAOImpl implements ItemBehindDAO {
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setBoolean(1, choice);
         preparedStatement.setInt(2, index);
-        preparedStatement.setString(3,contractAccount);
+        preparedStatement.setString(3, contractAccount);
         int result = preparedStatement.executeUpdate();
         close(preparedStatement, null);
         ConnectionPool.getInstance().releaseConnection(connection);

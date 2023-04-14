@@ -20,10 +20,10 @@ public class TraceSameView {
 
 
     public static void showItem(List<ItemPO> itemPos) {
-             System.out.println("商品列表");
+        System.out.println("商品列表");
         for (ItemPO itemPo : itemPos) {
             if (!itemPo.getSold()) {
-                System.out.println("商品种类 " + itemPo.getType() + " 序号: " + itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 卖家 "+itemPo.getOwnerName());
+                System.out.println("商品种类 " + itemPo.getType() + " 序号: " + itemPo.getId() + " " + "商品名称：" + itemPo.getName() + " 商品价格：" + itemPo.getPrice() + " 商品描述：" + itemPo.getDescription() + " 卖家 " + itemPo.getOwnerName());
             }
         }
     }

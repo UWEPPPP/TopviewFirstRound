@@ -1,7 +1,6 @@
 package com.liujiahui.www.service.impl;
 
 import com.liujiahui.www.dao.factory.TraceFactoryDAO;
-import com.liujiahui.www.dao.impl.ConsumerFeedbackDAOImpl;
 import com.liujiahui.www.dao.impl.ItemBehindDAOImpl;
 import com.liujiahui.www.entity.bo.TraceFeedbackBO;
 import com.liujiahui.www.entity.dto.TraceItemStatusDTO;

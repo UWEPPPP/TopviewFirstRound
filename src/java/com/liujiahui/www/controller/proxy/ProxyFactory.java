@@ -24,7 +24,7 @@ public class ProxyFactory {
         return Proxy.newProxyInstance(classLoader, interfaces, (proxy, method, args) -> {
             try {
                 return method.invoke(target, args);
-            }catch (InvocationTargetException e){
+            } catch (InvocationTargetException e) {
                 LOGGER.log(Level.INFO, "服务层抛出异常", e);
                 return null;
             }

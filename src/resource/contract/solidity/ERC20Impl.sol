@@ -1,11 +1,12 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.1;
 pragma experimental ABIEncoderV2;
+
 import "erc20.sol";
 
 contract MyToken is Token {
     // MAX_UINT256 代表最大的 uint256 值
-    uint256 private constant MAX_UINT256 = 2**256 - 1;
+    uint256 private constant MAX_UINT256 = 2 ** 256 - 1;
     // balances 存储每个地址的代币余额
     mapping(address => uint256) public balances;
     // allowed 存储每个地址授权给其他地址的代币数量
@@ -53,21 +54,21 @@ NOTE:
     }
 
     modifier onlyLogic(){
-        require(msg.sender==logic_address||msg.sender==proxy,"No right");
+        require(msg.sender == logic_address || msg.sender == proxy, "No right");
         _;
     }
 
-    function setLogic(address logicAddress,string memory password_) external  {
-        require(logicAddress!=address(0),"Invalid");
-        if(logic_address==address(0)){
-            passwordToken=password_;
-            logic_address=logicAddress;
-        }else{
-            require(keccak256(abi.encodePacked(password_))==keccak256(abi.encodePacked(passwordToken)),"No Right");
-            if(proxy==address(0)){
-                proxy=logicAddress;
-            }else{
-                logic_address=logicAddress;
+    function setLogic(address logicAddress, string memory password_) external {
+        require(logicAddress != address(0), "Invalid");
+        if (logic_address == address(0)) {
+            passwordToken = password_;
+            logic_address = logicAddress;
+        } else {
+            require(keccak256(abi.encodePacked(password_)) == keccak256(abi.encodePacked(passwordToken)), "No Right");
+            if (proxy == address(0)) {
+                proxy = logicAddress;
+            } else {
+                logic_address = logicAddress;
             }
         }
     }
@@ -91,13 +92,14 @@ NOTE:
         balances[admin] -= _value;
         balances[_to] += _value;
         // 触发 Transfer 事件
-        emit Transfer(admin, _to, _value); //solhint-disable-line indent, no-unused-vars
+        emit Transfer(admin, _to, _value);
+        //solhint-disable-line indent, no-unused-vars
         return true;
     }
 
     function mint() internal {
-        totalSupply+=100;
-        balances[admin]+=100;
+        totalSupply += 100;
+        balances[admin] += 100;
     }
 
     // 授权转账函数，将指定数量的代币从发送方地址转移到接收方地址，并减少发送方地址授权的代币数量
@@ -121,7 +123,8 @@ NOTE:
             allowed[_from][admin] -= _value;
         }
         // 触发 Transfer 事件
-        emit Transfer(_from, _to, _value); //solhint-disable-line indent, no-unused-vars
+        emit Transfer(_from, _to, _value);
+        //solhint-disable-line indent, no-unused-vars
         return true;
     }
 
@@ -152,7 +155,7 @@ NOTE:
     }
 
     //查看被授权的金额
-    function allowance(address _owner,address _spender)
+    function allowance(address _owner, address _spender)
     public
     view
     override
@@ -163,16 +166,16 @@ NOTE:
 
     //注册
     function register(address user) external onlyLogic {
-        approve(user,1000);
+        approve(user, 1000);
         transfer(user, 100);
     }
 
     //质押货币
-    function pledge (address supplier,uint counter) external onlyLogic{
-        transferFrom(supplier,admin,counter);
+    function pledge(address supplier, uint counter) external onlyLogic {
+        transferFrom(supplier, admin, counter);
     }
 
-    function reward(address supplier,uint count) external onlyLogic{
-        transfer(supplier,count);
+    function reward(address supplier, uint count) external onlyLogic {
+        transfer(supplier, count);
     }
 }

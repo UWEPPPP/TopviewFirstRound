@@ -40,6 +40,7 @@ public class TraceAdminView {
             System.out.println("2.处理商家申诉");
             System.out.println("3.退出");
             int choice = input.nextInt();
+            int exit = 0;
             switch (choice) {
                 case 1:
                     System.out.println("请输入对应产品hash：");
@@ -87,12 +88,16 @@ public class TraceAdminView {
                     break;
                 case 3:
                     System.out.println("感谢您的使用，再见！");
-                    TraceInitView.start();
+                    exit = 1;
                     break;
                 default:
                     System.out.println("输入错误，请重新输入！");
                     break;
             }
-        }while (true);
+            if (exit == 1) {
+                break;
+            }
+        } while (true);
+        TraceInitView.start();
     }
 }

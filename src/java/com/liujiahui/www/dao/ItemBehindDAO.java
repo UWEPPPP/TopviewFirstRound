@@ -26,7 +26,7 @@ public interface ItemBehindDAO {
      *
      * @param index           指数
      * @param choice          选择
-     * @param contractAccount
+     * @param contractAccount 合同账户
      * @throws SQLException sqlexception异常
      */
     void removeOrRestoredItem(int index, Boolean choice, String contractAccount) throws SQLException;

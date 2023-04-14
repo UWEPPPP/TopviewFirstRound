@@ -26,7 +26,7 @@ public class SupplyController {
     public Boolean registerItem(String name, BigInteger price, String description, String realName, String realDescription, int type, String location, String storage, BigInteger token) {
         Integer integer = marketService.showToken();
         int min = 10;
-        if(integer <=min|| integer <token.intValue()){
+        if (integer <= min || integer < token.intValue()) {
             return false;
         }
         TraceItemBO traceItemBO = new TraceItemBO();
@@ -54,7 +54,7 @@ public class SupplyController {
         for (ItemPO itemPoOne : itemPos) {
             if (itemPoOne.getId() == id) {
                 oldName = itemPoOne.getName();
-                index=itemPoOne.getIndex();
+                index = itemPoOne.getIndex();
                 break;
             }
         }

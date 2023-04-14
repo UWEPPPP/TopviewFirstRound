@@ -42,7 +42,7 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
             preparedStatement.setString(2, hash);
             int results = preparedStatement.executeUpdate();
             close(preparedStatement, null);
-            if(results==0){
+            if (results == 0) {
                 throw new RuntimeException("更新失败");
             }
             ConnectionPool.getInstance().releaseConnection(connection);
@@ -131,7 +131,7 @@ public class ConsumerFeedbackDAOImpl implements ConsumerFeedbackDAO {
         close(preparedStatement, null);
         close(preparedStatement1, null);
         ConnectionPool.getInstance().releaseConnection(connection);
-       if (result == 0 || result1 == 0) {
+        if (result == 0 || result1 == 0) {
             throw new RuntimeException("更新失败");
         }
     }

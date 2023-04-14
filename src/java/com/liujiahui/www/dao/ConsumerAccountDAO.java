@@ -37,6 +37,7 @@ public interface ConsumerAccountDAO {
      * @param type   类型
      * @param change 改变
      * @return {@link Boolean}
+     * @throws SQLException sqlexception异常
      */
     Boolean updatePersonalInformation(String type, String change) throws SQLException;
 }

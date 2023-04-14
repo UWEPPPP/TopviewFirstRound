@@ -113,7 +113,7 @@ public class SupplierServiceImpl implements SupplierService {
         itemTradeSolidity.removeItem(BigInteger.valueOf(index), choice);
         try {
             new ItemBehindDAOImpl().removeOrRestoredItem(index, choice,
-                    UserSaveDTO .getInstance().getContractAccount());
+                    UserSaveDTO.getInstance().getContractAccount());
         } catch (SQLException e) {
             e.printStackTrace();
         }

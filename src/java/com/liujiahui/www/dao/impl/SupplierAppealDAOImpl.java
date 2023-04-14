@@ -107,7 +107,7 @@ public class SupplierAppealDAOImpl implements SupplierAppealDAO {
             int results = preparedStatement.executeUpdate();
             close(preparedStatement, null);
             ConnectionPool.getInstance().releaseConnection(connection);
-            if(results==0){
+            if (results == 0) {
                 throw new RuntimeException("更新失败");
             }
         } catch (SQLException e) {
