@@ -34,8 +34,11 @@ public class ConsumerServiceImpl implements ConsumerService {
     private ConsumerServiceImpl() {
     }
 
+    public  static class ConsumerServiceImplInstanceHolder{
+        public static final ConsumerServiceImpl INSTANCE = new ConsumerServiceImpl();
+    }
     public static ConsumerService getInstance() {
-        return CommonUsedMarketByConsumerServiceImplImplHolder.INSTANCE;
+        return ConsumerServiceImplInstanceHolder.INSTANCE ;
     }
 
     @Override

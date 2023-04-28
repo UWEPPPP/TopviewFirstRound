@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "ERC20.sol";
 
 contract TraceStorage {
@@ -63,32 +64,31 @@ contract TraceStorage {
     // user_counter 记录每个地址的token质押数量
 
     modifier onlyLogicContract(){
-        if(logic_address!=address(0)){
-            require(msg.sender==logic_address||msg.sender==proxy,"No right");
+        if (logic_address != address(0)) {
+            require(msg.sender == logic_address || msg.sender == proxy, "No right");
         }
         _;
     }
 
     constructor() public {
-        admin=msg.sender;
+        admin = msg.sender;
     }
 
-    function setLogic(address logicAddress,string memory password) external  {
-        require(logicAddress!=address(0),"Invalid");
-        string memory test=password_;
-        if(logic_address==address(0)){
-            password_=password;
-            logic_address=logicAddress;
-        }else{
-            require(keccak256(abi.encodePacked(password))==keccak256(abi.encodePacked(test)),"No Right");
-            if(proxy==address(0)){
-                proxy=logicAddress;
-            }else{
-                logic_address=logicAddress;
+    function setLogic(address logicAddress, string memory password) external {
+        require(logicAddress != address(0), "Invalid");
+        string memory test = password_;
+        if (logic_address == address(0)) {
+            password_ = password;
+            logic_address = logicAddress;
+        } else {
+            require(keccak256(abi.encodePacked(password)) == keccak256(abi.encodePacked(test)), "No Right");
+            if (proxy == address(0)) {
+                proxy = logicAddress;
+            } else {
+                logic_address = logicAddress;
             }
         }
     }
-
 
 
     function getSellerItemsIndex(address owner)
@@ -179,7 +179,7 @@ contract TraceStorage {
         address seller,
         uint256 index,
         bool choice
-    ) external onlyLogicContract{
+    ) external onlyLogicContract {
         ItemsBySeller[seller][index].isSold = choice;
         ItemByHash[ItemsBySeller[seller][index].hash].isSold = choice;
     }
@@ -239,7 +239,7 @@ contract TraceStorage {
         address supplier,
         bytes32 hash,
         uint256 calculate
-    ) external onlyLogicContract returns(uint256) {
+    ) external onlyLogicContract returns (uint256) {
         user_counter[supplier][hash] -= calculate;
         return calculate;
     }
@@ -247,15 +247,13 @@ contract TraceStorage {
     function calculateToken(
         address supplier,
         bytes32 hash
-    ) external view onlyLogicContract returns(uint256) {
-        uint256 calculate = user_counter[supplier][hash]/10;
+    ) external view onlyLogicContract returns (uint256) {
+        uint256 calculate = user_counter[supplier][hash] / 10;
         return calculate;
     }
 
 
-
-
-    function returnToken(address supplier, bytes32 hash) external onlyLogicContract returns(uint256) {
+    function returnToken(address supplier, bytes32 hash) external onlyLogicContract returns (uint256) {
         uint256 pledge = user_counter[supplier][hash];
         user_counter[supplier][hash] = 0;
         return pledge;
@@ -269,7 +267,7 @@ contract TraceStorage {
     function appealYes(
         address feedbacker,
         uint256 calculate
-    ) external onlyLogicContract{
+    ) external onlyLogicContract {
         Balances[feedbacker] -= calculate;
     }
 }

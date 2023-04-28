@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
+
 import "Verifier.sol";
 import "TraceStorage.sol";
 import "ERC20.sol";
@@ -17,7 +18,7 @@ contract TraceMarket {
     event NewItemAdd(address indexed seller, string name, uint256 price);
     event ItemSold(address indexed seller, address buyer, bytes32 hash);
 
-    constructor(address storageAddress, address veri_Address,address token) public {
+    constructor(address storageAddress, address veri_Address, address token) public {
         trace = TraceStorage(storageAddress);
         admin = msg.sender;
         trace.setLogic(address(this), "liujiahui1Y");
@@ -25,7 +26,7 @@ contract TraceMarket {
         test = address(this);
         veri.market_address_set(test, "liujiahui1Y");
         veri.Market_right_set(msg.sender, 3, test);
-        erc20=MyToken(token);
+        erc20 = MyToken(token);
         erc20.setLogic(address(this), "liujiahui1Y");
     }
 
@@ -130,7 +131,7 @@ contract TraceMarket {
 
     function registerAsset(uint256 choice) external {
         trace.registerAsset(msg.sender, choice);
-        if(choice==1){
+        if (choice == 1) {
             erc20.register(msg.sender);
         }
         veri.Market_right_set(msg.sender, choice, test);
@@ -197,14 +198,14 @@ contract TraceMarket {
         bool chioce,
         bytes32 hash
     ) external onlyConsumer {
-        uint256 calculate=trace.calculateToken(seller, hash);
-        if(!chioce){
-            trace.report(seller,hash,calculate);
-        }else{
+        uint256 calculate = trace.calculateToken(seller, hash);
+        if (!chioce) {
+            trace.report(seller, hash, calculate);
+        } else {
             erc20.reward(seller, calculate);
         }
-        uint256 pledge= trace.returnToken(seller,hash);
-        erc20.reward(seller,pledge);
+        uint256 pledge = trace.returnToken(seller, hash);
+        erc20.reward(seller, pledge);
     }
 
     function showSupplierToken() external view onlySupplier returns (uint256) {
@@ -227,9 +228,9 @@ contract TraceMarket {
     ) external onlyAdmin {
         uint256 count = token / 10;
         trace.appealYes(feedbacker, count);
-        if(choice){
+        if (choice) {
             erc20.reward(supplier, count);
-        }else{
+        } else {
             erc20.pledge(supplier, count);
         }
     }
